@@ -1,0 +1,19 @@
+# Secrets
+.env
+*.env
+serviceAccountKey.json
+firebase-sa.json
+firebase-creds.json
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Node
+node_modules/
+dist/
+
+# OS
+.DS_Store
