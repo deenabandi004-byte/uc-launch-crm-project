@@ -17,3 +17,8 @@ dist/
 
 # OS
 .DS_Store
+__pycache__/
+*.pyc
+node_modules/
+dist/
+.vite/
