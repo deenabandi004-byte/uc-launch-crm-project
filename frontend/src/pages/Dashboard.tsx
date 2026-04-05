@@ -24,6 +24,24 @@ const PIPELINE_STAGES = [
   { key: "paid", label: "Paid", color: "#22C55E" },
 ];
 
+const S = {
+  page: { maxWidth: 1200, margin: "0 auto", padding: "40px 48px", fontFamily: "'Inter', sans-serif" } as const,
+  serif: "'Libre Baskerville', Georgia, serif",
+  // Cards
+  card: { background: "#fff", border: "1px solid #E2E8F0", borderRadius: 3, padding: 24, transition: "box-shadow 0.15s ease, border-color 0.15s ease" } as const,
+  cardHover: { borderColor: "#C4B5FD", boxShadow: "0 4px 16px rgba(124,58,237,0.08)" },
+  // Stat card
+  stat: { background: "#fff", border: "1px solid #E2E8F0", borderRadius: 3, padding: "20px 24px", cursor: "pointer", textDecoration: "none", display: "block", transition: "all 0.15s ease" } as const,
+  // Section header
+  sectionTitle: { fontSize: 15, fontWeight: 600, color: "#0f2545", margin: 0 } as const,
+  sectionLink: { fontSize: 13, fontWeight: 500, color: "#7C3AED", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 } as const,
+  // Hero
+  hero: { background: "linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)", borderRadius: 3, padding: "36px 40px", color: "#fff", marginBottom: 32 } as const,
+  // Muted text
+  muted: { fontSize: 14, color: "#64748B", margin: 0 } as const,
+  mutedSm: { fontSize: 12, color: "#94A3B8" } as const,
+};
+
 export default function Dashboard() {
   const { user } = useFirebaseAuth();
   const { data: leads = [] } = useQuery({ queryKey: ["leads"], queryFn: getLeads });
@@ -65,157 +83,103 @@ export default function Dashboard() {
     }
   };
 
+  const firstName = user?.name?.split(" ")[0] || "there";
+
   return (
-    <div className="mx-auto max-w-7xl p-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">
-          Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
+    <div style={S.page}>
+
+      {/* ── HERO CARD ── */}
+      <div style={S.hero}>
+        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, opacity: 0.7, marginBottom: 12 }}>
+          Dashboard
+        </div>
+        <h1 style={{ fontFamily: S.serif, fontSize: 28, fontWeight: 400, margin: "0 0 8px", color: "#fff" }}>
+          Welcome back, {firstName}
         </h1>
-        <p className="text-muted-foreground">
-          {user?.companyName ? `${user.companyName} Dashboard` : "Your outbound sales dashboard"}
+        <p style={{ fontSize: 15, color: "rgba(255,255,255,0.75)", margin: "0 0 24px", maxWidth: 500 }}>
+          {user?.companyName ? `Here's what's happening at ${user.companyName}.` : "Track your clients, follow up on time, and close more deals."}
         </p>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" as const }}>
+          <Link to="/outreach" style={{ background: "#fff", color: "#7C3AED", fontWeight: 600, fontSize: 13, padding: "10px 24px", borderRadius: 3, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6, transition: "background 0.15s" }}>
+            New Campaign <ArrowRight size={14} />
+          </Link>
+          <Link to="/contacts" style={{ background: "rgba(255,255,255,0.15)", color: "#fff", fontWeight: 500, fontSize: 13, padding: "10px 24px", borderRadius: 3, textDecoration: "none", border: "1px solid rgba(255,255,255,0.25)", display: "inline-flex", alignItems: "center", gap: 6 }}>
+            Find Contacts
+          </Link>
+        </div>
       </div>
 
-      {/* Gmail connection banner */}
+      {/* ── GMAIL BANNER ── */}
       {gmailStatus && !gmailStatus.connected && (
-        <div className="mb-6 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <div className="flex items-center gap-3">
-            <Mail className="text-amber-600" size={20} />
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "#FFFBEB", border: "1px solid #FDE68A", borderRadius: 3, padding: "14px 20px", marginBottom: 28 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <Mail size={18} style={{ color: "#D97706" }} />
             <div>
-              <p className="text-sm font-medium text-amber-900">Connect Gmail to send campaigns</p>
-              <p className="text-xs text-amber-700">Required for sending personalized emails to your contacts</p>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#92400E" }}>Connect Gmail to send campaigns</div>
+              <div style={{ fontSize: 12, color: "#B45309" }}>Required for personalized emails</div>
             </div>
           </div>
           <button
             onClick={handleConnectGmail}
             disabled={connectingGmail}
-            className="flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700 disabled:opacity-50"
+            style={{ background: "#D97706", color: "#fff", border: "none", borderRadius: 3, padding: "8px 16px", fontSize: 13, fontWeight: 500, cursor: "pointer", opacity: connectingGmail ? 0.5 : 1 }}
           >
-            <ExternalLink size={14} />
-            Connect Gmail
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}><ExternalLink size={13} /> Connect</span>
           </button>
         </div>
       )}
 
-      {/* KPI Cards */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Link
-          to="/quotes"
-          className="rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md"
-        >
-          <div className="flex items-center justify-between">
-            <div className="rounded-lg bg-green-50 p-2 text-green-600">
-              <DollarSign size={18} />
+      {/* ── KPI STAT CARDS ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 28 }}>
+        {[
+          { label: "Revenue", value: `$${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`, sub: pendingRevenue > 0 ? `$${pendingRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })} pending` : "", icon: DollarSign, iconBg: "#ECFDF5", iconColor: "#059669", to: "/quotes" },
+          { label: "Active Deals", value: pipelineCount, sub: interestedCount > 0 ? `${interestedCount} interested` : "", icon: TrendingUp, iconBg: "#F5F3FF", iconColor: "#7C3AED", to: "/pipeline" },
+          { label: "Tasks Today", value: openTasks.length, sub: overdueTasks.length > 0 ? `${overdueTasks.length} overdue` : "", icon: CheckSquare, iconBg: overdueTasks.length > 0 ? "#FEF2F2" : "#F5F3FF", iconColor: overdueTasks.length > 0 ? "#DC2626" : "#7C3AED", to: "/tasks" },
+          { label: "Contacts", value: contacts.length, sub: leads.length > 0 ? `${leads.length} companies` : "", icon: Users, iconBg: "#ECFDF5", iconColor: "#059669", to: "/contacts" },
+        ].map((kpi) => (
+          <Link
+            key={kpi.label}
+            to={kpi.to}
+            style={S.stat}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#C4B5FD"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(124,58,237,0.08)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#E2E8F0"; e.currentTarget.style.boxShadow = "none"; }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 3, background: kpi.iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <kpi.icon size={18} style={{ color: kpi.iconColor }} />
+              </div>
+              <ArrowRight size={14} style={{ color: "#94A3B8" }} />
             </div>
-            <ArrowRight size={16} className="text-muted-foreground" />
-          </div>
-          <div className="mt-3">
-            <div className="text-2xl font-bold">${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
-            <div className="text-sm text-muted-foreground">Revenue Collected</div>
-          </div>
-          {pendingRevenue > 0 && (
-            <div className="mt-1 text-xs text-amber-600">
-              ${pendingRevenue.toLocaleString(undefined, { maximumFractionDigits: 0 })} pending
-            </div>
-          )}
-        </Link>
-
-        <Link
-          to="/pipeline"
-          className="rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md"
-        >
-          <div className="flex items-center justify-between">
-            <div className="rounded-lg bg-purple-50 p-2 text-purple-600">
-              <TrendingUp size={18} />
-            </div>
-            <ArrowRight size={16} className="text-muted-foreground" />
-          </div>
-          <div className="mt-3">
-            <div className="text-2xl font-bold">{pipelineCount}</div>
-            <div className="text-sm text-muted-foreground">Active Deals</div>
-          </div>
-          {interestedCount > 0 && (
-            <div className="mt-1 text-xs text-emerald-600">
-              {interestedCount} interested
-            </div>
-          )}
-        </Link>
-
-        <Link
-          to="/tasks"
-          className="rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md"
-        >
-          <div className="flex items-center justify-between">
-            <div className={`rounded-lg p-2 ${overdueTasks.length > 0 ? "bg-red-50 text-red-600" : "bg-purple-50 text-purple-600"}`}>
-              <CheckSquare size={18} />
-            </div>
-            <ArrowRight size={16} className="text-muted-foreground" />
-          </div>
-          <div className="mt-3">
-            <div className="text-2xl font-bold">{openTasks.length}</div>
-            <div className="text-sm text-muted-foreground">Tasks Due Today</div>
-          </div>
-          {overdueTasks.length > 0 && (
-            <div className="mt-1 flex items-center gap-1 text-xs text-red-600">
-              <AlertCircle size={12} />
-              {overdueTasks.length} overdue
-            </div>
-          )}
-        </Link>
-
-        <Link
-          to="/contacts"
-          className="rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md"
-        >
-          <div className="flex items-center justify-between">
-            <div className="rounded-lg bg-emerald-50 p-2 text-emerald-600">
-              <Users size={18} />
-            </div>
-            <ArrowRight size={16} className="text-muted-foreground" />
-          </div>
-          <div className="mt-3">
-            <div className="text-2xl font-bold">{contacts.length}</div>
-            <div className="text-sm text-muted-foreground">Total Contacts</div>
-          </div>
-          {leads.length > 0 && (
-            <div className="mt-1 text-xs text-purple-600">
-              {leads.length} target companies
-            </div>
-          )}
-        </Link>
+            <div style={{ fontSize: 26, fontWeight: 700, color: "#0f2545", lineHeight: 1, marginBottom: 4 }}>{kpi.value}</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>{kpi.label}</div>
+            {kpi.sub && <div style={{ fontSize: 12, color: kpi.iconColor, marginTop: 4 }}>{kpi.sub}</div>}
+          </Link>
+        ))}
       </div>
 
-      {/* Pipeline Funnel + Tasks Due Today */}
-      <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Pipeline Funnel */}
-        <div className="lg:col-span-2 rounded-xl border border-border bg-card p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Pipeline Overview</h2>
-            <Link to="/pipeline" className="flex items-center gap-1 text-sm text-primary hover:underline">
-              View Kanban <ChevronRight size={14} />
-            </Link>
+      {/* ── PIPELINE + TASKS ROW ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 20, marginBottom: 28 }}>
+
+        {/* Pipeline Overview */}
+        <div style={S.card}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+            <h2 style={S.sectionTitle}>Pipeline Overview</h2>
+            <Link to="/pipeline" style={S.sectionLink}>View Kanban <ChevronRight size={14} /></Link>
           </div>
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {PIPELINE_STAGES.map((stage) => {
               const count = pipelineData[stage.key]?.length || 0;
               const pct = maxStageCount > 0 ? (count / maxStageCount) * 100 : 0;
               return (
-                <div key={stage.key} className="flex items-center gap-3">
-                  <div className="w-28 text-sm text-muted-foreground truncate" title={stage.label}>
-                    {stage.label}
-                  </div>
-                  <div className="flex-1 h-7 rounded-md bg-secondary overflow-hidden">
-                    <div
-                      className="h-full rounded-md transition-all duration-500 flex items-center px-2"
-                      style={{
-                        width: `${Math.max(pct, count > 0 ? 8 : 0)}%`,
-                        backgroundColor: stage.color,
-                      }}
-                    >
-                      {count > 0 && (
-                        <span className="text-xs font-medium text-white">{count}</span>
-                      )}
+                <div key={stage.key} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 100, fontSize: 13, color: "#64748B", flexShrink: 0 }}>{stage.label}</div>
+                  <div style={{ flex: 1, height: 24, background: "#F1F5F9", borderRadius: 3, overflow: "hidden" }}>
+                    <div style={{
+                      height: "100%", borderRadius: 3, background: stage.color,
+                      width: `${Math.max(pct, count > 0 ? 8 : 0)}%`,
+                      display: "flex", alignItems: "center", paddingLeft: 8, transition: "width 0.5s ease",
+                    }}>
+                      {count > 0 && <span style={{ fontSize: 11, fontWeight: 600, color: "#fff" }}>{count}</span>}
                     </div>
                   </div>
                 </div>
@@ -223,56 +187,49 @@ export default function Dashboard() {
             })}
           </div>
           {pipelineCount === 0 && (
-            <p className="mt-4 text-center text-sm text-muted-foreground">
-              No contacts in pipeline yet. <Link to="/contacts" className="text-primary hover:underline">Add contacts</Link> to get started.
+            <p style={{ textAlign: "center", fontSize: 13, color: "#94A3B8", marginTop: 16 }}>
+              No contacts in pipeline yet. <Link to="/contacts" style={{ color: "#7C3AED", textDecoration: "none" }}>Add contacts</Link> to get started.
             </p>
           )}
         </div>
 
-        {/* Tasks Due Today */}
-        <div className="rounded-xl border border-border bg-card p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Today's Tasks</h2>
-            <Link to="/tasks" className="flex items-center gap-1 text-sm text-primary hover:underline">
-              All Tasks <ChevronRight size={14} />
-            </Link>
+        {/* Tasks */}
+        <div style={S.card}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+            <h2 style={S.sectionTitle}>Today's Tasks</h2>
+            <Link to="/tasks" style={S.sectionLink}>All Tasks <ChevronRight size={14} /></Link>
           </div>
           {openTasks.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <CheckSquare size={32} className="mb-2 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">No tasks due today</p>
-              <Link to="/tasks" className="mt-2 text-sm text-primary hover:underline">
-                Create a task
-              </Link>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 0", textAlign: "center" }}>
+              <CheckSquare size={28} style={{ color: "#D1D5DB", marginBottom: 8 }} />
+              <p style={{ fontSize: 13, color: "#94A3B8", margin: "0 0 8px" }}>No tasks due today</p>
+              <Link to="/tasks" style={{ fontSize: 13, color: "#7C3AED", textDecoration: "none" }}>Create a task</Link>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {openTasks.slice(0, 6).map((task: any) => (
                 <Link
                   key={task.id}
                   to="/tasks"
-                  className="flex items-start gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-secondary"
+                  style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 12px", border: "1px solid #F1F5F9", borderRadius: 3, textDecoration: "none", transition: "background 0.12s" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "#FAFBFF"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                 >
-                  <div className={`mt-0.5 h-2 w-2 rounded-full flex-shrink-0 ${
-                    task.status === "overdue" ? "bg-red-500" :
-                    task.priority === "high" ? "bg-red-400" :
-                    task.priority === "medium" ? "bg-amber-400" : "bg-purple-400"
-                  }`} />
-                  <div className="min-w-0 flex-1">
-                    <div className="text-sm font-medium truncate">{task.title}</div>
-                    {task.contactName && (
-                      <div className="text-xs text-muted-foreground truncate">{task.contactName}</div>
-                    )}
+                  <div style={{
+                    width: 8, height: 8, borderRadius: "50%", marginTop: 5, flexShrink: 0,
+                    background: task.status === "overdue" ? "#DC2626" : task.priority === "high" ? "#EF4444" : task.priority === "medium" ? "#F59E0B" : "#7C3AED",
+                  }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: "#0f2545", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{task.title}</div>
+                    {task.contactName && <div style={{ fontSize: 12, color: "#94A3B8" }}>{task.contactName}</div>}
                   </div>
                   {task.status === "overdue" && (
-                    <span className="flex-shrink-0 rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-700">
-                      Overdue
-                    </span>
+                    <span style={{ fontSize: 10, fontWeight: 600, color: "#DC2626", background: "#FEF2F2", padding: "2px 8px", borderRadius: 100, flexShrink: 0 }}>Overdue</span>
                   )}
                 </Link>
               ))}
               {openTasks.length > 6 && (
-                <Link to="/tasks" className="block text-center text-sm text-primary hover:underline">
+                <Link to="/tasks" style={{ textAlign: "center", fontSize: 13, color: "#7C3AED", textDecoration: "none", padding: "6px 0" }}>
                   +{openTasks.length - 6} more
                 </Link>
               )}
@@ -281,26 +238,23 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Bottom row: Recent Quotes/Invoices + Quick Actions */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Recent Quotes & Invoices */}
-        <div className="rounded-xl border border-border bg-card p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">Recent Quotes & Invoices</h2>
-            <Link to="/quotes" className="flex items-center gap-1 text-sm text-primary hover:underline">
-              View All <ChevronRight size={14} />
-            </Link>
+      {/* ── BOTTOM ROW: QUOTES + QUICK ACTIONS ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+
+        {/* Quotes & Invoices */}
+        <div style={S.card}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+            <h2 style={S.sectionTitle}>Recent Quotes & Invoices</h2>
+            <Link to="/quotes" style={S.sectionLink}>View All <ChevronRight size={14} /></Link>
           </div>
           {quotes.length === 0 && invoices.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <FileText size={32} className="mb-2 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">No quotes or invoices yet</p>
-              <Link to="/quotes" className="mt-2 text-sm text-primary hover:underline">
-                Create a quote
-              </Link>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "32px 0", textAlign: "center" }}>
+              <FileText size={28} style={{ color: "#D1D5DB", marginBottom: 8 }} />
+              <p style={{ fontSize: 13, color: "#94A3B8", margin: "0 0 8px" }}>No quotes or invoices yet</p>
+              <Link to="/quotes" style={{ fontSize: 13, color: "#7C3AED", textDecoration: "none" }}>Create a quote</Link>
             </div>
           ) : (
-            <div className="space-y-2">
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {[
                 ...quotes.slice(0, 3).map((q: any) => ({ ...q, _type: "quote" })),
                 ...invoices.slice(0, 3).map((inv: any) => ({ ...inv, _type: "invoice" })),
@@ -311,25 +265,25 @@ export default function Dashboard() {
                   <Link
                     key={item.id}
                     to="/quotes"
-                    className="flex items-center justify-between rounded-lg border border-border p-3 transition-colors hover:bg-secondary"
+                    style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", border: "1px solid #F1F5F9", borderRadius: 3, textDecoration: "none", transition: "background 0.12s" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "#FAFBFF"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className={`rounded p-1.5 ${item._type === "quote" ? "bg-purple-50 text-purple-600" : "bg-green-50 text-green-600"}`}>
-                        <FileText size={14} />
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                      <div style={{ width: 32, height: 32, borderRadius: 3, background: item._type === "quote" ? "#F5F3FF" : "#ECFDF5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        <FileText size={14} style={{ color: item._type === "quote" ? "#7C3AED" : "#059669" }} />
                       </div>
-                      <div className="min-w-0">
-                        <div className="text-sm font-medium truncate">
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>
                           {item._type === "quote" ? item.quoteNumber : item.invoiceNumber}
-                          {item.contactName && <span className="text-muted-foreground font-normal"> — {item.contactName}</span>}
+                          {item.contactName && <span style={{ color: "#94A3B8", fontWeight: 400 }}> — {item.contactName}</span>}
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          {item._type === "quote" ? "Quote" : "Invoice"} · {_formatDate(item.createdAt)}
-                        </div>
+                        <div style={{ fontSize: 12, color: "#94A3B8" }}>{item._type === "quote" ? "Quote" : "Invoice"} · {_formatDate(item.createdAt)}</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                       <StatusBadge status={item.status} />
-                      <span className="text-sm font-semibold">${(item.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                      <span style={{ fontSize: 14, fontWeight: 600, color: "#0f2545" }}>${(item.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
                     </div>
                   </Link>
                 ))}
@@ -338,94 +292,81 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="rounded-xl border border-border bg-card p-6">
-          <h2 className="mb-4 text-lg font-semibold">Quick Actions</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Link
-              to="/leads"
-              className="flex items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-secondary"
-            >
-              <Target size={20} className="text-purple-600" />
-              <div>
-                <div className="text-sm font-medium">Generate Leads</div>
-                <div className="text-xs text-muted-foreground">Find target companies with AI</div>
-              </div>
-            </Link>
-            <Link
-              to="/outreach"
-              className="flex items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-secondary"
-            >
-              <Send size={20} className="text-emerald-600" />
-              <div>
-                <div className="text-sm font-medium">New Campaign</div>
-                <div className="text-xs text-muted-foreground">Send personalized emails</div>
-              </div>
-            </Link>
-            <Link
-              to="/quotes"
-              className="flex items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-secondary"
-            >
-              <FileText size={20} className="text-purple-600" />
-              <div>
-                <div className="text-sm font-medium">Create Quote</div>
-                <div className="text-xs text-muted-foreground">Send estimates to clients</div>
-              </div>
-            </Link>
-            <Link
-              to="/pipeline"
-              className="flex items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-secondary"
-            >
-              <GitBranch size={20} className="text-orange-600" />
-              <div>
-                <div className="text-sm font-medium">View Pipeline</div>
-                <div className="text-xs text-muted-foreground">Track your outreach</div>
-              </div>
-            </Link>
+        <div style={S.card}>
+          <h2 style={{ ...S.sectionTitle, marginBottom: 16 }}>Quick Actions</h2>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {[
+              { label: "Generate Leads", desc: "Find target companies", icon: Target, color: "#7C3AED", to: "/leads" },
+              { label: "New Campaign", desc: "Send personalized emails", icon: Send, color: "#059669", to: "/outreach" },
+              { label: "Create Quote", desc: "Send estimates to clients", icon: FileText, color: "#7C3AED", to: "/quotes" },
+              { label: "View Pipeline", desc: "Track your outreach", icon: GitBranch, color: "#EA580C", to: "/pipeline" },
+            ].map((action) => (
+              <Link
+                key={action.label}
+                to={action.to}
+                style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", border: "1px solid #E2E8F0", borderRadius: 3, textDecoration: "none", transition: "all 0.12s" }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#C4B5FD"; e.currentTarget.style.background = "#FAFBFF"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#E2E8F0"; e.currentTarget.style.background = "transparent"; }}
+              >
+                <action.icon size={18} style={{ color: action.color, flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>{action.label}</div>
+                  <div style={{ fontSize: 12, color: "#94A3B8" }}>{action.desc}</div>
+                </div>
+              </Link>
+            ))}
           </div>
 
-          {/* Campaign summary */}
           {campaigns.length > 0 && (
-            <div className="mt-4 rounded-lg bg-secondary/50 p-4">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Mail size={16} className="text-primary" />
+            <div style={{ marginTop: 16, background: "#F8FAFC", borderRadius: 3, padding: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: "#0f2545", marginBottom: 12 }}>
+                <Mail size={15} style={{ color: "#7C3AED" }} />
                 Campaign Activity
               </div>
-              <div className="mt-2 flex gap-4">
+              <div style={{ display: "flex", gap: 24 }}>
                 <div>
-                  <div className="text-lg font-bold">{campaigns.length}</div>
-                  <div className="text-xs text-muted-foreground">Campaigns</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: "#0f2545" }}>{campaigns.length}</div>
+                  <div style={{ fontSize: 12, color: "#94A3B8" }}>Campaigns</div>
                 </div>
                 <div>
-                  <div className="text-lg font-bold">
-                    {campaigns.filter((c: any) => c.status === "sent").length}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Sent</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: "#0f2545" }}>{campaigns.filter((c: any) => c.status === "sent").length}</div>
+                  <div style={{ fontSize: 12, color: "#94A3B8" }}>Sent</div>
                 </div>
                 <div>
-                  <div className="text-lg font-bold">
-                    {campaigns.filter((c: any) => c.status === "draft").length}
-                  </div>
-                  <div className="text-xs text-muted-foreground">Drafts</div>
+                  <div style={{ fontSize: 20, fontWeight: 700, color: "#0f2545" }}>{campaigns.filter((c: any) => c.status === "draft").length}</div>
+                  <div style={{ fontSize: 12, color: "#94A3B8" }}>Drafts</div>
                 </div>
               </div>
             </div>
           )}
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 1024px) {
+          div[style*="gridTemplateColumns: repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+          div[style*="gridTemplateColumns: 2fr 1fr"] { grid-template-columns: 1fr !important; }
+          div[style*="gridTemplateColumns: 1fr 1fr"] { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 640px) {
+          div[style*="gridTemplateColumns: repeat(4"] { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   );
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-700",
-    sent: "bg-blue-100 text-blue-700",
-    approved: "bg-green-100 text-green-700",
-    paid: "bg-emerald-100 text-emerald-700",
-    overdue: "bg-red-100 text-red-700",
+  const styles: Record<string, { bg: string; color: string }> = {
+    draft: { bg: "#F1F5F9", color: "#64748B" },
+    sent: { bg: "#F5F3FF", color: "#7C3AED" },
+    approved: { bg: "#ECFDF5", color: "#059669" },
+    paid: { bg: "#ECFDF5", color: "#047857" },
+    overdue: { bg: "#FEF2F2", color: "#DC2626" },
   };
+  const s = styles[status] || styles.draft;
   return (
-    <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${styles[status] || styles.draft}`}>
+    <span style={{ fontSize: 10, fontWeight: 600, background: s.bg, color: s.color, padding: "2px 8px", borderRadius: 100 }}>
       {status}
     </span>
   );
