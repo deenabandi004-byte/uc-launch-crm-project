@@ -19,7 +19,7 @@ def fetch_website_content(url: str) -> str:
         headers = {"Accept": "text/plain"}
         if JINA_API_KEY:
             headers["Authorization"] = f"Bearer {JINA_API_KEY}"
-        resp = requests.get(jina_url, headers=headers, timeout=15)
+        resp = requests.get(jina_url, headers=headers, timeout=8)
         resp.raise_for_status()
         content = resp.text.strip()
         if content and len(content) > 50:
@@ -29,7 +29,7 @@ def fetch_website_content(url: str) -> str:
 
     # Fallback: fetch directly and extract text
     try:
-        resp = requests.get(url, timeout=15, headers={
+        resp = requests.get(url, timeout=8, headers={
             "User-Agent": "Mozilla/5.0 (compatible; OutboundCRM/1.0)"
         })
         resp.raise_for_status()

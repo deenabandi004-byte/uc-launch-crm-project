@@ -4,9 +4,21 @@ from app.extensions import require_firebase_auth, get_db
 pipeline_bp = Blueprint("pipeline", __name__, url_prefix="/api/pipeline")
 
 VALID_STAGES = [
-    "none", "no_response", "replied", "call_scheduled",
-    "proposal_sent", "won", "not_interested", "lost",
+    "none", "new_lead", "contacted", "interested",
+    "estimate_sent", "approved", "in_progress",
+    "complete", "paid", "not_interested",
 ]
+
+
+STAGE_MIGRATION = {
+    "none": "new_lead",
+    "no_response": "contacted",
+    "replied": "interested",
+    "call_scheduled": "interested",
+    "proposal_sent": "estimate_sent",
+    "won": "paid",
+    "lost": "not_interested",
+}
 
 
 @pipeline_bp.get("/")
@@ -14,13 +26,20 @@ VALID_STAGES = [
 def get_pipeline():
     uid = request.firebase_user["uid"]
     db = get_db()
-    docs = db.collection("users").document(uid).collection("contacts").stream()
+    docs = list(db.collection("users").document(uid).collection("contacts").stream())
 
     pipeline = {stage: [] for stage in VALID_STAGES if stage != "none"}
     for doc in docs:
         c = doc.to_dict()
         c["id"] = doc.id
         stage = c.get("pipelineStage", "none")
+
+        # Migrate old stage values
+        if stage in STAGE_MIGRATION:
+            new_stage = STAGE_MIGRATION[stage]
+            doc.reference.update({"pipelineStage": new_stage})
+            stage = new_stage
+
         if stage in pipeline:
             pipeline[stage].append(c)
 

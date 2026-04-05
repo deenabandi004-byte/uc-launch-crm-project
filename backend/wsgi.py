@@ -11,6 +11,13 @@ from app.routes.email_templates import email_templates_bp
 from app.routes.campaigns import campaigns_bp
 from app.routes.pipeline import pipeline_bp
 from app.routes.gmail_oauth import gmail_oauth_bp
+from app.routes.tasks import tasks_bp
+from app.routes.quotes import quotes_bp
+from app.routes.replies import replies_bp
+from app.routes.sequences import sequences_bp
+from app.routes.tracking import tracking_bp
+from app.routes.analytics import analytics_bp
+from app.routes.calendar import calendar_bp
 from app.extensions import init_app_extensions
 
 
@@ -36,6 +43,13 @@ def create_app() -> Flask:
     app.register_blueprint(campaigns_bp)
     app.register_blueprint(pipeline_bp)
     app.register_blueprint(gmail_oauth_bp)
+    app.register_blueprint(tasks_bp)
+    app.register_blueprint(quotes_bp)
+    app.register_blueprint(replies_bp)
+    app.register_blueprint(sequences_bp)
+    app.register_blueprint(tracking_bp)
+    app.register_blueprint(analytics_bp)
+    app.register_blueprint(calendar_bp)
 
     # Serve static assets
     @app.route("/assets/<path:filename>")

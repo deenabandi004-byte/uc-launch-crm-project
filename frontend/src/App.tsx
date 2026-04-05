@@ -5,13 +5,17 @@ import { FirebaseAuthProvider, useFirebaseAuth } from "./contexts/FirebaseAuthCo
 import { AppLayout } from "./components/layout/AppLayout";
 import SignIn from "./pages/SignIn";
 import OnboardingFlow from "./pages/OnboardingFlow";
+import ConnectGmail from "./pages/ConnectGmail";
 import Dashboard from "./pages/Dashboard";
+import LeadGeneration from "./pages/LeadGeneration";
 import ContactSheet from "./pages/ContactSheet";
-import CampaignCompose from "./pages/CampaignCompose";
+import Outreach from "./pages/Outreach";
 import Pipeline from "./pages/Pipeline";
 import Tasks from "./pages/Tasks";
-import Quotes from "./pages/Quotes";
-import SettingsPage from "./pages/SettingsPage";
+import QuotesInvoices from "./pages/QuotesInvoices";
+import Replies from "./pages/Replies";
+import Calendar from "./pages/Calendar";
+import Analytics from "./pages/Analytics";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 5 * 60 * 1000, gcTime: 10 * 60 * 1000 } },
@@ -22,6 +26,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (isLoading) return <LoadingScreen />;
   if (!user) return <Navigate to="/signin" replace />;
   if (user.needsOnboarding) return <Navigate to="/onboarding" replace />;
+  if (!user.gmailConnected) return <Navigate to="/connect-gmail" replace />;
   return <>{children}</>;
 }
 
@@ -48,6 +53,12 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/connect-gmail"
+        element={
+          !user ? <Navigate to="/signin" replace /> : <ConnectGmail />
+        }
+      />
+      <Route
         element={
           <ProtectedRoute>
             <AppLayout />
@@ -55,15 +66,15 @@ function AppRoutes() {
         }
       >
         <Route path="/" element={<Dashboard />} />
-        <Route path="/pipeline" element={<Pipeline />} />
+        <Route path="/leads" element={<LeadGeneration />} />
         <Route path="/contacts" element={<ContactSheet />} />
-        <Route path="/campaigns" element={<CampaignCompose />} />
+        <Route path="/outreach" element={<Outreach />} />
+        <Route path="/pipeline" element={<Pipeline />} />
         <Route path="/tasks" element={<Tasks />} />
-        <Route path="/quotes" element={<Quotes />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        {/* Legacy redirects */}
-        <Route path="/leads" element={<Navigate to="/contacts" replace />} />
-        <Route path="/templates" element={<Navigate to="/campaigns" replace />} />
+        <Route path="/quotes" element={<QuotesInvoices />} />
+        <Route path="/replies" element={<Replies />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

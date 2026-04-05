@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify
 from app.extensions import require_firebase_auth, get_db
 from app.services.email_generation import generate_personalized_email
 from app.services.gmail_client import create_draft, send_draft
+from app.services.email_tracker import inject_tracking
 
 campaigns_bp = Blueprint("campaigns", __name__, url_prefix="/api/campaigns")
 
@@ -155,11 +156,13 @@ def send_campaign(campaign_id):
             results.append(draft)
             continue
         try:
+            base_url = request.host_url.rstrip("/")
+            tracked_body = inject_tracking(draft["body"], uid, draft["contactId"], campaign_id, base_url)
             result = create_draft(
                 gmail_creds=gmail_creds,
                 to=draft["contactEmail"],
                 subject=draft["subject"],
-                body=draft["body"],
+                body=tracked_body,
                 uid=uid,
             )
             send_result = send_draft(
