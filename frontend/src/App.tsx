@@ -3,11 +3,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { FirebaseAuthProvider, useFirebaseAuth } from "./contexts/FirebaseAuthContext";
 import { AppLayout } from "./components/layout/AppLayout";
+import Landing from "./pages/Landing";
 import SignIn from "./pages/SignIn";
 import OnboardingFlow from "./pages/OnboardingFlow";
 import ConnectGmail from "./pages/ConnectGmail";
 import Dashboard from "./pages/Dashboard";
-import LeadGeneration from "./pages/LeadGeneration";
 import ContactSheet from "./pages/ContactSheet";
 import Outreach from "./pages/Outreach";
 import Pipeline from "./pages/Pipeline";
@@ -45,7 +45,8 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/signin" element={user ? <Navigate to="/" replace /> : <SignIn />} />
+      <Route path="/" element={<Landing />} />
+      <Route path="/signin" element={user ? <Navigate to="/dashboard" replace /> : <SignIn />} />
       <Route
         path="/onboarding"
         element={
@@ -65,8 +66,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/leads" element={<LeadGeneration />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/contacts" element={<ContactSheet />} />
         <Route path="/outreach" element={<Outreach />} />
         <Route path="/pipeline" element={<Pipeline />} />
