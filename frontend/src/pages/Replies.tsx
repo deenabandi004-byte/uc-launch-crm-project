@@ -7,34 +7,49 @@ import {
   Clock, MessageSquare, ArrowRight, Eye, EyeOff, Sparkles,
 } from "lucide-react";
 
-const CATEGORY_CONFIG: Record<string, { label: string; color: string; icon: any; description: string }> = {
+const CATEGORY_CONFIG: Record<string, { label: string; color: string; bg: string; textColor: string; borderColor: string; icon: any; description: string }> = {
   interested: {
     label: "Interested",
     color: "bg-green-100 text-green-700 border-green-200",
+    bg: "#DCFCE7",
+    textColor: "#15803D",
+    borderColor: "#BBF7D0",
     icon: CheckCircle,
     description: "Wants to learn more or schedule a call",
   },
   not_interested: {
     label: "Not Interested",
     color: "bg-red-100 text-red-700 border-red-200",
+    bg: "#FEE2E2",
+    textColor: "#B91C1C",
+    borderColor: "#FECACA",
     icon: XCircle,
     description: "Declined or asked to stop emailing",
   },
   needs_info: {
     label: "Needs Info",
     color: "bg-blue-100 text-blue-700 border-blue-200",
+    bg: "#DBEAFE",
+    textColor: "#1D4ED8",
+    borderColor: "#BFDBFE",
     icon: HelpCircle,
     description: "Asking questions before deciding",
   },
   auto_reply: {
     label: "Auto Reply",
     color: "bg-gray-100 text-gray-600 border-gray-200",
+    bg: "#F1F5F9",
+    textColor: "#64748B",
+    borderColor: "#E2E8F0",
     icon: Clock,
     description: "Out of office or automated response",
   },
   neutral: {
     label: "Neutral",
     color: "bg-amber-100 text-amber-700 border-amber-200",
+    bg: "#FEF3C7",
+    textColor: "#B45309",
+    borderColor: "#FDE68A",
     icon: MessageSquare,
     description: "Acknowledgement or unclear intent",
   },
@@ -94,22 +109,32 @@ export default function Replies() {
   const totalActive = replies.filter((r: any) => !r.dismissed).length;
 
   return (
-    <div className="mx-auto max-w-6xl p-8">
+    <div style={{ maxWidth: 1152, margin: "0 auto", padding: "40px 48px", fontFamily: "'Inter', sans-serif" }}>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Sparkles size={24} className="text-primary" />
+          <h1 style={{
+            fontSize: 26, fontWeight: 600, color: "#0f2545",
+            fontFamily: "'Libre Baskerville', Georgia, serif",
+            margin: 0, display: "flex", alignItems: "center", gap: 8,
+          }}>
+            <Sparkles size={24} style={{ color: "#7C3AED" }} />
             AI Reply Classification
           </h1>
-          <p className="text-muted-foreground">
+          <p style={{ color: "#64748B", fontSize: 14, margin: "4px 0 0" }}>
             {totalActive} {totalActive === 1 ? "reply" : "replies"} detected
           </p>
         </div>
         <button
           onClick={() => checkMutation.mutate()}
           disabled={checkMutation.isPending}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+          style={{
+            display: "flex", alignItems: "center", gap: 8,
+            background: "#0F172A", color: "#EDE9FE",
+            borderRadius: 3, padding: "8px 16px",
+            fontSize: 14, fontWeight: 500, border: "none", cursor: "pointer",
+            opacity: checkMutation.isPending ? 0.5 : 1,
+          }}
         >
           {checkMutation.isPending ? (
             <Loader2 size={16} className="animate-spin" />
@@ -121,7 +146,7 @@ export default function Replies() {
       </div>
 
       {/* Category summary cards */}
-      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div style={{ marginBottom: 24, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 12 }}>
         {Object.entries(CATEGORY_CONFIG).map(([key, cfg]) => {
           const Icon = cfg.icon;
           const count = counts[key] || 0;
@@ -129,27 +154,38 @@ export default function Replies() {
             <button
               key={key}
               onClick={() => setFilter(filter === key ? "all" : key as FilterType)}
-              className={`rounded-xl border p-3 text-left transition-all ${
-                filter === key ? "ring-2 ring-primary" : ""
-              } ${cfg.color}`}
+              style={{
+                borderRadius: 3,
+                border: filter === key ? `2px solid #7C3AED` : `1px solid ${cfg.borderColor}`,
+                padding: 12,
+                textAlign: "left",
+                background: cfg.bg,
+                color: cfg.textColor,
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
             >
-              <div className="flex items-center justify-between">
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <Icon size={16} />
-                <span className="text-lg font-bold">{count}</span>
+                <span style={{ fontSize: 18, fontWeight: 700 }}>{count}</span>
               </div>
-              <div className="mt-1 text-xs font-medium">{cfg.label}</div>
+              <div style={{ marginTop: 4, fontSize: 12, fontWeight: 600 }}>{cfg.label}</div>
             </button>
           );
         })}
       </div>
 
       {/* Filter bar */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {filter !== "all" && (
             <button
               onClick={() => setFilter("all")}
-              className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary"
+              style={{
+                borderRadius: 3, border: "1px solid #E2E8F0",
+                padding: "6px 12px", fontSize: 12, fontWeight: 500,
+                background: "transparent", color: "#64748B", cursor: "pointer",
+              }}
             >
               Show All
             </button>
@@ -157,7 +193,14 @@ export default function Replies() {
         </div>
         <button
           onClick={() => setShowDismissed(!showDismissed)}
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          style={{
+            display: "flex", alignItems: "center", gap: 6,
+            fontSize: 14, color: "#64748B",
+            background: "none", border: "none", cursor: "pointer",
+            transition: "color 0.15s",
+          }}
+          onMouseEnter={(e) => { e.currentTarget.style.color = "#0f2545"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.color = "#64748B"; }}
         >
           {showDismissed ? <EyeOff size={14} /> : <Eye size={14} />}
           {showDismissed ? "Hide dismissed" : "Show dismissed"}
@@ -166,80 +209,123 @@ export default function Replies() {
 
       {/* Replies list */}
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin text-muted-foreground" />
+        <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}>
+          <Loader2 className="animate-spin" style={{ color: "#94A3B8" }} />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
-          <Inbox className="mb-3 text-muted-foreground" size={40} />
-          <h3 className="text-lg font-medium">
+        <div style={{
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          border: "2px dashed #E2E8F0", borderRadius: 3,
+          padding: "64px 0",
+        }}>
+          <Inbox style={{ marginBottom: 12, color: "#94A3B8" }} size={40} />
+          <h3 style={{ fontSize: 18, fontWeight: 500, color: "#0f2545", margin: 0 }}>
             {replies.length === 0 ? "No replies yet" : "No matching replies"}
           </h3>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p style={{ marginTop: 4, fontSize: 14, color: "#64748B", margin: "4px 0 0" }}>
             {replies.length === 0
               ? "Click \"Check for Replies\" to scan your Gmail for responses"
               : "Try changing the filter"}
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {filtered.map((reply: any) => {
             const cfg = CATEGORY_CONFIG[reply.category] || CATEGORY_CONFIG.neutral;
             const Icon = cfg.icon;
             return (
               <div
                 key={reply.id}
-                className={`rounded-xl border bg-card p-4 transition-all ${
-                  reply.dismissed ? "opacity-50" : ""
-                }`}
+                style={{
+                  background: "#fff",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: 3,
+                  padding: 16,
+                  transition: "border-color 0.15s, box-shadow 0.15s, opacity 0.15s",
+                  opacity: reply.dismissed ? 0.5 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!reply.dismissed) {
+                    e.currentTarget.style.borderColor = "#C4B5FD";
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(124,58,237,0.10)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#E2E8F0";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
               >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0 flex-1">
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+                  <div style={{ minWidth: 0, flex: 1 }}>
                     {/* Contact + Category */}
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium">{reply.contactName || "Unknown"}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <span style={{ fontWeight: 600, fontSize: 14, color: "#0f2545" }}>{reply.contactName || "Unknown"}</span>
                       {reply.company && (
-                        <span className="text-sm text-muted-foreground">at {reply.company}</span>
+                        <span style={{ fontSize: 13, color: "#64748B" }}>at {reply.company}</span>
                       )}
-                      <span className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium ${cfg.color}`}>
+                      <span style={{
+                        display: "inline-flex", alignItems: "center", gap: 4,
+                        borderRadius: 100, border: `1px solid ${cfg.borderColor}`,
+                        padding: "2px 8px", fontSize: 11, fontWeight: 600,
+                        background: cfg.bg, color: cfg.textColor,
+                      }}>
                         <Icon size={12} />
                         {cfg.label}
                       </span>
                       {reply.confidence === "low" && (
-                        <span className="rounded bg-amber-50 px-1.5 py-0.5 text-[10px] text-amber-600">
+                        <span style={{
+                          borderRadius: 3, background: "#FEF3C7",
+                          padding: "2px 6px", fontSize: 10, color: "#D97706",
+                        }}>
                           Low confidence
                         </span>
                       )}
                       {reply.stageUpdated && (
-                        <span className="flex items-center gap-1 rounded bg-purple-50 px-1.5 py-0.5 text-[10px] text-purple-600">
+                        <span style={{
+                          display: "inline-flex", alignItems: "center", gap: 4,
+                          borderRadius: 3, background: "#EDE9FE",
+                          padding: "2px 6px", fontSize: 10, color: "#7C3AED",
+                        }}>
                           <ArrowRight size={10} /> Stage updated
                         </span>
                       )}
                     </div>
 
                     {/* Subject */}
-                    <div className="mt-1 text-sm font-medium text-foreground">
+                    <div style={{ marginTop: 4, fontSize: 14, fontWeight: 500, color: "#0f2545" }}>
                       {reply.subject || "(no subject)"}
                     </div>
 
                     {/* Snippet */}
-                    <div className="mt-1 text-sm text-muted-foreground line-clamp-2">
+                    <div style={{
+                      marginTop: 4, fontSize: 13, color: "#64748B",
+                      overflow: "hidden", display: "-webkit-box",
+                      WebkitLineClamp: 2, WebkitBoxOrient: "vertical",
+                    }}>
                       {reply.snippet}
                     </div>
 
                     {/* Meta */}
-                    <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                    <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 12, fontSize: 12, color: "#64748B" }}>
                       <span>{_formatDate(reply.receivedAt)}</span>
                       <span>from {reply.sender}</span>
-                      <span className="text-muted-foreground/50">via {reply.provider}</span>
+                      <span style={{ color: "#94A3B8" }}>via {reply.provider}</span>
                     </div>
                   </div>
 
                   {/* Actions */}
-                  <div className="flex flex-col gap-1.5 flex-shrink-0">
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, flexShrink: 0 }}>
                     <button
                       onClick={() => dismissMutation.mutate({ id: reply.id, dismissed: !reply.dismissed })}
-                      className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary"
+                      style={{
+                        borderRadius: 3, border: "1px solid #E2E8F0",
+                        padding: "6px 12px", fontSize: 12, fontWeight: 500,
+                        background: "transparent", color: "#64748B", cursor: "pointer",
+                        transition: "background 0.15s",
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = "#F8FAFC"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
                     >
                       {reply.dismissed ? "Restore" : "Dismiss"}
                     </button>
@@ -247,7 +333,12 @@ export default function Replies() {
                     <select
                       value={reply.category}
                       onChange={(e) => recategorizeMutation.mutate({ id: reply.id, category: e.target.value })}
-                      className="rounded-lg border border-border px-2 py-1.5 text-xs"
+                      style={{
+                        borderRadius: 3, border: "1px solid #E2E8F0",
+                        padding: "6px 8px", fontSize: 12,
+                        background: "#fff", color: "#64748B",
+                        cursor: "pointer",
+                      }}
                     >
                       {Object.entries(CATEGORY_CONFIG).map(([key, c]) => (
                         <option key={key} value={key}>{c.label}</option>

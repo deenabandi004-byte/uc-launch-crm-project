@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
 @import "tailwindcss";
 
 @theme {
   --color-background: #ffffff;
   --color-foreground: #0f172a;
-  --color-primary: #2563eb;
+  --color-primary: #7C3AED;
   --color-primary-foreground: #ffffff;
   --color-secondary: #f1f5f9;
   --color-secondary-foreground: #0f172a;
@@ -13,13 +16,13 @@
   --color-accent-foreground: #0f172a;
   --color-destructive: #ef4444;
   --color-border: #e2e8f0;
-  --color-ring: #2563eb;
-  --color-sidebar: #060d1a;
+  --color-ring: #7C3AED;
+  --color-sidebar: #1E1B2E;
   --color-sidebar-foreground: #f8fafc;
   --color-card: #ffffff;
   --color-card-foreground: #0f172a;
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --radius: 0.5rem;
+  --radius: 3px;
 }
 
 * {
@@ -34,4 +37,524 @@ body {
   color: var(--color-foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
+
+/* ── Typography ── */
+.font-serif {
+  font-family: 'Libre Baskerville', Georgia, serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Card system ── */
+.glass-card {
+  background: #FAFBFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: #C4B5FD;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
+  transform: translateY(-4px);
+}
+
+/* ── Button system ── */
+.btn-primary-glass {
+  background: #0F172A;
+  color: #EDE9FE;
+  font-weight: 500;
+  border-radius: 3px;
+  padding: 0.625rem 1rem;
+  transition: all 0.12s ease;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-primary-glass:hover {
+  background: #1E293B;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.btn-secondary-glass {
+  background: #FFFFFF;
+  color: #0F172A;
+  font-weight: 500;
+  border: 1px solid #E2E8F0;
+  border-radius: 3px;
+  padding: 0.625rem 1rem;
+  transition: all 0.12s ease;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-secondary-glass:hover {
+  background: #FAFBFF;
+  border-color: #C4B5FD;
+}
+
+/* ── Hero animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-fade-up {
+  animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-fade-up-delay-0 { animation-delay: 0s; }
+.hero-fade-up-delay-1 { animation-delay: 0.08s; }
+.hero-fade-up-delay-2 { animation-delay: 0.18s; }
+.hero-fade-up-delay-3 { animation-delay: 0.3s; }
+.hero-fade-up-delay-4 { animation-delay: 0.42s; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* ── Scroll reveal ── */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Nav link hover underline ── */
+.nav-link {
+  position: relative;
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: currentColor;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* ── Accent highlight ── */
+.accent {
+  position: relative;
+  display: inline;
+}
+
+.accent::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  width: 100%;
+  height: 10px;
+  background: rgba(124, 58, 237, 0.12);
+  z-index: -1;
+  border-radius: 4px;
+  transform-origin: left;
+  animation: scaleInX 0.8s 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: scaleX(0);
+}
+
+@keyframes scaleInX {
+  to { transform: scaleX(1); }
+}
+
+/* ── Dot grid background ── */
+.bg-dots {
+  position: relative;
+}
+
+.bg-dots::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(124, 58, 237, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bg-dots > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Waffle texture background ── */
+.bg-waffle {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-waffle::before {
+  content: '';
+  position: absolute;
+  inset: -50% -50%;
+  width: 200%;
+  height: 200%;
+  background-image:
+    linear-gradient(0deg, rgba(124, 58, 237, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 58, 237, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
+  animation: waffle-drift 20s ease-in-out infinite;
+}
+
+.bg-waffle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 50%, rgba(124, 58, 237, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 35% at 80% 50%, rgba(124, 58, 237, 0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  animation: waffle-pulse 8s ease-in-out infinite;
+}
+
+.bg-waffle > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes waffle-drift {
+  0%   { transform: translate(0, 0) rotate(0deg); }
+  25%  { transform: translate(8px, -6px) rotate(0.3deg); }
+  50%  { transform: translate(-4px, 8px) rotate(-0.2deg); }
+  75%  { transform: translate(-8px, -4px) rotate(0.15deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes waffle-pulse {
+  0%, 100% { opacity: 0.4; }
+  30%      { opacity: 1; }
+  60%      { opacity: 0.6; }
+}
+
+/* ── Floating card animation ── */
+@keyframes floatCard {
+  0%, 100% { transform: translateY(-8px); }
+  50%      { transform: translateY(8px); }
+}
+
+.float-card {
+  animation: floatCard 3s ease-in-out infinite;
+}
+
+/* ── Typewriter cursor ── */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: #A78BFA;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink-cursor 0.7s step-end infinite;
+}
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* ── Testimonial marquee ── */
+.marquee-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: marquee-scroll 40s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ── Kanban ── */
+.kanban-card {
+  cursor: grab;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+.kanban-card:active {
+  cursor: grabbing;
+}
+
+.kanban-card.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+.kanban-col.drag-over {
+  background: rgba(124, 58, 237, 0.06) !important;
+}
+
+/* ── Confetti ── */
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(120px) rotate(720deg); opacity: 0; }
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: confetti-fall 1.2s ease-out forwards;
+  pointer-events: none;
+}
+
+/* ── Job Won flash ── */
+@keyframes greenFlash {
+  0%   { background: rgba(16, 185, 129, 0.3); }
+  100% { background: transparent; }
+}
+
+.job-won-flash {
+  animation: greenFlash 0.6s ease-out;
+}
+
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
+::selection {
+  background: rgba(124, 58, 237, 0.25);
+  color: #0F172A;
+}
+
+/* ── CTA pulse ── */
+@keyframes subtle-pulse {
+  0%, 100% { box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25); }
+  50% { box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
+}
+
+.btn-pulse {
+  animation: subtle-pulse 4s ease-in-out infinite;
+}
+
+/* ============================================================
+   APP DESIGN SYSTEM — Offerloop layout + Landing page colors
+   Offerloop patterns: glass cards, dark nav buttons, serif titles,
+   clean tables, generous spacing, 3px corners
+   Landing page colors: purple #7C3AED, navy #1E1B2E, #0f2545 text
+   ============================================================ */
+
+/* ── Typography — Libre Baskerville for page titles ── */
+h1, h2 {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  color: #0f2545;
+  letter-spacing: -0.015em;
+}
+h1 { font-weight: 600; }
+h2 { font-weight: 600; }
+h3 { font-weight: 600; color: #0f2545; font-family: 'Inter', sans-serif; }
+
+/* Page title class — centered like Offerloop */
+.text-2xl.font-bold {
+  font-family: 'Libre Baskerville', Georgia, serif !important;
+  font-size: 1.625rem !important;
+  font-weight: 600 !important;
+  color: #0f2545 !important;
+  letter-spacing: -0.015em;
+}
+
+/* Section headers */
+.text-lg.font-semibold {
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  color: #0f2545 !important;
+  letter-spacing: -0.01em;
+}
+
+/* ── Page containers — generous whitespace ── */
+.p-8 { padding: 2.5rem 3rem !important; }
+
+/* ── Primary buttons — dark navy (Offerloop style) with purple accent ── */
+.bg-primary {
+  background-color: #0F172A !important;
+  color: #EDE9FE !important;
+  border-radius: 3px !important;
+  font-weight: 500 !important;
+  font-size: 14px;
+  transition: all 0.12s ease;
+}
+.bg-primary:hover,
+.hover\:bg-primary\/90:hover {
+  background-color: #1E293B !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Text/border accents → purple ── */
+.text-primary { color: #7C3AED !important; }
+.border-primary { border-color: #7C3AED !important; }
+
+/* ── Sharp 3px corners (Offerloop standard) ── */
+.rounded-lg { border-radius: 3px !important; }
+.rounded-xl { border-radius: 3px !important; }
+.rounded-2xl { border-radius: 3px !important; }
+.rounded-full { border-radius: 100px !important; }
+.rounded-md { border-radius: 3px !important; }
+
+/* ── Cards — clean white with subtle border ── */
+.border-border { border-color: #E2E8F0 !important; }
+.bg-card { background: #FFFFFF !important; }
+
+.rounded-xl.border,
+.rounded-lg.border {
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.rounded-xl.border:hover,
+.rounded-lg.border:hover {
+  border-color: #C4B5FD;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
+}
+
+/* ── Table system — Offerloop spreadsheet style ── */
+.bg-muted\/50 { background: #F8FAFC !important; }
+
+table {
+  font-size: 14px;
+  border-collapse: collapse;
+}
+th {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #94A3B8 !important;
+  background: #F8FAFC !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  padding: 10px 16px !important;
+}
+td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  color: #0F172A;
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none !important; }
+tr:hover td { background: #F8FAFC !important; }
+
+/* ── Inputs — Offerloop style ── */
+input, select, textarea {
+  border-radius: 3px !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  border: 1px solid #E2E8F0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #7C3AED !important;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.08);
+}
+input[type="checkbox"] { accent-color: #7C3AED; border-radius: 2px !important; }
+
+/* ── Hover states ── */
+.hover\:bg-secondary:hover { background-color: #F5F3FF !important; }
+.hover\:bg-muted\/30:hover { background-color: #FAFBFF !important; }
+
+/* ── Text colors — Offerloop hierarchy ── */
+.text-foreground { color: #0F172A !important; }
+.text-muted-foreground { color: #64748B !important; }
+
+/* ── Secondary / muted backgrounds ── */
+.bg-secondary { background: #F8FAFC !important; }
+.bg-muted { background: #F8FAFC !important; }
+.bg-secondary\/30 { background: rgba(248, 250, 252, 0.3) !important; }
+
+/* ── Empty states — centered, clean ── */
+.border-dashed {
+  border-style: dashed !important;
+  border-color: #E2E8F0 !important;
+  border-radius: 3px !important;
+}
+
+/* ── Status badges — Offerloop pill style ── */
+.rounded-full {
+  font-weight: 500 !important;
+}
+
+/* ── Shadow system ── */
+.shadow-sm {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+.shadow-md {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+.shadow-lg {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+}
+.shadow-xl {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10) !important;
+}
+
+/* ── Pipeline/Kanban cards — Offerloop pattern ── */
+.cursor-grab {
+  border-radius: 3px !important;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.cursor-grab:hover {
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.10) !important;
+}
+
+/* ── Progress bars ── */
+.bg-primary.h-full {
+  background: #7C3AED !important;
+}
+
+/* ── Animate ── */
+.transition-all { transition-duration: 0.12s !important; }
+.transition-colors { transition-duration: 0.12s !important; }

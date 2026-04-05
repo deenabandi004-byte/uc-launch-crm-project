@@ -56,17 +56,22 @@ def _generate_document(doc: dict, business: dict, contact: dict, doc_type: str) 
     doc_label = "QUOTE" if doc_type == "quote" else "INVOICE"
 
     biz_name = business.get("companyName", "Your Business")
-    biz_lines = [Paragraph(f"<b>{biz_name}</b>", normal_style)]
-    if business.get("address"):
-        biz_lines.append(Paragraph(business["address"], small_style))
-    if business.get("phone"):
-        biz_lines.append(Paragraph(business["phone"], small_style))
+    biz_name_style = ParagraphStyle("BizName", parent=normal_style, fontSize=16, textColor=DARK_GRAY, spaceAfter=2)
+    biz_lines = [Paragraph(f"<b>{biz_name}</b>", biz_name_style)]
+    if business.get("industry"):
+        biz_lines.append(Paragraph(business["industry"], small_style))
     if business.get("email"):
         biz_lines.append(Paragraph(business["email"], small_style))
+    if business.get("phone"):
+        biz_lines.append(Paragraph(business["phone"], small_style))
+    if business.get("location"):
+        biz_lines.append(Paragraph(business["location"], small_style))
 
+    doc_label_style = ParagraphStyle("DocLabel", parent=right_style, fontSize=22, textColor=PURPLE, spaceAfter=4)
+    doc_number_style = ParagraphStyle("DocNumber", parent=right_style, fontSize=11, textColor=GRAY, spaceAfter=6)
     doc_lines = [
-        Paragraph(f"<b>{doc_label}</b>", ParagraphStyle("DocLabel", parent=right_style, fontSize=18, textColor=PURPLE)),
-        Paragraph(f"#{doc_number}", right_style),
+        Paragraph(f"<b>{doc_label}</b>", doc_label_style),
+        Paragraph(doc_number, doc_number_style),
         Paragraph(f"Date: {_format_date(doc.get('createdAt', ''))}", right_small),
     ]
     if doc_type == "quote" and doc.get("validUntil"):

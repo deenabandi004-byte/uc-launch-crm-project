@@ -5,6 +5,8 @@ from app.extensions import require_firebase_auth, get_db
 from app.services.email_generation import generate_personalized_email
 from app.services.gmail_client import create_draft, send_draft
 from app.services.email_tracker import inject_tracking
+from app.services.hunter_client import verify_email
+from app.config import HUNTER_API_KEY
 
 campaigns_bp = Blueprint("campaigns", __name__, url_prefix="/api/campaigns")
 
@@ -150,11 +152,40 @@ def send_campaign(campaign_id):
     gmail_creds = gmail_doc.to_dict()
 
     sent_count = 0
+    skipped_count = 0
     results = []
     for draft in drafts:
         if draft.get("status") == "error":
             results.append(draft)
             continue
+
+        # Verify email with Hunter before sending
+        email = draft.get("contactEmail", "").strip()
+        if not email:
+            draft["status"] = "skipped"
+            draft["error"] = "No email address"
+            skipped_count += 1
+            results.append(draft)
+            continue
+
+        if HUNTER_API_KEY:
+            try:
+                verification = verify_email(email)
+                if verification.get("result") == "undeliverable":
+                    draft["status"] = "skipped"
+                    draft["error"] = f"Email undeliverable (Hunter score: {verification.get('score', 0)})"
+                    skipped_count += 1
+                    results.append(draft)
+                    # Update contact with verification status
+                    if draft.get("contactId"):
+                        db.collection("users").document(uid).collection("contacts").document(draft["contactId"]).update({
+                            "emailVerification": "undeliverable",
+                            "emailScore": verification.get("score", 0),
+                        })
+                    continue
+            except Exception:
+                pass  # If Hunter fails, proceed with sending
+
         try:
             base_url = request.host_url.rstrip("/")
             tracked_body = inject_tracking(draft["body"], uid, draft["contactId"], campaign_id, base_url)
@@ -191,4 +222,4 @@ def send_campaign(campaign_id):
     camp_ref.update({"drafts": results, "status": "sent", "sentCount": sent_count})
     user_ref.update({"dailySendCount": daily_count + sent_count, "dailySendDate": today})
 
-    return jsonify({"sentCount": sent_count, "results": results})
+    return jsonify({"sentCount": sent_count, "skippedCount": skipped_count, "results": results})

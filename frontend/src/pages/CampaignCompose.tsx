@@ -67,49 +67,94 @@ export default function CampaignCompose() {
     onError: (err: any) => toast.error(err.message || "Failed to send"),
   });
 
+  const primaryBtnStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    borderRadius: 3,
+    background: "#0F172A",
+    color: "#EDE9FE",
+    padding: "10px 24px",
+    fontSize: 13,
+    fontWeight: 500,
+    border: "none",
+    cursor: "pointer",
+  };
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    maxWidth: 400,
+    borderRadius: 3,
+    border: "1px solid #E2E8F0",
+    padding: "8px 12px",
+    fontSize: 13,
+    outline: "none",
+    fontFamily: "'Inter', sans-serif",
+    boxSizing: "border-box",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    fontSize: 13,
+    fontWeight: 500,
+    color: "#0f2545",
+    marginBottom: 8,
+  };
+
+  const stepLabels = ["Select Contacts", "Generate Drafts", "Review & Send"];
+  const currentStepIndex = step === "select" ? 0 : step === "generate" ? 1 : step === "review" || step === "sent" ? 2 : 0;
+
   return (
-    <div className="mx-auto max-w-5xl p-8">
-      <div className="mb-6">
-        <p className="text-muted-foreground">Create and send personalized email campaigns</p>
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 48px", fontFamily: "'Inter', sans-serif" }}>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 26, fontWeight: 600, color: "#0f2545", fontFamily: "'Libre Baskerville', Georgia, serif", margin: 0 }}>
+          Campaign Compose
+        </h1>
+        <p style={{ color: "#64748B", fontSize: 13, marginTop: 4 }}>Create and send personalized email campaigns</p>
       </div>
 
-      {/* Progress */}
-      <div className="mb-8 flex gap-2">
-        {["Select Contacts", "Generate Drafts", "Review & Send"].map((label, i) => {
-          const stepIndex = i;
-          const current = step === "select" ? 0 : step === "generate" ? 1 : step === "review" || step === "sent" ? 2 : 0;
-          return (
-            <div key={label} className="flex items-center gap-2">
-              <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-medium ${
-                stepIndex <= current ? "bg-primary text-white" : "bg-muted text-muted-foreground"
-              }`}>
-                {stepIndex < current ? <Check size={14} /> : stepIndex + 1}
-              </div>
-              <span className={`text-sm ${stepIndex <= current ? "font-medium" : "text-muted-foreground"}`}>
-                {label}
-              </span>
-              {i < 2 && <div className="h-px w-8 bg-border" />}
+      {/* Stepper */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 32 }}>
+        {stepLabels.map((label, i) => (
+          <div key={label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 28, height: 28, borderRadius: "50%", fontSize: 12, fontWeight: 600,
+              background: i <= currentStepIndex ? "#7C3AED" : "#F1F5F9",
+              color: i <= currentStepIndex ? "#fff" : "#94A3B8",
+            }}>
+              {i < currentStepIndex ? <Check size={14} /> : i + 1}
             </div>
-          );
-        })}
+            <span style={{
+              fontSize: 13,
+              fontWeight: i <= currentStepIndex ? 600 : 400,
+              color: i <= currentStepIndex ? "#0f2545" : "#94A3B8",
+            }}>
+              {label}
+            </span>
+            {i < 2 && <div style={{ width: 32, height: 1, background: "#E2E8F0" }} />}
+          </div>
+        ))}
       </div>
 
       {step === "select" && (
-        <div className="space-y-6">
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {/* Campaign Name */}
           <div>
-            <label className="mb-2 block text-sm font-medium">Campaign Name (optional)</label>
+            <label style={labelStyle}>Campaign Name (optional)</label>
             <input
-              className="w-full max-w-md rounded-lg border border-border px-3 py-2 text-sm"
+              style={inputStyle}
               placeholder="e.g., Q2 SaaS Outreach"
               value={campaignName}
               onChange={(e) => setCampaignName(e.target.value)}
             />
           </div>
 
+          {/* Template Select */}
           <div>
-            <label className="mb-2 block text-sm font-medium">Email Template</label>
+            <label style={labelStyle}>Email Template</label>
             <select
-              className="w-full max-w-md rounded-lg border border-border px-3 py-2 text-sm"
+              style={{ ...inputStyle, appearance: "auto" }}
               value={selectedTemplate}
               onChange={(e) => setSelectedTemplate(e.target.value)}
             >
@@ -120,93 +165,123 @@ export default function CampaignCompose() {
             </select>
           </div>
 
+          {/* Contact Selection */}
           <div>
-            <div className="mb-2 flex items-center justify-between">
-              <label className="text-sm font-medium">
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+              <label style={{ ...labelStyle, marginBottom: 0 }}>
                 Select Contacts ({selectedContacts.length} selected)
               </label>
-              <button onClick={selectAll} className="text-xs text-primary hover:underline">
+              <button
+                onClick={selectAll}
+                style={{ background: "none", border: "none", fontSize: 12, color: "#7C3AED", cursor: "pointer", fontWeight: 500 }}
+              >
                 {selectedContacts.length === contactsWithEmail.length ? "Deselect All" : "Select All"}
               </button>
             </div>
             {contactsWithEmail.length === 0 ? (
-              <p className="text-sm text-muted-foreground">No contacts with email addresses. Find contacts first.</p>
+              <p style={{ fontSize: 13, color: "#64748B" }}>No contacts with email addresses. Find contacts first.</p>
             ) : (
-              <div className="max-h-72 space-y-1 overflow-y-auto rounded-lg border border-border p-2">
+              <div style={{
+                maxHeight: 288, overflowY: "auto",
+                border: "1px solid #E2E8F0", borderRadius: 3, padding: 8,
+                background: "#fff",
+              }}>
                 {contactsWithEmail.map((c: any) => (
                   <label
                     key={c.id}
-                    className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 hover:bg-muted/50"
+                    style={{
+                      display: "flex", alignItems: "center", gap: 12,
+                      padding: "8px 12px", borderRadius: 3, cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#FAFBFF"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
                   >
                     <input
                       type="checkbox"
                       checked={selectedContacts.includes(c.id)}
                       onChange={() => toggleContact(c.id)}
-                      className="h-4 w-4 rounded border-border text-primary"
+                      style={{ width: 16, height: 16, accentColor: "#7C3AED" }}
                     />
-                    <div className="flex-1">
-                      <div className="text-sm font-medium">{c.firstName} {c.lastName}</div>
-                      <div className="text-xs text-muted-foreground">{c.jobTitle} at {c.company}</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>{c.firstName} {c.lastName}</div>
+                      <div style={{ fontSize: 11, color: "#94A3B8" }}>{c.jobTitle} at {c.company}</div>
                     </div>
-                    <div className="text-xs text-muted-foreground">{c.email}</div>
+                    <div style={{ fontSize: 11, color: "#94A3B8" }}>{c.email}</div>
                   </label>
                 ))}
               </div>
             )}
           </div>
 
-          <button
-            onClick={() => createMutation.mutate()}
-            disabled={selectedContacts.length === 0 || !selectedTemplate || createMutation.isPending}
-            className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
-          >
-            {createMutation.isPending ? (
-              <Loader2 size={16} className="animate-spin" />
-            ) : (
-              <Sparkles size={16} />
-            )}
-            Generate Personalized Emails
-          </button>
+          <div>
+            <button
+              onClick={() => createMutation.mutate()}
+              disabled={selectedContacts.length === 0 || !selectedTemplate || createMutation.isPending}
+              style={{
+                ...primaryBtnStyle,
+                opacity: (selectedContacts.length === 0 || !selectedTemplate || createMutation.isPending) ? 0.5 : 1,
+              }}
+            >
+              {createMutation.isPending ? (
+                <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} />
+              ) : (
+                <Sparkles size={16} />
+              )}
+              Generate Personalized Emails
+            </button>
+          </div>
         </div>
       )}
 
       {step === "review" && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-medium">Review Drafts ({drafts.length})</h3>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <h3 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", margin: 0 }}>Review Drafts ({drafts.length})</h3>
             <button
               onClick={() => sendMutation.mutate()}
               disabled={sendMutation.isPending}
-              className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+              style={{ ...primaryBtnStyle, opacity: sendMutation.isPending ? 0.5 : 1 }}
             >
-              {sendMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+              {sendMutation.isPending ? <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /> : <Send size={16} />}
               Send All ({drafts.filter((d) => d.status === "draft").length} emails)
             </button>
           </div>
 
           {drafts.map((draft, i) => (
-            <div key={i} className={`rounded-xl border p-4 ${draft.status === "error" ? "border-red-200 bg-red-50" : "border-border"}`}>
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
+            <div
+              key={i}
+              style={{
+                background: draft.status === "error" ? "#FEF2F2" : "#fff",
+                border: draft.status === "error" ? "1px solid #FECACA" : "1px solid #E2E8F0",
+                borderRadius: 3, padding: 24,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   {draft.status === "error" ? (
-                    <AlertCircle size={16} className="text-red-600" />
+                    <AlertCircle size={16} style={{ color: "#DC2626" }} />
                   ) : (
-                    <Mail size={16} className="text-muted-foreground" />
+                    <Mail size={16} style={{ color: "#94A3B8" }} />
                   )}
                   <div>
-                    <div className="text-sm font-medium">{draft.contactName}</div>
-                    <div className="text-xs text-muted-foreground">{draft.contactEmail}</div>
+                    <div style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>{draft.contactName}</div>
+                    <div style={{ fontSize: 11, color: "#94A3B8" }}>{draft.contactEmail}</div>
                   </div>
                 </div>
               </div>
               {draft.status === "error" ? (
-                <p className="mt-2 text-sm text-red-600">{draft.error}</p>
+                <p style={{ marginTop: 8, fontSize: 13, color: "#DC2626" }}>{draft.error}</p>
               ) : (
-                <div className="mt-3">
-                  <div className="text-xs font-medium text-muted-foreground">Subject</div>
-                  <div className="text-sm">{draft.subject}</div>
-                  <div className="mt-2 text-xs font-medium text-muted-foreground">Body</div>
-                  <div className="mt-1 whitespace-pre-wrap rounded-lg bg-muted/50 p-3 text-sm">{draft.body}</div>
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.05em" }}>Subject</div>
+                  <div style={{ fontSize: 13, color: "#0f2545", marginTop: 2 }}>{draft.subject}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 12 }}>Body</div>
+                  <div style={{
+                    marginTop: 4, whiteSpace: "pre-wrap", background: "#F8FAFC",
+                    borderRadius: 3, padding: 12, fontSize: 13, color: "#334155", lineHeight: 1.6,
+                  }}>
+                    {draft.body}
+                  </div>
                 </div>
               )}
             </div>
@@ -215,13 +290,18 @@ export default function CampaignCompose() {
       )}
 
       {step === "sent" && (
-        <div className="flex flex-col items-center justify-center py-16">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-            <Check className="text-green-600" size={32} />
+        <div style={{
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "64px 0",
+        }}>
+          <div style={{
+            width: 64, height: 64, borderRadius: "50%", background: "#DCFCE7",
+            display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16,
+          }}>
+            <Check size={32} style={{ color: "#15803D" }} />
           </div>
-          <h3 className="text-xl font-bold">Campaign Sent!</h3>
-          <p className="mb-6 text-muted-foreground">Your emails are on their way</p>
-          <div className="flex gap-3">
+          <h3 style={{ fontSize: 20, fontWeight: 700, color: "#0f2545", margin: 0 }}>Campaign Sent!</h3>
+          <p style={{ color: "#64748B", fontSize: 13, marginTop: 4, marginBottom: 24 }}>Your emails are on their way</p>
+          <div style={{ display: "flex", gap: 12 }}>
             <button
               onClick={() => {
                 setStep("select");
@@ -230,11 +310,21 @@ export default function CampaignCompose() {
                 setDrafts([]);
                 setCampaignId("");
               }}
-              className="rounded-lg border border-border px-4 py-2 text-sm hover:bg-secondary"
+              style={{
+                borderRadius: 3, border: "1px solid #E2E8F0", padding: "8px 16px",
+                fontSize: 13, background: "#fff", cursor: "pointer", color: "#0f2545",
+              }}
             >
               New Campaign
             </button>
-            <a href="/pipeline" className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90">
+            <a
+              href="/pipeline"
+              style={{
+                borderRadius: 3, background: "#0F172A", color: "#EDE9FE",
+                padding: "8px 16px", fontSize: 13, fontWeight: 500, textDecoration: "none",
+                display: "inline-flex", alignItems: "center",
+              }}
+            >
               View Pipeline
             </a>
           </div>
@@ -243,20 +333,28 @@ export default function CampaignCompose() {
 
       {/* Past campaigns */}
       {campaigns.length > 0 && step === "select" && (
-        <div className="mt-8">
-          <h3 className="mb-3 text-lg font-medium">Past Campaigns</h3>
-          <div className="space-y-2">
+        <div style={{ marginTop: 32 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", marginBottom: 12, marginTop: 0 }}>Past Campaigns</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {campaigns.map((c: any) => (
-              <div key={c.id} className="flex items-center justify-between rounded-lg border border-border p-3">
+              <div
+                key={c.id}
+                style={{
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  background: "#fff", border: "1px solid #E2E8F0", borderRadius: 3, padding: 12,
+                }}
+              >
                 <div>
-                  <div className="text-sm font-medium">{c.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {c.sentCount} sent · {c.status} · {new Date(c.createdAt).toLocaleDateString()}
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>{c.name}</div>
+                  <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 2 }}>
+                    {c.sentCount} sent &middot; {c.status} &middot; {new Date(c.createdAt).toLocaleDateString()}
                   </div>
                 </div>
-                <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                  c.status === "sent" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-                }`}>
+                <span style={{
+                  borderRadius: 100, padding: "3px 10px", fontSize: 10, fontWeight: 600,
+                  background: c.status === "sent" ? "#DCFCE7" : "#F1F5F9",
+                  color: c.status === "sent" ? "#15803D" : "#64748B",
+                }}>
                   {c.status}
                 </span>
               </div>
@@ -264,6 +362,8 @@ export default function CampaignCompose() {
           </div>
         </div>
       )}
+
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

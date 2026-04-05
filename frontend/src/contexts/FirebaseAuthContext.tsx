@@ -73,6 +73,8 @@ export const FirebaseAuthProvider: React.FC<React.PropsWithChildren> = ({ childr
       const snap = await getDoc(ref);
       if (snap.exists()) {
         const d = snap.data();
+        // If user has company data, they've completed onboarding regardless of flag
+        const hasCompanyData = !!(d.companyName && d.industry);
         setUser({
           uid: firebaseUser.uid,
           email: firebaseUser.email || "",
@@ -80,7 +82,7 @@ export const FirebaseAuthProvider: React.FC<React.PropsWithChildren> = ({ childr
           picture: firebaseUser.photoURL || undefined,
           companyName: d.companyName,
           industry: d.industry,
-          needsOnboarding: d.needsOnboarding ?? false,
+          needsOnboarding: hasCompanyData ? false : (d.needsOnboarding ?? true),
           gmailConnected: d.gmailConnected ?? false,
         });
       } else {
@@ -150,7 +152,11 @@ export const FirebaseAuthProvider: React.FC<React.PropsWithChildren> = ({ childr
   const completeOnboarding = async (onboardingData: any) => {
     if (!user) throw new Error("Not authenticated");
     const ref = doc(db, "users", user.uid);
-    await updateDoc(ref, { ...onboardingData, needsOnboarding: false });
+    try {
+      await updateDoc(ref, { ...onboardingData, needsOnboarding: false });
+    } catch (err) {
+      console.warn("Client-side Firestore update failed (backend write is primary):", err);
+    }
     setUser({ ...user, ...onboardingData, needsOnboarding: false });
   };
 

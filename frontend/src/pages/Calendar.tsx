@@ -59,6 +59,9 @@ interface CalendarEvent {
   htmlLink: string;
 }
 
+const font = "'Inter', sans-serif";
+const serifFont = "'Libre Baskerville', Georgia, serif";
+
 // ---- Schedule Meeting Modal ----
 
 function ScheduleMeetingModal({
@@ -112,23 +115,42 @@ function ScheduleMeetingModal({
     });
   };
 
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    borderRadius: 3,
+    border: "1px solid #E2E8F0",
+    padding: "8px 12px",
+    fontSize: 13,
+    fontFamily: font,
+    outline: "none",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    marginBottom: 4,
+    fontSize: 13,
+    fontWeight: 500,
+    color: "#0f2545",
+    fontFamily: font,
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Schedule Meeting</h2>
-          <button onClick={onClose} className="rounded p-1 hover:bg-gray-100">
-            <X size={18} />
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.4)" }}>
+      <div style={{ width: "100%", maxWidth: 440, borderRadius: 3, background: "#fff", padding: 24, boxShadow: "0 20px 60px rgba(0,0,0,0.15)", fontFamily: font }}>
+        <div style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "between" }}>
+          <h2 style={{ fontSize: 17, fontWeight: 600, color: "#0f2545", fontFamily: serifFont, flex: 1 }}>Schedule Meeting</h2>
+          <button onClick={onClose} style={{ borderRadius: 3, padding: 4, border: "none", background: "transparent", cursor: "pointer" }}>
+            <X size={18} color="#64748B" />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {/* Contact */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Contact</label>
+            <label style={labelStyle}>Contact</label>
             <select
               value={contactId}
               onChange={(e) => handleContactChange(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+              style={inputStyle}
             >
               <option value="">-- Select contact (optional) --</option>
               {contacts.map((c: any) => (
@@ -141,54 +163,54 @@ function ScheduleMeetingModal({
 
           {/* Summary */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Title *</label>
+            <label style={labelStyle}>Title *</label>
             <input
               type="text"
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
               required
               placeholder="Call with John Doe"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+              style={inputStyle}
             />
           </div>
 
           {/* Date */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Date *</label>
+            <label style={labelStyle}>Date *</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               required
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+              style={inputStyle}
             />
           </div>
 
           {/* Time */}
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">Start</label>
-              <div className="flex gap-1">
-                <select value={startHour} onChange={(e) => setStartHour(e.target.value)} className="flex-1 rounded-lg border border-gray-300 px-2 py-2 text-sm focus:border-purple-500 focus:outline-none">
+              <label style={labelStyle}>Start</label>
+              <div style={{ display: "flex", gap: 4 }}>
+                <select value={startHour} onChange={(e) => setStartHour(e.target.value)} style={{ ...inputStyle, flex: 1 }}>
                   {Array.from({ length: 12 }, (_, i) => i + 7).map((h) => (
                     <option key={h} value={String(h)}>{h > 12 ? h - 12 : h}{h >= 12 ? "pm" : "am"}</option>
                   ))}
                 </select>
-                <select value={startMin} onChange={(e) => setStartMin(e.target.value)} className="w-16 rounded-lg border border-gray-300 px-2 py-2 text-sm focus:border-purple-500 focus:outline-none">
+                <select value={startMin} onChange={(e) => setStartMin(e.target.value)} style={{ ...inputStyle, width: 64, flex: "none" }}>
                   <option value="00">:00</option>
                   <option value="30">:30</option>
                 </select>
               </div>
             </div>
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">End</label>
-              <div className="flex gap-1">
-                <select value={endHour} onChange={(e) => setEndHour(e.target.value)} className="flex-1 rounded-lg border border-gray-300 px-2 py-2 text-sm focus:border-purple-500 focus:outline-none">
+              <label style={labelStyle}>End</label>
+              <div style={{ display: "flex", gap: 4 }}>
+                <select value={endHour} onChange={(e) => setEndHour(e.target.value)} style={{ ...inputStyle, flex: 1 }}>
                   {Array.from({ length: 12 }, (_, i) => i + 7).map((h) => (
                     <option key={h} value={String(h)}>{h > 12 ? h - 12 : h}{h >= 12 ? "pm" : "am"}</option>
                   ))}
                 </select>
-                <select value={endMin} onChange={(e) => setEndMin(e.target.value)} className="w-16 rounded-lg border border-gray-300 px-2 py-2 text-sm focus:border-purple-500 focus:outline-none">
+                <select value={endMin} onChange={(e) => setEndMin(e.target.value)} style={{ ...inputStyle, width: 64, flex: "none" }}>
                   <option value="00">:00</option>
                   <option value="30">:30</option>
                 </select>
@@ -198,32 +220,37 @@ function ScheduleMeetingModal({
 
           {/* Attendee email */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Attendee Email</label>
+            <label style={labelStyle}>Attendee Email</label>
             <input
               type="email"
               value={attendeeEmail}
               onChange={(e) => setAttendeeEmail(e.target.value)}
               placeholder="john@example.com"
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+              style={inputStyle}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
+            <label style={labelStyle}>Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="Discuss proposal details..."
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+              style={{ ...inputStyle, resize: "vertical" }}
             />
           </div>
 
           <button
             type="submit"
             disabled={createMutation.isPending || !summary}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-purple-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-50"
+            style={{
+              display: "flex", width: "100%", alignItems: "center", justifyContent: "center", gap: 8,
+              borderRadius: 3, background: "#0F172A", color: "#EDE9FE", padding: "10px 16px",
+              fontSize: 13, fontWeight: 500, fontFamily: font, border: "none", cursor: "pointer",
+              opacity: (createMutation.isPending || !summary) ? 0.5 : 1,
+            }}
           >
             {createMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <CalendarDays size={16} />}
             Schedule
@@ -258,37 +285,42 @@ function WeekView({ events, weekStart }: { events: CalendarEvent[]; weekStart: D
   const slotHeight = 60; // px per hour
 
   return (
-    <div className="overflow-auto rounded-xl border border-gray-200 bg-white">
+    <div style={{ overflow: "auto", borderRadius: 3, border: "1px solid #E2E8F0", background: "#fff", fontFamily: font }}>
       {/* Header row */}
-      <div className="grid border-b border-gray-200" style={{ gridTemplateColumns: "60px repeat(5, 1fr)" }}>
-        <div className="border-r border-gray-200 p-2" />
+      <div style={{ display: "grid", gridTemplateColumns: "60px repeat(5, 1fr)", borderBottom: "1px solid #E2E8F0" }}>
+        <div style={{ borderRight: "1px solid #E2E8F0", padding: 8 }} />
         {days.map((d, i) => {
           const isToday = isSameDay(d, new Date());
           return (
             <div
               key={i}
-              className={`border-r border-gray-200 p-2 text-center text-sm last:border-r-0 ${
-                isToday ? "bg-purple-50 font-semibold text-purple-700" : "text-gray-600"
-              }`}
+              style={{
+                borderRight: i < 4 ? "1px solid #E2E8F0" : "none",
+                padding: 8,
+                textAlign: "center",
+                fontSize: 13,
+                background: isToday ? "#F5F3FF" : "transparent",
+                fontWeight: isToday ? 600 : 400,
+                color: isToday ? "#7C3AED" : "#64748B",
+              }}
             >
-              <div className="text-xs uppercase">{WEEKDAYS[i]}</div>
-              <div className={`mt-0.5 text-lg ${isToday ? "text-purple-700" : "text-gray-900"}`}>{d.getDate()}</div>
+              <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.05em" }}>{WEEKDAYS[i]}</div>
+              <div style={{ marginTop: 2, fontSize: 18, color: isToday ? "#7C3AED" : "#0f2545" }}>{d.getDate()}</div>
             </div>
           );
         })}
       </div>
 
       {/* Time grid */}
-      <div className="relative grid" style={{ gridTemplateColumns: "60px repeat(5, 1fr)" }}>
+      <div style={{ position: "relative", display: "grid", gridTemplateColumns: "60px repeat(5, 1fr)" }}>
         {/* Time labels */}
-        <div className="border-r border-gray-200">
+        <div style={{ borderRight: "1px solid #E2E8F0" }}>
           {HOURS.map((h) => (
             <div
               key={h}
-              className="relative border-b border-gray-100 text-right text-[10px] text-gray-400 pr-2"
-              style={{ height: slotHeight }}
+              style={{ position: "relative", borderBottom: "1px solid #F1F5F9", textAlign: "right", fontSize: 10, color: "#94A3B8", paddingRight: 8, height: slotHeight }}
             >
-              <span className="absolute -top-2 right-2">
+              <span style={{ position: "absolute", top: -7, right: 8 }}>
                 {h > 12 ? h - 12 : h}{h >= 12 ? "pm" : "am"}
               </span>
             </div>
@@ -297,10 +329,10 @@ function WeekView({ events, weekStart }: { events: CalendarEvent[]; weekStart: D
 
         {/* Day columns */}
         {days.map((d, dayIdx) => (
-          <div key={dayIdx} className="relative border-r border-gray-200 last:border-r-0">
+          <div key={dayIdx} style={{ position: "relative", borderRight: dayIdx < 4 ? "1px solid #E2E8F0" : "none" }}>
             {/* Hour lines */}
             {HOURS.map((h) => (
-              <div key={h} className="border-b border-gray-100" style={{ height: slotHeight }} />
+              <div key={h} style={{ borderBottom: "1px solid #F1F5F9", height: slotHeight }} />
             ))}
 
             {/* Event cards */}
@@ -316,22 +348,32 @@ function WeekView({ events, weekStart }: { events: CalendarEvent[]; weekStart: D
               return (
                 <div
                   key={ev.id}
-                  className={`absolute left-1 right-1 overflow-hidden rounded px-1.5 py-0.5 text-xs shadow-sm ${
-                    hasAttendees
-                      ? "border border-purple-200 bg-purple-100 text-purple-800"
-                      : "border border-blue-200 bg-blue-100 text-blue-800"
-                  }`}
-                  style={{ top, height, zIndex: 10 }}
+                  style={{
+                    position: "absolute",
+                    left: 4,
+                    right: 4,
+                    overflow: "hidden",
+                    borderRadius: 3,
+                    padding: "2px 6px",
+                    fontSize: 11,
+                    top,
+                    height,
+                    zIndex: 10,
+                    border: "1px solid rgba(124, 58, 237, 0.25)",
+                    background: "#F5F3FF",
+                    color: "#7C3AED",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                  }}
                   title={`${ev.summary}\n${formatTime(ev.start)} - ${formatTime(ev.end)}`}
                 >
-                  <div className="truncate font-medium">{ev.summary}</div>
+                  <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontWeight: 500 }}>{ev.summary}</div>
                   {height > 30 && (
-                    <div className="truncate text-[10px] opacity-70">
+                    <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 10, opacity: 0.7 }}>
                       {formatTime(ev.start)} - {formatTime(ev.end)}
                     </div>
                   )}
                   {height > 46 && hasAttendees && (
-                    <div className="truncate text-[10px] opacity-70">
+                    <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 10, opacity: 0.7 }}>
                       {ev.attendees[0].name || ev.attendees[0].email}
                     </div>
                   )}
@@ -369,7 +411,11 @@ function UpcomingList({ events }: { events: CalendarEvent[] }) {
 
   if (upcoming.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-gray-300 py-10 text-center text-sm text-gray-400">
+      <div style={{
+        borderRadius: 3, border: "1px dashed #E2E8F0", padding: "40px 0",
+        textAlign: "center", fontSize: 13, color: "#94A3B8", fontFamily: font,
+      }}>
+        <CalendarDays size={32} style={{ margin: "0 auto 8px", color: "#94A3B8" }} />
         No upcoming events in the next 7 days
       </div>
     );
@@ -384,39 +430,42 @@ function UpcomingList({ events }: { events: CalendarEvent[] }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: "flex", flexDirection: "column", gap: 16, fontFamily: font }}>
       {Object.entries(grouped).map(([dayLabel, dayEvents]) => (
         <div key={dayLabel}>
-          <h3 className="mb-2 text-sm font-semibold text-gray-600">
+          <h3 style={{ marginBottom: 8, fontSize: 13, fontWeight: 600, color: "#64748B" }}>
             {new Date(dayEvents[0].start).toLocaleDateString([], { weekday: "long", month: "short", day: "numeric" })}
           </h3>
-          <div className="space-y-2">
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {dayEvents.map((ev) => (
               <div
                 key={ev.id}
-                className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 shadow-sm"
+                style={{
+                  display: "flex", alignItems: "center", gap: 12, borderRadius: 3,
+                  border: "1px solid #E2E8F0", background: "#fff", padding: 12,
+                }}
               >
-                <div className={`h-10 w-1 flex-shrink-0 rounded-full ${ev.attendees.length > 0 ? "bg-purple-500" : "bg-blue-500"}`} />
-                <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-gray-900">{ev.summary}</div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                <div style={{ height: 40, width: 4, flexShrink: 0, borderRadius: 100, background: "#7C3AED" }} />
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontSize: 13, fontWeight: 500, color: "#0f2545" }}>{ev.summary}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#64748B", marginTop: 2 }}>
                     <Clock size={11} />
                     {formatTime(ev.start)} - {formatTime(ev.end)}
                     {ev.attendees.length > 0 && (
                       <>
-                        <Users size={11} className="ml-1" />
+                        <Users size={11} style={{ marginLeft: 4 }} />
                         {ev.attendees.map((a) => a.name || a.email).join(", ")}
                       </>
                     )}
                   </div>
                 </div>
-                <div className="flex flex-shrink-0 items-center gap-1">
+                <div style={{ display: "flex", flexShrink: 0, alignItems: "center", gap: 4 }}>
                   {ev.htmlLink && (
                     <a
                       href={ev.htmlLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-blue-600"
+                      style={{ borderRadius: 3, padding: 6, color: "#94A3B8", textDecoration: "none" }}
                       title="Open in Google Calendar"
                     >
                       <ExternalLink size={14} />
@@ -425,7 +474,7 @@ function UpcomingList({ events }: { events: CalendarEvent[] }) {
                   <button
                     onClick={() => deleteMutation.mutate(ev.id)}
                     disabled={deleteMutation.isPending}
-                    className="rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                    style={{ borderRadius: 3, padding: 6, color: "#94A3B8", border: "none", background: "transparent", cursor: "pointer" }}
                     title="Delete event"
                   >
                     <Trash2 size={14} />
@@ -471,39 +520,53 @@ export default function Calendar() {
 
   if (eventsLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <Loader2 className="animate-spin text-muted-foreground" />
+      <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center" }}>
+        <Loader2 className="animate-spin" style={{ color: "#94A3B8" }} />
       </div>
     );
   }
 
   return (
-    <div className="h-full p-8">
+    <div style={{ width: "100%", padding: "40px 48px", fontFamily: font }}>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-2xl font-bold">Calendar</h1>
-          <p className="text-muted-foreground">{events.length} upcoming events</p>
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: "#0f2545", fontFamily: serifFont, margin: 0 }}>Calendar</h1>
+          <p style={{ color: "#64748B", fontSize: 13, margin: "4px 0 0" }}>{events.length} upcoming events</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {/* View toggle */}
-          <div className="flex rounded-lg border border-gray-200">
+          <div style={{ display: "flex", borderRadius: 3, border: "1px solid #E2E8F0", overflow: "hidden" }}>
             <button
               onClick={() => setView("week")}
-              className={`px-3 py-1.5 text-sm ${view === "week" ? "bg-purple-50 font-medium text-purple-700" : "text-gray-600 hover:bg-gray-50"} rounded-l-lg`}
+              style={{
+                padding: "6px 12px", fontSize: 13, border: "none", cursor: "pointer", fontFamily: font,
+                background: view === "week" ? "#F5F3FF" : "#fff",
+                fontWeight: view === "week" ? 500 : 400,
+                color: view === "week" ? "#7C3AED" : "#64748B",
+              }}
             >
               Week
             </button>
             <button
               onClick={() => setView("list")}
-              className={`px-3 py-1.5 text-sm ${view === "list" ? "bg-purple-50 font-medium text-purple-700" : "text-gray-600 hover:bg-gray-50"} rounded-r-lg`}
+              style={{
+                padding: "6px 12px", fontSize: 13, border: "none", borderLeft: "1px solid #E2E8F0", cursor: "pointer", fontFamily: font,
+                background: view === "list" ? "#F5F3FF" : "#fff",
+                fontWeight: view === "list" ? 500 : 400,
+                color: view === "list" ? "#7C3AED" : "#64748B",
+              }}
             >
               List
             </button>
           </div>
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700"
+            style={{
+              display: "flex", alignItems: "center", gap: 8, borderRadius: 3,
+              background: "#0F172A", color: "#EDE9FE", padding: "8px 16px",
+              fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+            }}
           >
             <Plus size={16} />
             Schedule Meeting
@@ -514,26 +577,26 @@ export default function Calendar() {
       {view === "week" ? (
         <>
           {/* Week navigation */}
-          <div className="mb-4 flex items-center gap-3">
+          <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 12 }}>
             <button
               onClick={() => setWeekOffset((o) => o - 1)}
-              className="rounded-lg border border-gray-200 p-1.5 hover:bg-gray-50"
+              style={{ borderRadius: 3, border: "1px solid #E2E8F0", padding: 6, background: "#fff", cursor: "pointer" }}
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={18} color="#64748B" />
             </button>
             <button
               onClick={() => setWeekOffset(0)}
-              className="rounded-lg border border-gray-200 px-3 py-1.5 text-sm font-medium hover:bg-gray-50"
+              style={{ borderRadius: 3, border: "1px solid #E2E8F0", padding: "6px 12px", fontSize: 13, fontWeight: 500, background: "#fff", cursor: "pointer", fontFamily: font }}
             >
               Today
             </button>
             <button
               onClick={() => setWeekOffset((o) => o + 1)}
-              className="rounded-lg border border-gray-200 p-1.5 hover:bg-gray-50"
+              style={{ borderRadius: 3, border: "1px solid #E2E8F0", padding: 6, background: "#fff", cursor: "pointer" }}
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={18} color="#64748B" />
             </button>
-            <span className="text-sm font-medium text-gray-700">{weekLabel}</span>
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>{weekLabel}</span>
           </div>
 
           <WeekView events={events} weekStart={weekStart} />

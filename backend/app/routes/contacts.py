@@ -4,6 +4,7 @@ import io
 from flask import Blueprint, request, jsonify, Response
 from app.extensions import require_firebase_auth, get_db
 from app.services.pdl_client import find_contacts
+from app.services.hunter_client import verify_email, find_email
 
 contacts_bp = Blueprint("contacts", __name__, url_prefix="/api/contacts")
 
@@ -153,6 +154,117 @@ def enrich_phones():
             updated += 1
 
     return jsonify({"updated": updated})
+
+
+@contacts_bp.post("/verify-emails")
+@require_firebase_auth
+def verify_contact_emails():
+    """Verify emails for contacts using Hunter. Updates contacts with verification status."""
+    import logging
+    logger = logging.getLogger(__name__)
+
+    uid = request.firebase_user["uid"]
+    db = get_db()
+    data = request.get_json() or {}
+    contact_ids = data.get("contactIds", [])
+
+    if not contact_ids:
+        # Verify all contacts
+        docs = list(db.collection("users").document(uid).collection("contacts").stream())
+    else:
+        docs = []
+        for cid in contact_ids:
+            doc = db.collection("users").document(uid).collection("contacts").document(cid).get()
+            if doc.exists:
+                docs.append(doc)
+
+    results = {"verified": 0, "invalid": 0, "skipped": 0, "contacts": []}
+    for doc in docs:
+        c = doc.to_dict()
+        email = c.get("email", "").strip()
+        if not email:
+            results["skipped"] += 1
+            continue
+
+        try:
+            verification = verify_email(email)
+            status = verification.get("result", "unknown")
+            db.collection("users").document(uid).collection("contacts").document(doc.id).update({
+                "emailVerification": status,
+                "emailScore": verification.get("score", 0),
+            })
+            if status == "deliverable":
+                results["verified"] += 1
+            elif status == "undeliverable":
+                results["invalid"] += 1
+            results["contacts"].append({
+                "id": doc.id,
+                "email": email,
+                "verification": status,
+                "score": verification.get("score", 0),
+            })
+        except Exception as e:
+            logger.warning(f"Verification failed for {email}: {e}")
+            results["skipped"] += 1
+
+    return jsonify(results)
+
+
+@contacts_bp.post("/find-emails")
+@require_firebase_auth
+def find_contact_emails():
+    """Use Hunter email finder to find emails for contacts missing them."""
+    import logging
+    logger = logging.getLogger(__name__)
+
+    uid = request.firebase_user["uid"]
+    db = get_db()
+    data = request.get_json() or {}
+    contact_ids = data.get("contactIds", [])
+
+    if not contact_ids:
+        docs = list(db.collection("users").document(uid).collection("contacts").stream())
+    else:
+        docs = []
+        for cid in contact_ids:
+            doc = db.collection("users").document(uid).collection("contacts").document(cid).get()
+            if doc.exists:
+                docs.append(doc)
+
+    found = 0
+    for doc in docs:
+        c = doc.to_dict()
+        if c.get("email"):
+            continue
+
+        first_name = c.get("firstName", "")
+        last_name = c.get("lastName", "")
+        company = c.get("company", "")
+
+        # Extract domain from company website or linkedinUrl
+        domain = ""
+        if c.get("website"):
+            domain = c["website"].replace("https://", "").replace("http://", "").split("/")[0]
+        elif company:
+            # Try company name as domain guess
+            domain = company.lower().replace(" ", "") + ".com"
+
+        if not domain or not first_name:
+            continue
+
+        try:
+            result = find_email(domain=domain, first_name=first_name, last_name=last_name)
+            if result.get("email") and result.get("confidence", 0) >= 50:
+                db.collection("users").document(uid).collection("contacts").document(doc.id).update({
+                    "email": result["email"],
+                    "emailConfidence": result["confidence"],
+                    "emailSource": "hunter",
+                })
+                found += 1
+        except Exception as e:
+            logger.warning(f"Email finder failed for {first_name} {last_name} at {domain}: {e}")
+
+    return jsonify({"found": found})
 
 
 @contacts_bp.delete("/<contact_id>")

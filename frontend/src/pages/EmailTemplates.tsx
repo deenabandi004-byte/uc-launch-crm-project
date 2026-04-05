@@ -50,14 +50,19 @@ export default function EmailTemplates() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl p-8">
-      <div className="mb-6 flex items-center justify-between">
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 48px", fontFamily: "'Inter', sans-serif" }}>
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <p className="text-muted-foreground">Manage your outreach templates</p>
+          <p style={{ fontSize: 14, color: "#64748B", margin: 0 }}>Manage your outreach templates</p>
         </div>
         <button
           onClick={() => { setCreating(true); setForm({ name: "", subject: "", body: "" }); }}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
+          style={{
+            display: "flex", alignItems: "center", gap: 8,
+            borderRadius: 3, border: "none", padding: "8px 16px",
+            fontSize: 14, fontWeight: 500, background: "#0F172A", color: "#EDE9FE",
+            cursor: "pointer", fontFamily: "'Inter', sans-serif",
+          }}
         >
           <Plus size={16} /> New Template
         </button>
@@ -65,48 +70,76 @@ export default function EmailTemplates() {
 
       {/* Create / Edit form */}
       {(creating || editing) && (
-        <div className="mb-6 rounded-xl border border-border p-5">
-          <h3 className="mb-4 text-sm font-medium">{creating ? "New Template" : "Edit Template"}</h3>
-          <div className="space-y-3">
+        <div style={{ marginBottom: 24, borderRadius: 3, border: "1px solid #E2E8F0", background: "#fff", padding: 24 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", margin: "0 0 16px" }}>{creating ? "New Template" : "Edit Template"}</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <input
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm"
+              style={{
+                width: "100%", borderRadius: 3, border: "1px solid #E2E8F0",
+                padding: "8px 12px", fontSize: 14, outline: "none",
+                fontFamily: "'Inter', sans-serif", boxSizing: "border-box",
+              }}
               placeholder="Template name"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onFocus={(e) => e.currentTarget.style.borderColor = "#7C3AED"}
+              onBlur={(e) => e.currentTarget.style.borderColor = "#E2E8F0"}
             />
             <input
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm"
+              style={{
+                width: "100%", borderRadius: 3, border: "1px solid #E2E8F0",
+                padding: "8px 12px", fontSize: 14, outline: "none",
+                fontFamily: "'Inter', sans-serif", boxSizing: "border-box",
+              }}
               placeholder="Email subject line"
               value={form.subject}
               onChange={(e) => setForm({ ...form, subject: e.target.value })}
+              onFocus={(e) => e.currentTarget.style.borderColor = "#7C3AED"}
+              onBlur={(e) => e.currentTarget.style.borderColor = "#E2E8F0"}
             />
             <div>
-              <div className="mb-1 flex flex-wrap gap-1">
+              <div style={{ marginBottom: 4, display: "flex", flexWrap: "wrap", gap: 4 }}>
                 {VARIABLES.map((v) => (
                   <button
                     key={v}
                     onClick={() => insertVariable(v)}
-                    className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground hover:bg-muted/80"
+                    style={{
+                      borderRadius: 3, border: "none", background: "#F1F5F9",
+                      padding: "2px 8px", fontSize: 12, color: "#64748B",
+                      cursor: "pointer", fontFamily: "'Inter', sans-serif",
+                    }}
                   >
                     {v}
                   </button>
                 ))}
               </div>
               <textarea
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm"
+                style={{
+                  width: "100%", borderRadius: 3, border: "1px solid #E2E8F0",
+                  padding: "8px 12px", fontSize: 14, outline: "none", resize: "vertical",
+                  fontFamily: "'Inter', sans-serif", boxSizing: "border-box",
+                }}
                 rows={8}
                 placeholder="Email body..."
                 value={form.body}
                 onChange={(e) => setForm({ ...form, body: e.target.value })}
+                onFocus={(e) => e.currentTarget.style.borderColor = "#7C3AED"}
+                onBlur={(e) => e.currentTarget.style.borderColor = "#E2E8F0"}
               />
             </div>
           </div>
-          <div className="mt-3 flex gap-2">
+          <div style={{ marginTop: 12, display: "flex", gap: 8 }}>
             {creating ? (
               <button
                 onClick={() => createMutation.mutate(form)}
                 disabled={!form.name || createMutation.isPending}
-                className="flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+                style={{
+                  display: "flex", alignItems: "center", gap: 4,
+                  borderRadius: 3, border: "none", padding: "8px 16px",
+                  fontSize: 14, fontWeight: 500, background: "#0F172A", color: "#EDE9FE",
+                  cursor: "pointer", opacity: (!form.name || createMutation.isPending) ? 0.5 : 1,
+                  fontFamily: "'Inter', sans-serif",
+                }}
               >
                 <Save size={14} /> Save
               </button>
@@ -114,14 +147,25 @@ export default function EmailTemplates() {
               <button
                 onClick={() => updateMutation.mutate({ id: editing!, data: form })}
                 disabled={updateMutation.isPending}
-                className="flex items-center gap-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+                style={{
+                  display: "flex", alignItems: "center", gap: 4,
+                  borderRadius: 3, border: "none", padding: "8px 16px",
+                  fontSize: 14, fontWeight: 500, background: "#0F172A", color: "#EDE9FE",
+                  cursor: "pointer", opacity: updateMutation.isPending ? 0.5 : 1,
+                  fontFamily: "'Inter', sans-serif",
+                }}
               >
                 <Save size={14} /> Update
               </button>
             )}
             <button
               onClick={() => { setCreating(false); setEditing(null); }}
-              className="flex items-center gap-1 rounded-lg px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+              style={{
+                display: "flex", alignItems: "center", gap: 4,
+                borderRadius: 3, border: "none", padding: "8px 16px",
+                fontSize: 14, background: "transparent", color: "#64748B",
+                cursor: "pointer", fontFamily: "'Inter', sans-serif",
+              }}
             >
               <X size={14} /> Cancel
             </button>
@@ -131,41 +175,57 @@ export default function EmailTemplates() {
 
       {/* Template list */}
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="animate-spin text-muted-foreground" /></div>
+        <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}>
+          <Loader2 style={{ color: "#94A3B8", animation: "spin 1s linear infinite" }} />
+        </div>
       ) : templates.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
-          <Mail className="mb-3 text-muted-foreground" size={40} />
-          <h3 className="text-lg font-medium">No templates yet</h3>
-          <p className="text-sm text-muted-foreground">Templates will be created automatically on first load</p>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: 3, border: "1px dashed #E2E8F0", padding: "64px 0" }}>
+          <Mail style={{ color: "#D1D5DB", marginBottom: 12 }} size={40} />
+          <h3 style={{ fontSize: 18, fontWeight: 500, color: "#0f2545", margin: "0 0 4px" }}>No templates yet</h3>
+          <p style={{ fontSize: 14, color: "#94A3B8", margin: 0 }}>Templates will be created automatically on first load</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {templates.map((t: any) => (
-            <div key={t.id} className="rounded-xl border border-border p-4 hover:shadow-sm">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-3">
-                  <FileText size={18} className="mt-0.5 text-muted-foreground" />
+            <div
+              key={t.id}
+              style={{
+                borderRadius: 3, border: "1px solid #E2E8F0", background: "#fff", padding: 16,
+                transition: "border-color 0.15s, box-shadow 0.15s", cursor: "default",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "#C4B5FD"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(124,58,237,0.08)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "#E2E8F0"; e.currentTarget.style.boxShadow = "none"; }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 12 }}>
+                  <FileText size={18} style={{ marginTop: 2, color: "#94A3B8" }} />
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">{t.name}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 14, fontWeight: 500, color: "#0f2545" }}>{t.name}</span>
                       {t.isPreset && (
-                        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700">
+                        <span style={{
+                          borderRadius: 100, background: "#F5F3FF", padding: "2px 8px",
+                          fontSize: 10, fontWeight: 600, color: "#7C3AED",
+                        }}>
                           PRESET
                         </span>
                       )}
                     </div>
-                    <div className="mt-1 text-xs text-muted-foreground">Subject: {t.subject}</div>
-                    <div className="mt-1 text-xs text-muted-foreground line-clamp-2">{t.body}</div>
+                    <div style={{ marginTop: 4, fontSize: 12, color: "#64748B" }}>Subject: {t.subject}</div>
+                    <div style={{ marginTop: 4, fontSize: 12, color: "#94A3B8", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{t.body}</div>
                   </div>
                 </div>
-                <div className="flex gap-1">
-                  <button onClick={() => startEdit(t)} className="rounded p-1 text-muted-foreground hover:text-foreground">
+                <div style={{ display: "flex", gap: 4 }}>
+                  <button
+                    onClick={() => startEdit(t)}
+                    style={{ background: "none", border: "none", borderRadius: 3, padding: 4, color: "#94A3B8", cursor: "pointer" }}
+                  >
                     <Edit2 size={14} />
                   </button>
                   {!t.isPreset && (
                     <button
                       onClick={() => deleteMutation.mutate(t.id)}
-                      className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      style={{ background: "none", border: "none", borderRadius: 3, padding: 4, color: "#94A3B8", cursor: "pointer" }}
                     >
                       <Trash2 size={14} />
                     </button>

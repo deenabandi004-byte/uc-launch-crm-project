@@ -12,8 +12,8 @@ import {
 import { useState } from "react";
 
 const STAGE_COLORS: Record<string, string> = {
-  new_lead: "#3B82F6",
-  contacted: "#6366F1",
+  new_lead: "#7C3AED",
+  contacted: "#7C3AED",
   interested: "#14B8A6",
   estimate_sent: "#F59E0B",
   approved: "#10B981",
@@ -37,6 +37,9 @@ function relativeTime(timestamp: string): string {
   return new Date(timestamp).toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
+const font = "'Inter', sans-serif";
+const serifFont = "'Libre Baskerville', Georgia, serif";
+
 export default function Analytics() {
   const { data: overview, isLoading: overviewLoading } = useQuery({
     queryKey: ["analytics-overview"],
@@ -57,8 +60,8 @@ export default function Analytics() {
 
   if (overviewLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center" }}>
+        <Loader2 className="animate-spin" style={{ width: 32, height: 32, color: "#7C3AED" }} />
       </div>
     );
   }
@@ -82,81 +85,91 @@ export default function Analytics() {
   const maxFunnelCount = Math.max(1, ...pipelineFunnel.map((s: any) => s.count));
   const totalFunnelContacts = pipelineFunnel.reduce((sum: number, s: any) => sum + s.count, 0);
 
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    border: "1px solid #E2E8F0",
+    borderRadius: 3,
+    padding: 24,
+  };
+
+  const kpiIconBox = (bg: string, color: string): React.CSSProperties => ({
+    width: 40,
+    height: 40,
+    borderRadius: 3,
+    background: bg,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: color,
+  });
+
   return (
-    <div className="mx-auto max-w-7xl p-8">
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 48px", fontFamily: font }}>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold">Analytics & Reporting</h1>
-        <p className="text-muted-foreground">
+      <div style={{ marginBottom: 32 }}>
+        <h1 style={{ fontSize: 26, fontWeight: 600, color: "#0f2545", fontFamily: serifFont, margin: 0 }}>Analytics & Reporting</h1>
+        <p style={{ color: "#64748B", fontSize: 13, margin: "4px 0 0" }}>
           Track your outreach performance, pipeline health, and revenue
         </p>
       </div>
 
       {/* KPI Cards */}
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div style={{ marginBottom: 24, display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
         {/* Total Emails Sent */}
-        <div className="rounded-xl border border-border bg-card p-5">
-          <div className="flex items-center justify-between">
-            <div className="rounded-lg bg-blue-50 p-2 text-blue-600">
-              <Send size={18} />
-            </div>
+        <div style={cardStyle}>
+          <div style={kpiIconBox("#F5F3FF", "#7C3AED")}>
+            <Send size={18} />
           </div>
-          <div className="mt-3">
-            <div className="text-2xl font-bold">{data.emailsSent.toLocaleString()}</div>
-            <div className="text-sm text-muted-foreground">Emails Sent</div>
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#0f2545" }}>{data.emailsSent.toLocaleString()}</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>Emails Sent</div>
           </div>
-          <div className="mt-1 text-xs text-muted-foreground">
+          <div style={{ marginTop: 4, fontSize: 11, color: "#94A3B8" }}>
             {data.campaignsSent} campaign{data.campaignsSent !== 1 ? "s" : ""} sent
           </div>
         </div>
 
         {/* Reply Rate */}
-        <div className="rounded-xl border border-border bg-card p-5">
-          <div className="flex items-center justify-between">
-            <div className="rounded-lg bg-emerald-50 p-2 text-emerald-600">
-              <MessageSquare size={18} />
-            </div>
+        <div style={cardStyle}>
+          <div style={kpiIconBox("#ECFDF5", "#10B981")}>
+            <MessageSquare size={18} />
           </div>
-          <div className="mt-3">
-            <div className="text-2xl font-bold">{data.replyRate}%</div>
-            <div className="text-sm text-muted-foreground">Reply Rate</div>
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#0f2545" }}>{data.replyRate}%</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>Reply Rate</div>
           </div>
-          <div className="mt-1 text-xs text-muted-foreground">
+          <div style={{ marginTop: 4, fontSize: 11, color: "#94A3B8" }}>
             {repliedCount}/{data.emailsSent} emails
           </div>
         </div>
 
         {/* Conversion Rate */}
-        <div className="rounded-xl border border-border bg-card p-5">
-          <div className="flex items-center justify-between">
-            <div className="rounded-lg bg-purple-50 p-2 text-purple-600">
-              <TrendingUp size={18} />
-            </div>
+        <div style={cardStyle}>
+          <div style={kpiIconBox("#F5F3FF", "#7C3AED")}>
+            <TrendingUp size={18} />
           </div>
-          <div className="mt-3">
-            <div className="text-2xl font-bold">{data.conversionRate}%</div>
-            <div className="text-sm text-muted-foreground">Conversion Rate</div>
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#0f2545" }}>{data.conversionRate}%</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>Conversion Rate</div>
           </div>
-          <div className="mt-1 text-xs text-muted-foreground">
+          <div style={{ marginTop: 4, fontSize: 11, color: "#94A3B8" }}>
             contacts to paid
           </div>
         </div>
 
         {/* Revenue */}
-        <div className="rounded-xl border border-border bg-card p-5">
-          <div className="flex items-center justify-between">
-            <div className="rounded-lg bg-green-50 p-2 text-green-600">
-              <DollarSign size={18} />
-            </div>
+        <div style={cardStyle}>
+          <div style={kpiIconBox("#F0FDF4", "#22C55E")}>
+            <DollarSign size={18} />
           </div>
-          <div className="mt-3">
-            <div className="text-2xl font-bold">
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#0f2545" }}>
               ${data.revenue.collected.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
             </div>
-            <div className="text-sm text-muted-foreground">Revenue Collected</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>Revenue Collected</div>
           </div>
           {data.revenue.pending > 0 && (
-            <div className="mt-1 text-xs text-amber-600">
+            <div style={{ marginTop: 4, fontSize: 11, color: "#F59E0B" }}>
               ${data.revenue.pending.toLocaleString(undefined, { maximumFractionDigits: 0 })} pending
             </div>
           )}
@@ -164,48 +177,54 @@ export default function Analytics() {
       </div>
 
       {/* Pipeline Funnel + Recent Activity */}
-      <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div style={{ marginBottom: 24, display: "grid", gridTemplateColumns: "2fr 1fr", gap: 24 }}>
         {/* Pipeline Funnel */}
-        <div className="lg:col-span-2 rounded-xl border border-border bg-card p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <BarChart3 size={18} className="text-primary" />
-              <h2 className="text-lg font-semibold">Pipeline Funnel</h2>
+        <div style={cardStyle}>
+          <div style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <BarChart3 size={18} style={{ color: "#7C3AED" }} />
+              <h2 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", margin: 0 }}>Pipeline Funnel</h2>
             </div>
-            <span className="text-sm text-muted-foreground">
+            <span style={{ fontSize: 13, color: "#64748B" }}>
               {totalFunnelContacts} total contact{totalFunnelContacts !== 1 ? "s" : ""}
             </span>
           </div>
           {funnelLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            <div style={{ display: "flex", justifyContent: "center", padding: "32px 0" }}>
+              <Loader2 className="animate-spin" style={{ width: 24, height: 24, color: "#94A3B8" }} />
             </div>
           ) : (
-            <div className="space-y-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {pipelineFunnel.map((stage: any) => {
                 const pct = maxFunnelCount > 0 ? (stage.count / maxFunnelCount) * 100 : 0;
                 const totalPct = totalFunnelContacts > 0
                   ? ((stage.count / totalFunnelContacts) * 100).toFixed(1)
                   : "0.0";
                 return (
-                  <div key={stage.stage} className="flex items-center gap-3">
-                    <div className="w-28 text-sm text-muted-foreground truncate" title={stage.label}>
+                  <div key={stage.stage} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <div style={{ width: 112, fontSize: 13, color: "#64748B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={stage.label}>
                       {stage.label}
                     </div>
-                    <div className="flex-1 h-8 rounded-md bg-secondary overflow-hidden">
+                    <div style={{ flex: 1, height: 32, borderRadius: 3, background: "#F8FAFC", overflow: "hidden" }}>
                       <div
-                        className="h-full rounded-md transition-all duration-500 flex items-center justify-between px-2"
                         style={{
+                          height: "100%",
+                          borderRadius: 3,
+                          transition: "all 0.5s",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          padding: "0 8px",
                           width: `${Math.max(pct, stage.count > 0 ? 10 : 0)}%`,
                           backgroundColor: STAGE_COLORS[stage.stage] || "#6B7280",
                         }}
                       >
                         {stage.count > 0 && (
-                          <span className="text-xs font-medium text-white">{stage.count}</span>
+                          <span style={{ fontSize: 11, fontWeight: 500, color: "#fff" }}>{stage.count}</span>
                         )}
                       </div>
                     </div>
-                    <div className="w-14 text-right text-xs text-muted-foreground">
+                    <div style={{ width: 56, textAlign: "right", fontSize: 11, color: "#94A3B8" }}>
                       {totalPct}%
                     </div>
                   </div>
@@ -214,34 +233,32 @@ export default function Analytics() {
             </div>
           )}
           {!funnelLoading && totalFunnelContacts === 0 && (
-            <p className="mt-4 text-center text-sm text-muted-foreground">
+            <p style={{ marginTop: 16, textAlign: "center", fontSize: 13, color: "#94A3B8" }}>
               No contacts in the pipeline yet.
             </p>
           )}
         </div>
 
         {/* Recent Activity */}
-        <div className="rounded-xl border border-border bg-card p-6">
-          <div className="mb-4 flex items-center gap-2">
-            <Clock size={18} className="text-primary" />
-            <h2 className="text-lg font-semibold">Recent Activity</h2>
+        <div style={cardStyle}>
+          <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
+            <Clock size={18} style={{ color: "#7C3AED" }} />
+            <h2 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", margin: 0 }}>Recent Activity</h2>
           </div>
           {data.recentActivity.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Clock size={32} className="mb-2 text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">No recent activity</p>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 0", textAlign: "center" }}>
+              <Clock size={32} style={{ marginBottom: 8, color: "#94A3B8" }} />
+              <p style={{ fontSize: 13, color: "#94A3B8", margin: 0 }}>No recent activity</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {data.recentActivity.map((item: any, i: number) => (
-                <div key={i} className="flex items-start gap-3 rounded-lg border border-border p-3">
-                  <div className={`mt-0.5 rounded-md p-1.5 flex-shrink-0 ${
-                    item.type === "reply"
-                      ? "bg-blue-50 text-blue-600"
-                      : item.type === "campaign_sent"
-                      ? "bg-emerald-50 text-emerald-600"
-                      : "bg-green-50 text-green-600"
-                  }`}>
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, borderRadius: 3, border: "1px solid #E2E8F0", padding: 12 }}>
+                  <div style={{
+                    marginTop: 2, borderRadius: 3, padding: 6, flexShrink: 0,
+                    background: item.type === "reply" ? "#F5F3FF" : item.type === "campaign_sent" ? "#ECFDF5" : "#F0FDF4",
+                    color: item.type === "reply" ? "#7C3AED" : item.type === "campaign_sent" ? "#10B981" : "#22C55E",
+                  }}>
                     {item.type === "reply" ? (
                       <MessageSquare size={14} />
                     ) : item.type === "campaign_sent" ? (
@@ -250,14 +267,14 @@ export default function Analytics() {
                       <FileText size={14} />
                     )}
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div style={{ minWidth: 0, flex: 1 }}>
                     {item.contactName && (
-                      <div className="text-sm font-medium truncate">{item.contactName}</div>
+                      <div style={{ fontSize: 13, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#0f2545" }}>{item.contactName}</div>
                     )}
-                    <div className="text-xs text-muted-foreground truncate">
+                    <div style={{ fontSize: 11, color: "#64748B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {item.description}
                     </div>
-                    <div className="mt-0.5 text-[10px] text-muted-foreground/60">
+                    <div style={{ marginTop: 2, fontSize: 10, color: "#94A3B8" }}>
                       {relativeTime(item.timestamp)}
                     </div>
                   </div>
@@ -269,29 +286,29 @@ export default function Analytics() {
       </div>
 
       {/* Campaign Performance Table */}
-      <div className="rounded-xl border border-border bg-card p-6">
-        <div className="mb-4 flex items-center gap-2">
-          <Send size={18} className="text-primary" />
-          <h2 className="text-lg font-semibold">Campaign Performance</h2>
+      <div style={cardStyle}>
+        <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
+          <Send size={18} style={{ color: "#7C3AED" }} />
+          <h2 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", margin: 0 }}>Campaign Performance</h2>
         </div>
 
         {campaigns.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 text-center">
-            <Send size={32} className="mb-2 text-muted-foreground/40" />
-            <p className="text-sm text-muted-foreground">No campaigns yet</p>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 0", textAlign: "center" }}>
+            <Send size={32} style={{ marginBottom: 8, color: "#94A3B8" }} />
+            <p style={{ fontSize: 13, color: "#94A3B8", margin: 0 }}>No campaigns yet</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse" }}>
               <thead>
-                <tr className="border-b border-border text-left">
-                  <th className="pb-3 pr-4 font-medium text-muted-foreground"></th>
-                  <th className="pb-3 pr-4 font-medium text-muted-foreground">Campaign</th>
-                  <th className="pb-3 pr-4 font-medium text-muted-foreground">Date</th>
-                  <th className="pb-3 pr-4 font-medium text-muted-foreground text-right">Emails Sent</th>
-                  <th className="pb-3 pr-4 font-medium text-muted-foreground text-right">Replies</th>
-                  <th className="pb-3 font-medium text-muted-foreground text-right">Reply Rate</th>
-                  <th className="pb-3 font-medium text-muted-foreground">Status</th>
+                <tr>
+                  <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "10px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}></th>
+                  <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "10px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Campaign</th>
+                  <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "10px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Date</th>
+                  <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "10px 16px", textAlign: "right", borderBottom: "1px solid #E2E8F0" }}>Emails Sent</th>
+                  <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "10px 16px", textAlign: "right", borderBottom: "1px solid #E2E8F0" }}>Replies</th>
+                  <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "10px 16px", textAlign: "right", borderBottom: "1px solid #E2E8F0" }}>Reply Rate</th>
+                  <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "10px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -344,84 +361,92 @@ function CampaignRow({
     ? new Date(campaign.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
     : "";
 
+  const tdStyle: React.CSSProperties = { padding: "12px 16px", borderBottom: "1px solid #E2E8F0" };
+
   return (
     <>
       <tr
-        className="border-b border-border cursor-pointer hover:bg-secondary/50 transition-colors"
         onClick={onToggle}
+        style={{ cursor: "pointer", transition: "background 0.15s" }}
+        onMouseEnter={(e) => (e.currentTarget.style.background = "#F8FAFC")}
+        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
       >
-        <td className="py-3 pr-2">
+        <td style={{ ...tdStyle, paddingRight: 8 }}>
           {expanded ? (
-            <ChevronDown size={14} className="text-muted-foreground" />
+            <ChevronDown size={14} style={{ color: "#64748B" }} />
           ) : (
-            <ChevronRight size={14} className="text-muted-foreground" />
+            <ChevronRight size={14} style={{ color: "#64748B" }} />
           )}
         </td>
-        <td className="py-3 pr-4 font-medium">{campaign.name}</td>
-        <td className="py-3 pr-4 text-muted-foreground">{dateStr}</td>
-        <td className="py-3 pr-4 text-right">{sentCount}</td>
-        <td className="py-3 pr-4 text-right">{expanded ? replyCount : "..."}</td>
-        <td className="py-3 text-right">{expanded ? `${replyRate}%` : "..."}</td>
-        <td className="py-3">
+        <td style={{ ...tdStyle, fontWeight: 500, color: "#0f2545" }}>{campaign.name}</td>
+        <td style={{ ...tdStyle, color: "#64748B" }}>{dateStr}</td>
+        <td style={{ ...tdStyle, textAlign: "right" }}>{sentCount}</td>
+        <td style={{ ...tdStyle, textAlign: "right" }}>{expanded ? replyCount : "..."}</td>
+        <td style={{ ...tdStyle, textAlign: "right" }}>{expanded ? `${replyRate}%` : "..."}</td>
+        <td style={tdStyle}>
           <StatusBadge status={campaign.status} />
         </td>
       </tr>
       {expanded && (
         <tr>
-          <td colSpan={7} className="p-0">
-            <div className="bg-secondary/30 px-6 py-4">
+          <td colSpan={7} style={{ padding: 0 }}>
+            <div style={{ background: "#F8FAFC", padding: "16px 24px" }}>
               {isLoading ? (
-                <div className="flex justify-center py-4">
-                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                <div style={{ display: "flex", justifyContent: "center", padding: "16px 0" }}>
+                  <Loader2 className="animate-spin" style={{ width: 20, height: 20, color: "#94A3B8" }} />
                 </div>
               ) : analytics?.contacts?.length > 0 ? (
-                <table className="w-full text-xs">
+                <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse" }}>
                   <thead>
-                    <tr className="border-b border-border text-left">
-                      <th className="pb-2 pr-4 font-medium text-muted-foreground">Name</th>
-                      <th className="pb-2 pr-4 font-medium text-muted-foreground">Email</th>
-                      <th className="pb-2 pr-4 font-medium text-muted-foreground">Status</th>
-                      <th className="pb-2 pr-4 font-medium text-muted-foreground">Replied</th>
-                      <th className="pb-2 pr-4 font-medium text-muted-foreground">Category</th>
-                      <th className="pb-2 font-medium text-muted-foreground">Pipeline Stage</th>
+                    <tr>
+                      <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Name</th>
+                      <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Email</th>
+                      <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Status</th>
+                      <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Replied</th>
+                      <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Category</th>
+                      <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 16px", textAlign: "left", borderBottom: "1px solid #E2E8F0" }}>Pipeline Stage</th>
                     </tr>
                   </thead>
                   <tbody>
                     {analytics.contacts.map((contact: any, i: number) => (
-                      <tr key={i} className="border-b border-border/50">
-                        <td className="py-2 pr-4">{contact.name}</td>
-                        <td className="py-2 pr-4 text-muted-foreground">{contact.email}</td>
-                        <td className="py-2 pr-4">
+                      <tr key={i}>
+                        <td style={{ padding: "8px 16px", borderBottom: "1px solid #F1F5F9" }}>{contact.name}</td>
+                        <td style={{ padding: "8px 16px", borderBottom: "1px solid #F1F5F9", color: "#64748B" }}>{contact.email}</td>
+                        <td style={{ padding: "8px 16px", borderBottom: "1px solid #F1F5F9" }}>
                           <StatusBadge status={contact.status} />
                         </td>
-                        <td className="py-2 pr-4">
+                        <td style={{ padding: "8px 16px", borderBottom: "1px solid #F1F5F9" }}>
                           {contact.replied ? (
-                            <span className="text-emerald-600 font-medium">Yes</span>
+                            <span style={{ color: "#10B981", fontWeight: 500 }}>Yes</span>
                           ) : (
-                            <span className="text-muted-foreground">No</span>
+                            <span style={{ color: "#94A3B8" }}>No</span>
                           )}
                         </td>
-                        <td className="py-2 pr-4">
+                        <td style={{ padding: "8px 16px", borderBottom: "1px solid #F1F5F9" }}>
                           {contact.category ? (
-                            <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700">
+                            <span style={{ borderRadius: 100, background: "#F5F3FF", padding: "2px 8px", fontSize: 10, fontWeight: 600, color: "#7C3AED" }}>
                               {contact.category}
                             </span>
                           ) : (
-                            <span className="text-muted-foreground">--</span>
+                            <span style={{ color: "#94A3B8" }}>--</span>
                           )}
                         </td>
-                        <td className="py-2">
+                        <td style={{ padding: "8px 16px", borderBottom: "1px solid #F1F5F9" }}>
                           {contact.pipelineStage ? (
                             <span
-                              className="rounded px-1.5 py-0.5 text-[10px] font-medium text-white"
                               style={{
+                                borderRadius: 100,
+                                padding: "2px 8px",
+                                fontSize: 10,
+                                fontWeight: 600,
+                                color: "#fff",
                                 backgroundColor: STAGE_COLORS[contact.pipelineStage] || "#6B7280",
                               }}
                             >
                               {contact.pipelineStage.replace(/_/g, " ")}
                             </span>
                           ) : (
-                            <span className="text-muted-foreground">--</span>
+                            <span style={{ color: "#94A3B8" }}>--</span>
                           )}
                         </td>
                       </tr>
@@ -429,7 +454,7 @@ function CampaignRow({
                   </tbody>
                 </table>
               ) : (
-                <p className="text-xs text-muted-foreground text-center py-2">
+                <p style={{ fontSize: 11, color: "#94A3B8", textAlign: "center", padding: "8px 0", margin: 0 }}>
                   No contact details available for this campaign.
                 </p>
               )}
@@ -442,14 +467,15 @@ function CampaignRow({
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    draft: "bg-gray-100 text-gray-700",
-    drafts_ready: "bg-amber-100 text-amber-700",
-    sent: "bg-blue-100 text-blue-700",
-    send_error: "bg-red-100 text-red-700",
+  const styles: Record<string, { bg: string; color: string }> = {
+    draft: { bg: "#F1F5F9", color: "#64748B" },
+    drafts_ready: { bg: "#FEF3C7", color: "#B45309" },
+    sent: { bg: "#F5F3FF", color: "#7C3AED" },
+    send_error: { bg: "#FEE2E2", color: "#DC2626" },
   };
+  const s = styles[status] || styles.draft;
   return (
-    <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${styles[status] || styles.draft}`}>
+    <span style={{ borderRadius: 100, padding: "2px 8px", fontSize: 10, fontWeight: 600, background: s.bg, color: s.color }}>
       {status?.replace(/_/g, " ") || "unknown"}
     </span>
   );

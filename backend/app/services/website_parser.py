@@ -66,11 +66,13 @@ def fetch_website_content(url: str) -> str:
 def extract_business_info(content: str) -> dict:
     """Use AI to extract structured business info from website content."""
     prompt = f"""Analyze this website content and extract business information. Return a JSON object with these fields:
+- companyName: the company's name
 - products: array of product/service names
 - targetMarket: who they sell to (1-2 sentences)
 - valueProps: array of key value propositions (3-5 items)
 - employeeEstimate: rough estimate of company size
-- industry: primary industry
+- industry: primary industry (pick the closest match from common industry names)
+- description: a 1-2 sentence summary of what the company does
 
 Website content:
 {content[:5000]}

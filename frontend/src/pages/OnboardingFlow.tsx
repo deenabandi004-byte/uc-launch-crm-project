@@ -319,8 +319,60 @@ export default function OnboardingFlow() {
     setParsing(true);
     try {
       const result = await parseWebsite(form.website);
-      update("parsedWebsite", result);
-      toast.success("Website analyzed successfully!");
+
+      // Build all updates in one batch to avoid stale state
+      setForm((prev) => {
+        const updates = { ...prev, parsedWebsite: result };
+
+        if (result.companyName && !prev.companyName) {
+          updates.companyName = result.companyName;
+        }
+        if (result.description && !prev.description) {
+          updates.description = result.description;
+        }
+        if (result.industry) {
+          const ai = result.industry.toLowerCase();
+          const match =
+            INDUSTRIES.find((ind) => ind.toLowerCase() === ai) ||
+            INDUSTRIES.find((ind) => ai.includes(ind.toLowerCase())) ||
+            INDUSTRIES.find((ind) => ind.toLowerCase().includes(ai)) ||
+            INDUSTRIES.find((ind) => {
+              const words = ai.split(/\s+/);
+              return words.some((w: string) => w.length > 3 && ind.toLowerCase().includes(w));
+            });
+          if (match) {
+            updates.industry = match;
+          }
+        }
+        return updates;
+      });
+
+      // Industry query state is separate, update after
+      if (result.industry) {
+        const ai = result.industry.toLowerCase();
+        const match =
+          INDUSTRIES.find((ind) => ind.toLowerCase() === ai) ||
+          INDUSTRIES.find((ind) => ai.includes(ind.toLowerCase())) ||
+          INDUSTRIES.find((ind) => ind.toLowerCase().includes(ai)) ||
+          INDUSTRIES.find((ind) => {
+            const words = ai.split(/\s+/);
+            return words.some((w: string) => w.length > 3 && ind.toLowerCase().includes(w));
+          });
+        if (match) {
+          setIndustryQuery(match);
+        }
+      }
+
+      // Auto-fill target customers
+      if (result.targetMarket && targetCustomerTags.length === 0) {
+        const customers = result.targetMarket.split(/[,;.]/).map((s: string) => s.trim()).filter((s: string) => s.length > 2);
+        if (customers.length > 0) {
+          setTargetCustomerTags(customers);
+          setForm((prev) => ({ ...prev, targetCustomers: customers.join(", ") }));
+        }
+      }
+
+      toast.success("Website analyzed — fields auto-filled!");
     } catch (err: any) {
       toast.error(err.message || "Failed to parse website");
     } finally {
@@ -331,12 +383,12 @@ export default function OnboardingFlow() {
   const handleComplete = async () => {
     setLoading(true);
     try {
-      // Write directly to Firestore client-side (faster than round-tripping through backend)
+      // Write to backend first (uses admin SDK, bypasses Firestore rules)
+      await apiCompleteOnboarding(form);
+      // Then update local state and client-side Firestore
       await completeOnboarding(form);
       toast.success("Welcome to OutboundCRM!");
-      navigate("/");
-      // Sync to backend in background (non-blocking)
-      apiCompleteOnboarding(form).catch(() => {});
+      navigate("/dashboard");
     } catch (err: any) {
       toast.error(err.message || "Failed to complete onboarding");
     } finally {
