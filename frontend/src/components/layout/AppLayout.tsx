@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate, Link } from "react-router-dom";
 import { useFirebaseAuth } from "../../contexts/FirebaseAuthContext";
 import {
-  LayoutDashboard, Users, Send, GitBranch,
+  LayoutDashboard, Target, Users, Send, GitBranch,
   LogOut, ChevronDown, ChevronUp, Zap, ExternalLink,
   PanelLeft, CheckSquare, FileText, Sparkles, CalendarDays, BarChart3,
 } from "lucide-react";
@@ -21,6 +21,7 @@ const BORDER = "1px solid rgba(255,255,255,.06)";
 
 const mainNavItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/leads", icon: Target, label: "Leads" },
   { to: "/contacts", icon: Users, label: "Contacts" },
   { to: "/outreach", icon: Send, label: "Outreach" },
   { to: "/pipeline", icon: GitBranch, label: "Pipeline" },

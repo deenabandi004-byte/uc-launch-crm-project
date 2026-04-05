@@ -16,6 +16,7 @@ import QuotesInvoices from "./pages/QuotesInvoices";
 import Replies from "./pages/Replies";
 import Calendar from "./pages/Calendar";
 import Analytics from "./pages/Analytics";
+import LeadGeneration from "./pages/LeadGeneration";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 5 * 60 * 1000, gcTime: 10 * 60 * 1000 } },
@@ -68,6 +69,7 @@ function AppRoutes() {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/leads" element={<LeadGeneration />} />
         <Route path="/contacts" element={<ContactSheet />} />
         <Route path="/outreach" element={<Outreach />} />
         <Route path="/pipeline" element={<Pipeline />} />
