@@ -1,8 +1,9 @@
 import { Outlet, NavLink, useNavigate, Link } from "react-router-dom";
+import { useFirebaseAuth } from "../../contexts/FirebaseAuthContext";
 import {
-  LayoutDashboard, Search, Wrench, Send,
+  LayoutDashboard, Users, Send, GitBranch,
   LogOut, ChevronDown, ChevronUp, Zap, ExternalLink,
-  PanelLeft, Settings, Tag,
+  PanelLeft, CheckSquare, FileText, Sparkles, CalendarDays, BarChart3,
 } from "lucide-react";
 import { useState } from "react";
 import logoImg from "../../assets/logo-circle.png";
@@ -21,10 +22,14 @@ const HOVER_LABEL = "rgba(255,255,255,.70)";
 
 const mainNavItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/find-clients", icon: Search, label: "Find Clients" },
-  { to: "/job-tracker", icon: Wrench, label: "Job Tracker" },
+  { to: "/contacts", icon: Users, label: "Contacts" },
   { to: "/outreach", icon: Send, label: "Outreach" },
-  { to: "/field-ai", icon: Zap, label: "Field AI" },
+  { to: "/pipeline", icon: GitBranch, label: "Pipeline" },
+  { to: "/calendar", icon: CalendarDays, label: "Calendar" },
+  { to: "/tasks", icon: CheckSquare, label: "Tasks" },
+  { to: "/quotes", icon: FileText, label: "Quotes" },
+  { to: "/replies", icon: Sparkles, label: "Replies" },
+  { to: "/analytics", icon: BarChart3, label: "Analytics" },
 ];
 
 const utilityNavItems = [
@@ -32,6 +37,7 @@ const utilityNavItems = [
 ];
 
 export function AppLayout() {
+  const { user, signOut } = useFirebaseAuth();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
@@ -40,8 +46,13 @@ export function AppLayout() {
   const maxCredits = 1000;
   const creditPercentage = Math.min((credits / maxCredits) * 100, 100);
 
-  const handleSignOut = () => {
-    navigate("/");
+  const userInitials = user?.name
+    ? user.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
+    : "?";
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/signin");
   };
 
   const renderNavItem = (item: typeof mainNavItems[0], isActive: boolean) => {
@@ -155,11 +166,11 @@ export function AppLayout() {
                     className="h-8 w-8 flex-shrink-0 rounded-full flex items-center justify-center text-xs font-medium"
                     style={{ background: "rgba(124,58,237,0.12)", color: "#7C3AED", boxShadow: "0 0 0 2px rgba(124,58,237,0.20)" }}
                   >
-                    MT
+                    {userInitials}
                   </div>
                   <div className="flex-1 min-w-0 text-left">
                     <p className="text-sm font-medium truncate" style={{ color: "#fff", fontFamily: "'Inter', sans-serif" }}>
-                      Mike Torres
+                      {user?.name || "User"}
                     </p>
                   </div>
                   {userDropdownOpen
