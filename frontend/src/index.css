@@ -445,24 +445,24 @@ h3 { font-weight: 600; color: #0f2545; font-family: 'Inter', sans-serif; }
 .rounded-full { border-radius: 100px !important; }
 .rounded-md { border-radius: 3px !important; }
 
-/* ── Cards — Offerloop glass-card pattern ── */
+/* ── Cards — clean white with subtle border ── */
 .border-border { border-color: #E2E8F0 !important; }
-.bg-card { background: #FAFBFF !important; }
+.bg-card { background: #FFFFFF !important; }
 
 .rounded-xl.border,
-.rounded-lg.border,
-.border.border-border {
-  background: #FAFBFF;
+.rounded-lg.border {
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .rounded-xl.border:hover,
 .rounded-lg.border:hover {
   border-color: #C4B5FD;
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.10);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
 }
 
 /* ── Table system — Offerloop spreadsheet style ── */
-.bg-muted\/50 { background: #FAFBFF !important; }
+.bg-muted\/50 { background: #F8FAFC !important; }
 
 table {
   font-size: 14px;
@@ -474,7 +474,7 @@ th {
   text-transform: uppercase !important;
   letter-spacing: 0.05em !important;
   color: #94A3B8 !important;
-  background: #FAFBFF !important;
+  background: #F8FAFC !important;
   border-bottom: 1px solid #E2E8F0 !important;
   padding: 10px 16px !important;
 }
@@ -485,7 +485,7 @@ td {
   vertical-align: middle;
 }
 tr:last-child td { border-bottom: none !important; }
-tr:hover td { background: #FAFBFF !important; }
+tr:hover td { background: #F8FAFC !important; }
 
 /* ── Inputs — Offerloop style ── */
 input, select, textarea {
@@ -511,9 +511,9 @@ input[type="checkbox"] { accent-color: #7C3AED; border-radius: 2px !important; }
 .text-muted-foreground { color: #64748B !important; }
 
 /* ── Secondary / muted backgrounds ── */
-.bg-secondary { background: #F5F3FF !important; }
-.bg-muted { background: #F5F3FF !important; }
-.bg-secondary\/30 { background: rgba(245, 243, 255, 0.3) !important; }
+.bg-secondary { background: #F8FAFC !important; }
+.bg-muted { background: #F8FAFC !important; }
+.bg-secondary\/30 { background: rgba(248, 250, 252, 0.3) !important; }
 
 /* ── Empty states — centered, clean ── */
 .border-dashed {
