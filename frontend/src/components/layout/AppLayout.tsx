@@ -8,10 +8,7 @@ import {
 import { useState } from "react";
 import logoImg from "../../assets/logo-circle.png";
 
-const NAV_FONT_SIZE = "13.5px";
-const NAV_PY = "10px";
-const NAV_GAP = "11px";
-const NAV_RADIUS = "6px";
+const SERIF = "'Libre Baskerville', Georgia, serif";
 
 const ACTIVE_BG = "rgba(124,58,237,.18)";
 const ACTIVE_COLOR = "#C4B5FD";
@@ -19,6 +16,8 @@ const INACTIVE_ICON = "rgba(140,170,210,.55)";
 const INACTIVE_LABEL = "rgba(255,255,255,.40)";
 const HOVER_BG = "rgba(255,255,255,.06)";
 const HOVER_LABEL = "rgba(255,255,255,.70)";
+const SIDEBAR_BG = "#1E1B2E";
+const BORDER = "1px solid rgba(255,255,255,.06)";
 
 const mainNavItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -32,10 +31,6 @@ const mainNavItems = [
   { to: "/analytics", icon: BarChart3, label: "Analytics" },
 ];
 
-const utilityNavItems = [
-  { to: "/", icon: ExternalLink, label: "Back to Website" },
-];
-
 export function AppLayout() {
   const { user, signOut } = useFirebaseAuth();
   const navigate = useNavigate();
@@ -44,7 +39,7 @@ export function AppLayout() {
 
   const credits = 847;
   const maxCredits = 1000;
-  const creditPercentage = Math.min((credits / maxCredits) * 100, 100);
+  const creditPct = Math.min((credits / maxCredits) * 100, 100);
 
   const userInitials = user?.name
     ? user.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
@@ -55,242 +50,263 @@ export function AppLayout() {
     navigate("/signin");
   };
 
-  const renderNavItem = (item: typeof mainNavItems[0], isActive: boolean) => {
+  const navLink = (item: typeof mainNavItems[0]) => {
     const Icon = item.icon;
-
-    if (collapsed) {
-      return (
-        <NavLink
-          key={item.to}
-          to={item.to}
-          end={item.to === "/dashboard"}
-          className="flex items-center justify-center transition-all"
-          style={({ isActive: active }) => ({
-            padding: NAV_PY,
-            background: active ? ACTIVE_BG : "transparent",
-            borderRadius: NAV_RADIUS,
-          })}
-        >
-          {({ isActive: active }) => (
-            <Icon size={16} style={{ color: active ? ACTIVE_COLOR : INACTIVE_ICON }} />
-          )}
-        </NavLink>
-      );
-    }
-
     return (
       <NavLink
         key={item.to}
         to={item.to}
         end={item.to === "/dashboard"}
-        className="flex items-center transition-all"
-        style={({ isActive: active }) => ({
-          gap: NAV_GAP,
-          paddingTop: NAV_PY,
-          paddingBottom: NAV_PY,
-          paddingLeft: "10px",
-          paddingRight: "10px",
-          borderRadius: NAV_RADIUS,
-          fontSize: NAV_FONT_SIZE,
-          fontWeight: active ? 500 : 400,
+        style={({ isActive }) => ({
+          display: "flex",
+          alignItems: "center",
+          gap: collapsed ? 0 : 11,
+          justifyContent: collapsed ? "center" : "flex-start",
+          padding: collapsed ? "10px" : "10px 10px",
+          borderRadius: 6,
+          fontSize: 13.5,
+          fontWeight: isActive ? 500 : 400,
           fontFamily: "'Inter', sans-serif",
-          background: active ? ACTIVE_BG : "transparent",
-          color: active ? ACTIVE_COLOR : INACTIVE_LABEL,
+          background: isActive ? ACTIVE_BG : "transparent",
+          color: isActive ? ACTIVE_COLOR : INACTIVE_LABEL,
+          textDecoration: "none",
+          transition: "all .12s",
         })}
         onMouseEnter={(e) => {
-          const el = e.currentTarget;
-          if (!el.classList.contains("active")) {
-            el.style.background = HOVER_BG;
-            el.style.color = HOVER_LABEL;
+          if (!e.currentTarget.getAttribute("aria-current")) {
+            e.currentTarget.style.background = HOVER_BG;
+            e.currentTarget.style.color = HOVER_LABEL;
           }
         }}
         onMouseLeave={(e) => {
-          const el = e.currentTarget;
-          // Check if NavLink is active by looking at aria-current
-          if (!el.getAttribute("aria-current")) {
-            el.style.background = "transparent";
-            el.style.color = INACTIVE_LABEL;
+          if (!e.currentTarget.getAttribute("aria-current")) {
+            e.currentTarget.style.background = "transparent";
+            e.currentTarget.style.color = INACTIVE_LABEL;
           }
         }}
       >
-        {({ isActive: active }) => (
+        {({ isActive }) => (
           <>
-            <Icon size={16} style={{ color: active ? ACTIVE_COLOR : INACTIVE_ICON, flexShrink: 0 }} />
-            <span>{item.label}</span>
+            <Icon size={16} style={{ color: isActive ? ACTIVE_COLOR : INACTIVE_ICON, flexShrink: 0 }} />
+            {!collapsed && <span>{item.label}</span>}
           </>
         )}
       </NavLink>
     );
   };
 
+  // Dropdown item style (matches sidebar look)
+  const dropdownItem = (style?: React.CSSProperties): React.CSSProperties => ({
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    padding: "9px 12px",
+    borderRadius: 6,
+    fontSize: 13,
+    fontWeight: 400,
+    fontFamily: "'Inter', sans-serif",
+    color: "rgba(255,255,255,.55)",
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
+    width: "100%",
+    textAlign: "left" as const,
+    textDecoration: "none",
+    transition: "all .12s",
+    ...style,
+  });
+
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <aside
-        className="flex flex-col h-full overflow-hidden transition-all duration-200"
-        style={{
-          width: collapsed ? 64 : 256,
-          background: "#1E1B2E",
-          borderRight: "0.5px solid rgba(255,255,255,.06)",
-        }}
-      >
-        {/* User profile / toggle */}
-        <div className="px-3 pt-4 pb-2 flex-shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,.06)" }}>
-          {collapsed ? (
-            <div className="flex justify-center">
-              <button
-                onClick={() => setCollapsed(false)}
-                className="p-1 rounded-lg transition-colors"
-                style={{ background: "transparent", border: "none", cursor: "pointer" }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,.06)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-              >
-                <img src={logoImg} alt="Outbound" style={{ width: 28, height: 28, objectFit: "contain" }} />
-              </button>
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex-1 flex items-center gap-3 px-2 py-2 rounded-lg transition-all"
-                  style={{
-                    background: userDropdownOpen ? "rgba(255,255,255,.06)" : "transparent",
-                    border: "none", cursor: "pointer",
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,.06)"; }}
-                  onMouseLeave={(e) => { if (!userDropdownOpen) e.currentTarget.style.background = "transparent"; }}
-                >
-                  {/* Avatar */}
-                  <div
-                    className="h-8 w-8 flex-shrink-0 rounded-full flex items-center justify-center text-xs font-medium"
-                    style={{ background: "rgba(124,58,237,0.12)", color: "#7C3AED", boxShadow: "0 0 0 2px rgba(124,58,237,0.20)" }}
-                  >
-                    {userInitials}
-                  </div>
-                  <div className="flex-1 min-w-0 text-left">
-                    <p className="truncate" style={{ color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500, lineHeight: 1.3 }}>
-                      {user?.name || "User"}
-                    </p>
-                    <p className="truncate" style={{ color: "rgba(255,255,255,.35)", fontSize: 11, lineHeight: 1.3, marginTop: 1 }}>
-                      {user?.email || ""}
-                    </p>
-                  </div>
-                  {userDropdownOpen
-                    ? <ChevronUp size={14} style={{ color: "rgba(255,255,255,.45)", flexShrink: 0 }} />
-                    : <ChevronDown size={14} style={{ color: "rgba(255,255,255,.45)", flexShrink: 0 }} />
-                  }
-                </button>
+    <div style={{ display: "flex", height: "100vh" }}>
+      {/* ── SIDEBAR ── */}
+      <aside style={{
+        display: "flex",
+        flexDirection: "column",
+        width: collapsed ? 64 : 240,
+        background: SIDEBAR_BG,
+        borderRight: "0.5px solid rgba(255,255,255,.06)",
+        transition: "width .2s ease",
+        flexShrink: 0,
+        overflow: "hidden",
+      }}>
 
-                <button
-                  onClick={() => setCollapsed(true)}
-                  className="p-2 rounded-lg transition-colors flex-shrink-0"
-                  style={{ color: "rgba(255,255,255,.45)", background: "transparent", border: "none", cursor: "pointer" }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,.06)"; e.currentTarget.style.color = "rgba(255,255,255,.75)"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,.45)"; }}
-                >
-                  <PanelLeft size={16} />
-                </button>
-              </div>
-
-              {/* Dropdown */}
-              {userDropdownOpen && (
-                <div className="mt-1 py-1 rounded-lg shadow-lg" style={{ background: "#fff" }}>
-                  <Link
-                    to="/"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 text-sm transition-colors"
-                    style={{ color: "#475569", textDecoration: "none" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "#F5F3FF"; e.currentTarget.style.color = "#0F172A"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#475569"; }}
-                  >
-                    <ExternalLink size={14} />
-                    <span>Back to Website</span>
-                  </Link>
-                  <div style={{ margin: "4px 0", borderTop: "1px solid #E2E8F0" }} />
-                  <button
-                    onClick={handleSignOut}
-                    className="w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors"
-                    style={{ color: "#475569", background: "none", border: "none", cursor: "pointer" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "#F5F3FF"; e.currentTarget.style.color = "#0F172A"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#475569"; }}
-                  >
-                    <LogOut size={14} />
-                    <span>Sign out</span>
-                  </button>
-                </div>
-              )}
-            </>
+        {/* ── TOP: Logo + Brand ── */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          padding: collapsed ? "16px 0" : "16px 16px",
+          justifyContent: collapsed ? "center" : "flex-start",
+          borderBottom: BORDER,
+          flexShrink: 0,
+        }}>
+          <img src={logoImg} alt="Outbound" style={{ width: 28, height: 28, objectFit: "contain", flexShrink: 0 }} />
+          {!collapsed && (
+            <span style={{ fontFamily: SERIF, fontWeight: 700, fontSize: 16, color: "#fff", letterSpacing: "-0.02em" }}>
+              Outbound
+            </span>
+          )}
+          {!collapsed && (
+            <button
+              onClick={() => setCollapsed(true)}
+              style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 6, color: "rgba(255,255,255,.4)", display: "flex", alignItems: "center", transition: "all .12s" }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = HOVER_BG; e.currentTarget.style.color = "rgba(255,255,255,.7)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "rgba(255,255,255,.4)"; }}
+            >
+              <PanelLeft size={15} />
+            </button>
+          )}
+          {collapsed && (
+            <button
+              onClick={() => setCollapsed(false)}
+              style={{ position: "absolute", background: "none", border: "none", cursor: "pointer", opacity: 0 }}
+            />
           )}
         </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-3 pt-4 pb-4 flex flex-col">
+        {/* Collapsed: click logo to expand */}
+        {collapsed && (
+          <button
+            onClick={() => setCollapsed(false)}
+            style={{ position: "absolute", top: 0, left: 0, width: 64, height: 56, background: "transparent", border: "none", cursor: "pointer" }}
+          />
+        )}
+
+        {/* ── NAVIGATION ── */}
+        <nav style={{ flex: 1, overflowY: "auto", padding: "12px 8px", display: "flex", flexDirection: "column" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {mainNavItems.map((item) => renderNavItem(item, false))}
+            {mainNavItems.map((item) => navLink(item))}
           </div>
 
-          <div className="flex-1" />
+          <div style={{ flex: 1 }} />
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 2, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,.06)" }}>
-            {utilityNavItems.map((item) => renderNavItem(item, false))}
+          {/* Utility nav */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 2, paddingTop: 8, borderTop: BORDER }}>
+            <NavLink
+              to="/"
+              style={{
+                display: "flex", alignItems: "center", gap: collapsed ? 0 : 11,
+                justifyContent: collapsed ? "center" : "flex-start",
+                padding: "10px", borderRadius: 6, fontSize: 13.5, fontWeight: 400,
+                fontFamily: "'Inter', sans-serif", color: INACTIVE_LABEL,
+                textDecoration: "none", transition: "all .12s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = HOVER_BG; e.currentTarget.style.color = HOVER_LABEL; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = INACTIVE_LABEL; }}
+            >
+              <ExternalLink size={16} style={{ color: INACTIVE_ICON, flexShrink: 0 }} />
+              {!collapsed && <span>Back to Website</span>}
+            </NavLink>
           </div>
         </nav>
 
-        {/* Footer — Credits + Upgrade */}
-        <div className="flex-shrink-0" style={{ padding: "16px 12px", borderTop: "1px solid rgba(255,255,255,.06)" }}>
-          {!collapsed ? (
-            <div className="space-y-3">
-              {/* Credits */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "rgba(255,255,255,.45)", textTransform: "uppercase" }}>
-                    Credits
-                  </span>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,.7)" }}>
-                    {credits} / {maxCredits}
-                  </span>
-                </div>
-                <div className="h-1 rounded-full overflow-hidden" style={{ background: "rgba(124,58,237,0.12)" }}>
-                  <div
-                    className="h-full rounded-full transition-all duration-300"
-                    style={{ width: `${creditPercentage}%`, background: "#7C3AED" }}
-                  />
-                </div>
-              </div>
+        {/* ── BOTTOM: Credits + User Profile ── */}
+        <div style={{ flexShrink: 0, borderTop: BORDER }}>
 
-              {/* Upgrade button */}
+          {/* Credits */}
+          <div style={{ padding: collapsed ? "12px 8px" : "14px 14px 10px" }}>
+            {!collapsed ? (
+              <>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.08em", color: "rgba(255,255,255,.4)", textTransform: "uppercase" }}>Credits</span>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,.6)" }}>{credits}/{maxCredits}</span>
+                </div>
+                <div style={{ height: 3, borderRadius: 100, background: "rgba(124,58,237,0.12)", overflow: "hidden" }}>
+                  <div style={{ height: "100%", borderRadius: 100, width: `${creditPct}%`, background: "#7C3AED", transition: "width .3s" }} />
+                </div>
+                <button
+                  style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6, padding: "8px 0", marginTop: 10, background: "#7C3AED", color: "#fff", borderRadius: 3, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 500, fontFamily: "'Inter', sans-serif", transition: "background .12s" }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "#5B21B6"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "#7C3AED"; }}
+                >
+                  <Zap size={14} style={{ color: "#FACC15", fill: "#FACC15" }} /> Upgrade
+                </button>
+              </>
+            ) : (
               <button
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-all"
-                style={{
-                  background: "#7C3AED", color: "#FFFFFF", borderRadius: 3,
-                  border: "none", cursor: "pointer", fontFamily: "'Inter', sans-serif",
-                }}
+                style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", padding: 8, background: "#7C3AED", color: "#fff", borderRadius: 3, border: "none", cursor: "pointer", transition: "background .12s" }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "#5B21B6"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "#7C3AED"; }}
               >
                 <Zap size={16} style={{ color: "#FACC15", fill: "#FACC15" }} />
-                <span>Upgrade Plan</span>
               </button>
-            </div>
-          ) : (
+            )}
+          </div>
+
+          {/* User Profile */}
+          <div style={{ padding: collapsed ? "8px" : "8px 10px 14px", borderTop: BORDER, position: "relative" }}>
             <button
-              className="w-full flex items-center justify-center p-2 transition-all"
+              onClick={() => setUserDropdownOpen(!userDropdownOpen)}
               style={{
-                background: "#7C3AED", color: "#FFFFFF", borderRadius: 3,
-                border: "none", cursor: "pointer",
+                display: "flex", alignItems: "center", gap: 10, width: "100%",
+                padding: collapsed ? "8px 0" : "8px 6px", borderRadius: 6,
+                background: userDropdownOpen ? "rgba(255,255,255,.06)" : "transparent",
+                border: "none", cursor: "pointer", justifyContent: collapsed ? "center" : "flex-start",
+                transition: "background .12s",
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#5B21B6"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "#7C3AED"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,.06)"; }}
+              onMouseLeave={(e) => { if (!userDropdownOpen) e.currentTarget.style.background = "transparent"; }}
             >
-              <Zap size={20} style={{ color: "#FACC15", fill: "#FACC15" }} />
+              <div style={{
+                width: 30, height: 30, borderRadius: "50%", flexShrink: 0,
+                background: "rgba(124,58,237,0.15)", color: "#C4B5FD",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 11, fontWeight: 600,
+              }}>
+                {userInitials}
+              </div>
+              {!collapsed && (
+                <>
+                  <div style={{ flex: 1, minWidth: 0, textAlign: "left" }}>
+                    <div style={{ fontSize: 12.5, fontWeight: 500, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.3 }}>
+                      {user?.name || "User"}
+                    </div>
+                    <div style={{ fontSize: 11, color: "rgba(255,255,255,.3)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.3 }}>
+                      {user?.email || ""}
+                    </div>
+                  </div>
+                  {userDropdownOpen
+                    ? <ChevronUp size={13} style={{ color: "rgba(255,255,255,.35)", flexShrink: 0 }} />
+                    : <ChevronDown size={13} style={{ color: "rgba(255,255,255,.35)", flexShrink: 0 }} />
+                  }
+                </>
+              )}
             </button>
-          )}
+
+            {/* Dropdown — dark, matches sidebar */}
+            {userDropdownOpen && !collapsed && (
+              <div style={{
+                position: "absolute", bottom: "100%", left: 8, right: 8, marginBottom: 4,
+                background: "#262340", border: "1px solid rgba(255,255,255,.08)",
+                borderRadius: 6, padding: "6px 4px",
+                boxShadow: "0 -4px 20px rgba(0,0,0,.3)",
+              }}>
+                <Link
+                  to="/"
+                  onClick={() => setUserDropdownOpen(false)}
+                  style={dropdownItem()}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = HOVER_BG; e.currentTarget.style.color = HOVER_LABEL; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,.55)"; }}
+                >
+                  <ExternalLink size={14} /> Back to Website
+                </Link>
+                <div style={{ margin: "4px 6px", borderTop: "1px solid rgba(255,255,255,.06)" }} />
+                <button
+                  onClick={() => { setUserDropdownOpen(false); handleSignOut(); }}
+                  style={dropdownItem({ color: "rgba(239,68,68,.7)" })}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,.08)"; e.currentTarget.style.color = "#EF4444"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(239,68,68,.7)"; }}
+                >
+                  <LogOut size={14} /> Sign out
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 overflow-auto" style={{ background: "#FFFFFF" }}>
+      {/* ── MAIN CONTENT ── */}
+      <main style={{ flex: 1, overflow: "auto", background: "#FFFFFF" }}>
         <Outlet />
       </main>
     </div>
