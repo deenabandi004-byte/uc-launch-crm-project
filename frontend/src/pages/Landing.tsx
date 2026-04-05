@@ -162,6 +162,9 @@ export default function Landing() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [navScrolled, setNavScrolled] = useState(false);
 
+  // If user is already logged in, CTA buttons go to dashboard
+  const ctaTarget = "/signin";
+
   // Typewriter
   const typedWord = useTypewriter(TYPEWRITER_WORDS);
 

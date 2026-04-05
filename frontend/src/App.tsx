@@ -44,9 +44,7 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={
-        user && !user.needsOnboarding ? <Navigate to="/dashboard" replace /> : <Landing />
-      } />
+      <Route path="/" element={<Landing />} />
       <Route path="/signin" element={user ? <Navigate to="/dashboard" replace /> : <SignIn />} />
       <Route
         path="/onboarding"
