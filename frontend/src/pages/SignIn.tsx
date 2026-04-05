@@ -24,12 +24,12 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
-      <div className="w-full max-w-md space-y-8 rounded-2xl bg-white p-10 shadow-xl">
+    <div className="flex min-h-screen items-center justify-center" style={{ background: "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)" }}>
+      <div className="w-full max-w-md space-y-8 rounded-2xl bg-white p-10" style={{ boxShadow: "0 4px 24px rgba(124,58,237,.1)" }}>
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">OutboundCRM</h1>
+          <h1 className="text-3xl font-bold tracking-tight" style={{ color: "#1e1b4b" }}>Outbound</h1>
           <p className="mt-2 text-muted-foreground">
-            Smart outbound sales for growing businesses
+            The simple CRM for busy small businesses
           </p>
         </div>
 

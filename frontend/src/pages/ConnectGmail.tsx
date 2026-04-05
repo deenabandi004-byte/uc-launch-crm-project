@@ -20,10 +20,10 @@ export default function ConnectGmail() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
-      <div className="w-full max-w-md space-y-6 rounded-2xl bg-white p-8 shadow-lg text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
-          <Mail className="text-red-500" size={32} />
+    <div className="flex min-h-screen items-center justify-center" style={{ background: "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)" }}>
+      <div className="w-full max-w-md space-y-6 rounded-2xl bg-white p-8 text-center" style={{ boxShadow: "0 4px 24px rgba(124,58,237,.1)" }}>
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full" style={{ background: "#ede9fe" }}>
+          <Mail style={{ color: "#7c3aed" }} size={32} />
         </div>
 
         <div>
@@ -35,15 +35,15 @@ export default function ConnectGmail() {
 
         <div className="space-y-3 text-left text-sm text-muted-foreground">
           <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
+            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7c3aed" }} />
             <span>Send campaigns from your Gmail address</span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
+            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7c3aed" }} />
             <span>Track replies and engagement automatically</span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
+            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7c3aed" }} />
             <span>We only request compose and read permissions</span>
           </div>
         </div>

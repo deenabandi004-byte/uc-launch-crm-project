@@ -12,14 +12,14 @@ import {
 import { useState } from "react";
 
 const STAGE_COLORS: Record<string, string> = {
-  new_lead: "#3B82F6",
-  contacted: "#6366F1",
-  interested: "#14B8A6",
-  estimate_sent: "#F59E0B",
-  approved: "#10B981",
-  in_progress: "#8B5CF6",
-  complete: "#06B6D4",
-  paid: "#22C55E",
+  new_lead: "#7c3aed",
+  contacted: "#6d28d9",
+  interested: "#0d9488",
+  estimate_sent: "#4f46e5",
+  approved: "#d97706",
+  in_progress: "#ea580c",
+  complete: "#059669",
+  paid: "#047857",
 };
 
 function relativeTime(timestamp: string): string {

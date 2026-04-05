@@ -30,65 +30,143 @@ export function AppLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
-      <aside
-        className={`flex flex-col border-r border-border bg-sidebar text-sidebar-foreground transition-all duration-200 ${
-          collapsed ? "w-16" : "w-60"
-        }`}
-      >
-        <div className="flex h-14 items-center gap-2 border-b border-white/10 px-4">
-          {!collapsed && (
-            <span className="text-lg font-bold tracking-tight">OutboundCRM</span>
-          )}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="ml-auto rounded p-1 hover:bg-white/10"
-          >
+    <div className="ob-shell">
+      <aside className={`ob-sidebar ${collapsed ? "ob-sidebar--collapsed" : ""}`}>
+        <div className="ob-brand">
+          {!collapsed && <span className="ob-brand-text">Outbound</span>}
+          <button onClick={() => setCollapsed(!collapsed)} className="ob-collapse-btn">
             {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 p-2">
+        <nav className="ob-nav">
           {navItems.map(({ to, icon: Icon, label }) => (
             <NavLink
               key={to}
               to={to}
               end={to === "/"}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-                  isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-sidebar-foreground/70 hover:bg-white/10 hover:text-sidebar-foreground"
-                }`
+                `ob-nav-link ${isActive ? "ob-nav-link--active" : ""}`
               }
             >
-              <Icon size={18} />
-              {!collapsed && label}
+              <Icon size={18} strokeWidth={1.8} />
+              {!collapsed && <span>{label}</span>}
             </NavLink>
           ))}
         </nav>
 
-        <div className="border-t border-white/10 p-3">
+        <div className="ob-footer">
           {!collapsed && user && (
-            <div className="mb-2 truncate text-xs text-sidebar-foreground/60">
-              {user.email}
-            </div>
+            <div className="ob-user-email">{user.email}</div>
           )}
-          <button
-            onClick={handleSignOut}
-            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/70 hover:bg-white/10 hover:text-sidebar-foreground"
-          >
-            <LogOut size={16} />
-            {!collapsed && "Sign Out"}
+          <button onClick={handleSignOut} className="ob-nav-link">
+            <LogOut size={16} strokeWidth={1.8} />
+            {!collapsed && <span>Sign Out</span>}
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 overflow-auto">
+      <main className="ob-main">
         <Outlet />
       </main>
+
+      <style>{`
+        .ob-shell {
+          display: flex;
+          height: 100vh;
+          background: #faf9fb;
+        }
+        .ob-sidebar {
+          display: flex;
+          flex-direction: column;
+          width: 220px;
+          background: #1e1b4b;
+          color: #e0def4;
+          transition: width .2s ease;
+          flex-shrink: 0;
+        }
+        .ob-sidebar--collapsed { width: 60px; }
+        .ob-brand {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          height: 56px;
+          padding: 0 16px;
+          border-bottom: 1px solid rgba(255,255,255,.08);
+        }
+        .ob-brand-text {
+          font-size: 17px;
+          font-weight: 700;
+          letter-spacing: -.3px;
+          color: #fff;
+        }
+        .ob-collapse-btn {
+          margin-left: auto;
+          background: none;
+          border: none;
+          color: rgba(255,255,255,.5);
+          cursor: pointer;
+          padding: 4px;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .ob-collapse-btn:hover { background: rgba(255,255,255,.1); }
+        .ob-nav {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          padding: 12px 8px;
+          overflow-y: auto;
+        }
+        .ob-nav-link {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 9px 12px;
+          border-radius: 10px;
+          font-size: 13.5px;
+          font-weight: 500;
+          color: rgba(255,255,255,.6);
+          text-decoration: none;
+          transition: background .12s, color .12s;
+          border: none;
+          background: none;
+          cursor: pointer;
+          width: 100%;
+          text-align: left;
+        }
+        .ob-nav-link:hover {
+          background: rgba(255,255,255,.08);
+          color: rgba(255,255,255,.9);
+        }
+        .ob-nav-link--active {
+          background: #7c3aed !important;
+          color: #fff !important;
+        }
+        .ob-nav-link--active:hover {
+          background: #6d28d9 !important;
+        }
+        .ob-footer {
+          border-top: 1px solid rgba(255,255,255,.08);
+          padding: 12px 8px;
+        }
+        .ob-user-email {
+          font-size: 11px;
+          color: rgba(255,255,255,.35);
+          padding: 0 12px 8px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .ob-main {
+          flex: 1;
+          overflow: auto;
+          background: #faf9fb;
+        }
+      `}</style>
     </div>
   );
 }
