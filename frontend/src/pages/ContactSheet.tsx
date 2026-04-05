@@ -424,14 +424,14 @@ export default function ContactSheet() {
                       <td className="px-4 py-3 text-sm">{c.company || "—"}</td>
                       <td className="px-4 py-3 text-sm">
                         {c.email ? (
-                          <a href={`mailto:${c.email}`} className="flex items-center gap-1 text-blue-600 hover:underline">
+                          <a href={`mailto:${c.email}`} className="flex items-center gap-1 text-purple-600 hover:underline">
                             <Mail size={12} /> {c.email}
                           </a>
                         ) : "—"}
                       </td>
                       <td className="px-4 py-3 text-sm">
                         {c.phone ? (
-                          <a href={`tel:${c.phone}`} className="flex items-center gap-1 text-blue-600 hover:underline">
+                          <a href={`tel:${c.phone}`} className="flex items-center gap-1 text-purple-600 hover:underline">
                             <Phone size={12} /> {c.phone}
                           </a>
                         ) : "—"}
@@ -453,7 +453,7 @@ export default function ContactSheet() {
                             <Pencil size={14} />
                           </button>
                           {c.linkedinUrl && (
-                            <a href={c.linkedinUrl} target="_blank" rel="noopener noreferrer" className="rounded p-1 text-muted-foreground hover:text-blue-600">
+                            <a href={c.linkedinUrl} target="_blank" rel="noopener noreferrer" className="rounded p-1 text-muted-foreground hover:text-purple-600">
                               <Linkedin size={14} />
                             </a>
                           )}

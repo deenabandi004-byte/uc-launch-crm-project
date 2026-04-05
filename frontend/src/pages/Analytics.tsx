@@ -12,8 +12,8 @@ import {
 import { useState } from "react";
 
 const STAGE_COLORS: Record<string, string> = {
-  new_lead: "#3B82F6",
-  contacted: "#6366F1",
+  new_lead: "#7C3AED",
+  contacted: "#7C3AED",
   interested: "#14B8A6",
   estimate_sent: "#F59E0B",
   approved: "#10B981",
@@ -97,7 +97,7 @@ export default function Analytics() {
         {/* Total Emails Sent */}
         <div className="rounded-xl border border-border bg-card p-5">
           <div className="flex items-center justify-between">
-            <div className="rounded-lg bg-blue-50 p-2 text-blue-600">
+            <div className="rounded-lg bg-purple-50 p-2 text-purple-600">
               <Send size={18} />
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function Analytics() {
                 <div key={i} className="flex items-start gap-3 rounded-lg border border-border p-3">
                   <div className={`mt-0.5 rounded-md p-1.5 flex-shrink-0 ${
                     item.type === "reply"
-                      ? "bg-blue-50 text-blue-600"
+                      ? "bg-purple-50 text-purple-600"
                       : item.type === "campaign_sent"
                       ? "bg-emerald-50 text-emerald-600"
                       : "bg-green-50 text-green-600"

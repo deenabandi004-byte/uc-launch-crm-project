@@ -106,8 +106,8 @@ export default function LeadGeneration() {
 
       {/* Search results */}
       {searchResults.length > 0 && (
-        <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
-          <h3 className="mb-3 text-sm font-medium text-blue-900">Search Results</h3>
+        <div className="mb-6 rounded-xl border border-purple-200 bg-purple-50 p-4">
+          <h3 className="mb-3 text-sm font-medium text-purple-900">Search Results</h3>
           <div className="space-y-2">
             {searchResults.map((r, i) => (
               <div key={i} className="flex items-center justify-between rounded-lg bg-white p-3">
@@ -221,7 +221,7 @@ export default function LeadGeneration() {
                             href={lead.website.startsWith("http") ? lead.website : `https://${lead.website}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-xs text-blue-600 hover:underline"
+                            className="flex items-center gap-1 text-xs text-purple-600 hover:underline"
                           >
                             {lead.domain || lead.website} <ExternalLink size={10} />
                           </a>

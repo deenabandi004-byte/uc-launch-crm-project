@@ -24,12 +24,12 @@ export default function SignIn() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
-      <div className="w-full max-w-md space-y-8 rounded-2xl bg-white p-10 shadow-xl">
+    <div className="flex min-h-screen items-center justify-center bg-dots" style={{ background: "#FAFBFF" }}>
+      <div className="w-full max-w-md space-y-8 bg-white p-10" style={{ borderRadius: 3, border: "1px solid #E2E8F0", boxShadow: "0 8px 24px rgba(124,58,237,0.08)" }}>
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">OutboundCRM</h1>
+          <h1 className="font-serif text-3xl font-bold tracking-tight" style={{ color: "#0F172A" }}>Outbound</h1>
           <p className="mt-2 text-muted-foreground">
-            Smart outbound sales for growing businesses
+            The simple CRM for busy small businesses
           </p>
         </div>
 
@@ -37,7 +37,8 @@ export default function SignIn() {
           <button
             onClick={handleSignIn}
             disabled={loading}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-white px-6 py-3 text-sm font-medium shadow-sm transition-all hover:bg-secondary hover:shadow-md disabled:opacity-50"
+            className="flex w-full items-center justify-center gap-3 border border-border bg-white px-6 py-3 text-sm font-medium shadow-sm transition-all hover:bg-secondary hover:shadow-md disabled:opacity-50"
+            style={{ borderRadius: 3 }}
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />

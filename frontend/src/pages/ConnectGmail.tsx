@@ -20,30 +20,30 @@ export default function ConnectGmail() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
-      <div className="w-full max-w-md space-y-6 rounded-2xl bg-white p-8 shadow-lg text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
-          <Mail className="text-red-500" size={32} />
+    <div className="flex min-h-screen items-center justify-center bg-dots" style={{ background: "#FAFBFF" }}>
+      <div className="w-full max-w-md space-y-6 bg-white p-8 text-center" style={{ borderRadius: 3, border: "1px solid #E2E8F0", boxShadow: "0 8px 24px rgba(124,58,237,0.08)" }}>
+        <div className="mx-auto flex h-16 w-16 items-center justify-center" style={{ borderRadius: 3, background: "#F5F3FF" }}>
+          <Mail style={{ color: "#7C3AED" }} size={32} />
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold">Connect Gmail</h2>
+          <h2 className="text-2xl font-bold" style={{ color: "#0F172A" }}>Connect Gmail</h2>
           <p className="mt-2 text-muted-foreground">
-            Connect your Gmail account to send personalized outreach emails directly from OutboundCRM.
+            Connect your Gmail account to send personalized outreach emails directly from Outbound.
           </p>
         </div>
 
         <div className="space-y-3 text-left text-sm text-muted-foreground">
           <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
+            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7C3AED" }} />
             <span>Send campaigns from your Gmail address</span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
+            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7C3AED" }} />
             <span>Track replies and engagement automatically</span>
           </div>
           <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-blue-500" />
+            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7C3AED" }} />
             <span>We only request compose and read permissions</span>
           </div>
         </div>
@@ -51,7 +51,7 @@ export default function ConnectGmail() {
         <button
           onClick={handleConnect}
           disabled={connecting}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+          className="btn-primary-glass flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-medium disabled:opacity-50"
         >
           {connecting ? (
             <Loader2 size={16} className="animate-spin" />

@@ -319,7 +319,7 @@ function WeekView({ events, weekStart }: { events: CalendarEvent[]; weekStart: D
                   className={`absolute left-1 right-1 overflow-hidden rounded px-1.5 py-0.5 text-xs shadow-sm ${
                     hasAttendees
                       ? "border border-purple-200 bg-purple-100 text-purple-800"
-                      : "border border-blue-200 bg-blue-100 text-blue-800"
+                      : "border border-purple-200 bg-purple-100 text-purple-800"
                   }`}
                   style={{ top, height, zIndex: 10 }}
                   title={`${ev.summary}\n${formatTime(ev.start)} - ${formatTime(ev.end)}`}
@@ -396,7 +396,7 @@ function UpcomingList({ events }: { events: CalendarEvent[] }) {
                 key={ev.id}
                 className="flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 shadow-sm"
               >
-                <div className={`h-10 w-1 flex-shrink-0 rounded-full ${ev.attendees.length > 0 ? "bg-purple-500" : "bg-blue-500"}`} />
+                <div className={`h-10 w-1 flex-shrink-0 rounded-full ${ev.attendees.length > 0 ? "bg-purple-500" : "bg-purple-500"}`} />
                 <div className="min-w-0 flex-1">
                   <div className="truncate text-sm font-medium text-gray-900">{ev.summary}</div>
                   <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -416,7 +416,7 @@ function UpcomingList({ events }: { events: CalendarEvent[] }) {
                       href={ev.htmlLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-blue-600"
+                      className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-purple-600"
                       title="Open in Google Calendar"
                     >
                       <ExternalLink size={14} />

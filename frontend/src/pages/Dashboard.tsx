@@ -14,8 +14,8 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 const PIPELINE_STAGES = [
-  { key: "new_lead", label: "New Lead", color: "#3B82F6" },
-  { key: "contacted", label: "Contacted", color: "#6366F1" },
+  { key: "new_lead", label: "New Lead", color: "#7C3AED" },
+  { key: "contacted", label: "Contacted", color: "#7C3AED" },
   { key: "interested", label: "Interested", color: "#14B8A6" },
   { key: "estimate_sent", label: "Estimate Sent", color: "#F59E0B" },
   { key: "approved", label: "Approved", color: "#10B981" },
@@ -147,7 +147,7 @@ export default function Dashboard() {
           className="rounded-xl border border-border bg-card p-5 transition-shadow hover:shadow-md"
         >
           <div className="flex items-center justify-between">
-            <div className={`rounded-lg p-2 ${overdueTasks.length > 0 ? "bg-red-50 text-red-600" : "bg-blue-50 text-blue-600"}`}>
+            <div className={`rounded-lg p-2 ${overdueTasks.length > 0 ? "bg-red-50 text-red-600" : "bg-purple-50 text-purple-600"}`}>
               <CheckSquare size={18} />
             </div>
             <ArrowRight size={16} className="text-muted-foreground" />
@@ -179,7 +179,7 @@ export default function Dashboard() {
             <div className="text-sm text-muted-foreground">Total Contacts</div>
           </div>
           {leads.length > 0 && (
-            <div className="mt-1 text-xs text-blue-600">
+            <div className="mt-1 text-xs text-purple-600">
               {leads.length} target companies
             </div>
           )}
@@ -256,7 +256,7 @@ export default function Dashboard() {
                   <div className={`mt-0.5 h-2 w-2 rounded-full flex-shrink-0 ${
                     task.status === "overdue" ? "bg-red-500" :
                     task.priority === "high" ? "bg-red-400" :
-                    task.priority === "medium" ? "bg-amber-400" : "bg-blue-400"
+                    task.priority === "medium" ? "bg-amber-400" : "bg-purple-400"
                   }`} />
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium truncate">{task.title}</div>
@@ -345,7 +345,7 @@ export default function Dashboard() {
               to="/leads"
               className="flex items-center gap-3 rounded-lg border border-border p-4 transition-colors hover:bg-secondary"
             >
-              <Target size={20} className="text-blue-600" />
+              <Target size={20} className="text-purple-600" />
               <div>
                 <div className="text-sm font-medium">Generate Leads</div>
                 <div className="text-xs text-muted-foreground">Find target companies with AI</div>

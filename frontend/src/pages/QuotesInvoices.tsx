@@ -12,7 +12,7 @@ import {
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "bg-gray-100 text-gray-700",
-  sent: "bg-blue-100 text-blue-700",
+  sent: "bg-purple-100 text-purple-700",
   approved: "bg-green-100 text-green-700",
   rejected: "bg-red-100 text-red-700",
   expired: "bg-gray-100 text-gray-500",
@@ -491,11 +491,11 @@ export default function QuotesInvoices() {
               <div key={inv.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
                 <div className="flex items-center gap-4">
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-                    inv.status === "paid" ? "bg-emerald-50" : inv.status === "overdue" ? "bg-red-50" : "bg-blue-50"
+                    inv.status === "paid" ? "bg-emerald-50" : inv.status === "overdue" ? "bg-red-50" : "bg-purple-50"
                   }`}>
                     {inv.status === "paid" ? <CheckCircle size={18} className="text-emerald-600" /> :
                      inv.status === "overdue" ? <AlertCircle size={18} className="text-red-600" /> :
-                     <FileText size={18} className="text-blue-600" />}
+                     <FileText size={18} className="text-purple-600" />}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">

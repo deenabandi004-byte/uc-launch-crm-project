@@ -381,3 +381,84 @@ h1, h2, h3, h4, h5, h6 {
 .btn-pulse {
   animation: subtle-pulse 4s ease-in-out infinite;
 }
+
+/* ============================================================
+   APP PAGE OVERRIDES — match landing page aesthetic
+   ============================================================ */
+
+/* ── Page typography ── */
+h1 { font-weight: 700; letter-spacing: -0.02em; color: #0F172A; }
+h2 { font-weight: 600; letter-spacing: -0.01em; color: #0F172A; }
+h3 { font-weight: 600; color: #0F172A; }
+
+/* ── Page containers — clean white bg with generous padding ── */
+.p-8 { padding: 2.5rem !important; }
+
+/* ── Buttons — dark primary, sharp corners ── */
+.bg-primary {
+  background-color: #0F172A !important;
+  border-radius: 3px !important;
+  font-weight: 500 !important;
+  font-size: 14px;
+  transition: all 0.12s ease;
+}
+.bg-primary:hover,
+.hover\:bg-primary\/90:hover {
+  background-color: #1E293B !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Text/border accents → purple ── */
+.text-primary { color: #7C3AED !important; }
+.border-primary { border-color: #7C3AED !important; }
+
+/* ── Sharp corners globally ── */
+.rounded-lg { border-radius: 3px !important; }
+.rounded-xl { border-radius: 3px !important; }
+.rounded-2xl { border-radius: 6px !important; }
+
+/* ── Cards — glass style with subtle hover ── */
+.border-border { border-color: #E2E8F0 !important; }
+.bg-card { background: #FAFBFF !important; }
+
+.rounded-xl.border,
+.rounded-lg.border {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.rounded-xl.border:hover,
+.rounded-lg.border:hover {
+  border-color: #C4B5FD;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.08);
+}
+
+/* ── Table headers ── */
+.bg-muted\/50 { background: #FAFBFF !important; }
+
+/* ── Inputs — sharp, clean focus ── */
+input, select, textarea {
+  border-radius: 3px !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #7C3AED !important;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
+}
+input[type="checkbox"] { accent-color: #7C3AED; border-radius: 2px !important; }
+
+/* ── Hover accent ── */
+.hover\:bg-secondary:hover { background-color: #F5F3FF !important; }
+
+/* ── Badge pills stay round ── */
+.rounded-full { border-radius: 100px !important; }
+
+/* ── Muted foreground — slightly lighter for breathing room ── */
+.text-muted-foreground { color: #64748B !important; }
+
+/* ── Table rows — clean hover ── */
+tr:hover td { background: #FAFBFF; }
+
+/* ── Spacing for page section headers ── */
+.text-2xl.font-bold { font-size: 1.375rem !important; letter-spacing: -0.02em; }
+.text-lg.font-semibold { font-size: 0.9375rem !important; letter-spacing: -0.01em; }

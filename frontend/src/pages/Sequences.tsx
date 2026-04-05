@@ -166,7 +166,7 @@ export default function Sequences() {
   const statusBadge = (status: string) => {
     const colors: Record<string, string> = {
       draft: "bg-gray-100 text-gray-700",
-      active: "bg-blue-100 text-blue-700",
+      active: "bg-purple-100 text-purple-700",
       paused: "bg-yellow-100 text-yellow-700",
       completed: "bg-green-100 text-green-700",
     };
@@ -431,7 +431,7 @@ export default function Sequences() {
                   {seq.status === "paused" && (
                     <button
                       onClick={() => pauseResumeMutation.mutate({ id: seq.id, status: "active" })}
-                      className="flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
+                      className="flex items-center gap-1 rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700"
                     >
                       <Play size={12} />
                       Resume

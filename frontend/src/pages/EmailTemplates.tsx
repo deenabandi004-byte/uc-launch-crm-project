@@ -149,7 +149,7 @@ export default function EmailTemplates() {
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium">{t.name}</span>
                       {t.isPreset && (
-                        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-700">
+                        <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-medium text-purple-700">
                           PRESET
                         </span>
                       )}

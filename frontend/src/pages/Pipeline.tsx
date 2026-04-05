@@ -21,7 +21,7 @@ import {
 
 const STAGES = [
   { key: "new_lead", label: "New Lead", color: "#7C3AED", bg: "bg-purple-50 border-purple-300" },
-  { key: "contacted", label: "Contacted", color: "#2563EB", bg: "bg-blue-50 border-blue-300" },
+  { key: "contacted", label: "Contacted", color: "#6D28D9", bg: "bg-purple-50 border-purple-300" },
   { key: "interested", label: "Interested", color: "#0D9488", bg: "bg-teal-50 border-teal-300" },
   { key: "estimate_sent", label: "Estimate Sent", color: "#4F46E5", bg: "bg-indigo-50 border-indigo-300" },
   { key: "approved", label: "Approved", color: "#D97706", bg: "bg-amber-50 border-amber-300" },
@@ -112,17 +112,17 @@ function DraggableCard({ contact, stageColor }: { contact: ContactCard; stageCol
       {/* Contact actions */}
       <div className="mt-2 flex items-center gap-1">
         {contact.email && (
-          <a href={`mailto:${contact.email}`} className="rounded p-0.5 text-gray-400 hover:text-blue-600" title={contact.email}>
+          <a href={`mailto:${contact.email}`} className="rounded p-0.5 text-gray-400 hover:text-purple-600" title={contact.email}>
             <Mail size={12} />
           </a>
         )}
         {contact.phone && (
-          <a href={`tel:${contact.phone}`} className="rounded p-0.5 text-gray-400 hover:text-blue-600" title={contact.phone}>
+          <a href={`tel:${contact.phone}`} className="rounded p-0.5 text-gray-400 hover:text-purple-600" title={contact.phone}>
             <Phone size={12} />
           </a>
         )}
         {contact.linkedinUrl && (
-          <a href={contact.linkedinUrl} target="_blank" rel="noopener noreferrer" className="rounded p-0.5 text-gray-400 hover:text-blue-600">
+          <a href={contact.linkedinUrl} target="_blank" rel="noopener noreferrer" className="rounded p-0.5 text-gray-400 hover:text-purple-600">
             <Linkedin size={12} />
           </a>
         )}
