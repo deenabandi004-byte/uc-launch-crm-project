@@ -333,8 +333,8 @@ export default function OnboardingFlow() {
     try {
       // Write directly to Firestore client-side (faster than round-tripping through backend)
       await completeOnboarding(form);
-      toast.success("Welcome to OutboundCRM!");
-      navigate("/");
+      toast.success("Welcome to Outbound!");
+      navigate("/dashboard");
       // Sync to backend in background (non-blocking)
       apiCompleteOnboarding(form).catch(() => {});
     } catch (err: any) {
@@ -437,7 +437,7 @@ export default function OnboardingFlow() {
     [showIndustryDropdown, filteredIndustries, highlightedIndex, selectIndustry],
   );
   const inputClass =
-    "w-full rounded-lg border border-[#E5E7EB] bg-white px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 transition-all duration-200 hover:bg-slate-50 focus:border-[#3B82F6] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/15";
+    "w-full rounded-[3px] border border-[#E2E8F0] bg-white px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 transition-all duration-200 hover:bg-slate-50 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/15";
 
   return (
     <div className="h-screen overflow-hidden bg-[#f8fafc]">
@@ -451,13 +451,13 @@ export default function OnboardingFlow() {
                   <div key={i} className="flex items-center">
                     <span
                       className={`h-6 w-6 rounded-full border-2 transition-all duration-300 ${
-                        i <= step ? "border-[#3B82F6] bg-[#3B82F6]" : "border-[#D1D5DB] bg-white"
+                        i <= step ? "border-[#7C3AED] bg-[#7C3AED]" : "border-[#D1D5DB] bg-white"
                       }`}
                     />
                     {i < steps.length - 1 && (
                       <span
                         className={`mx-4 h-px w-16 transition-colors duration-300 ${
-                          i < step ? "bg-[#3B82F6]/70" : "bg-slate-200"
+                          i < step ? "bg-[#7C3AED]/70" : "bg-slate-200"
                         }`}
                       />
                     )}
@@ -477,7 +477,7 @@ export default function OnboardingFlow() {
                   <div>
                     <label className="mb-2.5 block text-sm font-normal text-slate-500">Company Name</label>
                     <input
-                      className="w-full rounded-lg border border-[#E5E7EB] bg-white px-4 py-4 text-[20px] text-slate-900 placeholder:text-slate-400 transition-all duration-200 hover:bg-slate-50 focus:border-[#3B82F6] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3B82F6]/15"
+                      className="w-full rounded-lg border border-[#E5E7EB] bg-white px-4 py-4 text-[20px] text-slate-900 placeholder:text-slate-400 transition-all duration-200 hover:bg-slate-50 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/15"
                       placeholder="Acme Inc."
                       value={form.companyName}
                       onChange={(e) => update("companyName", e.target.value)}
@@ -550,13 +550,13 @@ export default function OnboardingFlow() {
                               onClick={() => selectIndustry(industry)}
                               className={`flex w-full cursor-pointer items-center px-4 py-2.5 text-left text-sm transition-colors ${
                                 idx === highlightedIndex
-                                  ? "bg-[#3B82F6]/10 text-[#3B82F6]"
+                                  ? "bg-[#7C3AED]/10 text-[#7C3AED]"
                                   : "text-slate-700 hover:bg-slate-50"
                               } ${form.industry === industry ? "font-medium" : ""}`}
                             >
                               {industry}
                               {form.industry === industry && (
-                                <Check size={14} className="ml-auto text-[#3B82F6]" />
+                                <Check size={14} className="ml-auto text-[#7C3AED]" />
                               )}
                             </button>
                           ))
@@ -646,13 +646,13 @@ export default function OnboardingFlow() {
                       {targetCustomerTags.map((tag) => (
                         <span
                           key={tag}
-                          className="inline-flex items-center gap-1 rounded-md bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700"
+                          className="inline-flex items-center gap-1 rounded-md bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700"
                         >
                           {tag}
                           <button
                             type="button"
                             onClick={() => removeTargetCustomer(tag)}
-                            className="rounded p-0.5 text-blue-500 hover:bg-blue-100"
+                            className="rounded p-0.5 text-purple-500 hover:bg-purple-100"
                           >
                             <X size={12} />
                           </button>
@@ -732,7 +732,7 @@ export default function OnboardingFlow() {
                       setStep(step + 1);
                     }}
                     disabled={!canProceed()}
-                    className="flex h-12 min-w-[164px] items-center justify-center gap-1 rounded-lg bg-[#3B82F6] px-7 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 disabled:opacity-50"
+                    className="flex h-12 min-w-[164px] items-center justify-center gap-1 rounded-lg bg-[#7C3AED] px-7 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6D28D9] disabled:opacity-50"
                   >
                     Continue <ArrowRight size={16} />
                   </button>
@@ -740,7 +740,7 @@ export default function OnboardingFlow() {
                   <button
                     onClick={handleComplete}
                     disabled={loading}
-                    className="flex h-12 min-w-[164px] items-center justify-center gap-1 rounded-lg bg-[#3B82F6] px-7 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-600 disabled:opacity-50"
+                    className="flex h-12 min-w-[164px] items-center justify-center gap-1 rounded-lg bg-[#7C3AED] px-7 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6D28D9] disabled:opacity-50"
                   >
                     {loading ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                     Create Page
@@ -752,15 +752,15 @@ export default function OnboardingFlow() {
         </main>
 
         <aside className="relative hidden overflow-hidden xl:flex xl:items-center xl:justify-center xl:px-12 xl:py-12">
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100/80" />
-          <div className="absolute -top-20 right-16 h-64 w-64 rounded-full bg-blue-300/20 blur-3xl" />
-          <div className="absolute -bottom-20 left-16 h-72 w-72 rounded-full bg-indigo-300/20 blur-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-purple-50 to-violet-100/80" />
+          <div className="absolute -top-20 right-16 h-64 w-64 rounded-full bg-purple-300/20 blur-3xl" />
+          <div className="absolute -bottom-20 left-16 h-72 w-72 rounded-full bg-violet-300/20 blur-3xl" />
           <div className="relative z-10 w-full max-w-[460px] rounded-2xl border border-white/40 bg-white/60 p-8 shadow-lg shadow-slate-200/40 backdrop-blur">
             <div className="rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-8">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-lg bg-blue-500/30" />
+                <div className="h-10 w-10 rounded-lg bg-purple-500/30" />
                 <div className="space-y-2">
-                  <div className="h-2.5 w-28 rounded bg-blue-200/40" />
+                  <div className="h-2.5 w-28 rounded bg-purple-200/40" />
                   <div className="h-2 w-20 rounded bg-slate-400/40" />
                 </div>
               </div>
