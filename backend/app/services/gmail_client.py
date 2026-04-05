@@ -24,7 +24,7 @@ def create_draft(gmail_creds: dict, to: str, subject: str, body: str, uid: str =
     """Create a Gmail draft."""
     service = _get_gmail_service(gmail_creds)
 
-    message = MIMEText(body)
+    message = MIMEText(body, "html")
     message["to"] = to
     message["subject"] = subject
 
@@ -58,7 +58,7 @@ def send_email(gmail_creds: dict, to: str, subject: str, body: str) -> dict:
     """Send an email directly without creating a draft first."""
     service = _get_gmail_service(gmail_creds)
 
-    message = MIMEText(body)
+    message = MIMEText(body, "html")
     message["to"] = to
     message["subject"] = subject
 

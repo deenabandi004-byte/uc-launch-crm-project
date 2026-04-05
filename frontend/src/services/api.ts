@@ -84,6 +84,9 @@ export const getContacts = () => apiGet("/contacts/");
 export const findContacts = (data: any) => apiPost("/contacts/find", data);
 export const updateContact = (id: string, data: any) => apiPut(`/contacts/${id}`, data);
 export const deleteContact = (id: string) => apiDelete(`/contacts/${id}`);
+export const enrichContactPhones = () => apiPost("/contacts/enrich-phones");
+export const importContacts = (data: any[]) => apiPost("/contacts/import", data);
+export const exportContactsCsvUrl = () => `${API_BASE}/contacts/export`;
 
 // Email Templates
 export const getEmailTemplates = () => apiGet("/email-templates/");
@@ -102,6 +105,57 @@ export const sendCampaign = (campaignId: string) => apiPost(`/campaigns/${campai
 export const getPipeline = () => apiGet("/pipeline/");
 export const movePipelineContact = (contactId: string, stage: string) =>
   apiPut(`/pipeline/move/${contactId}`, { stage });
+
+// Tasks
+export const getTasks = () => apiGet("/tasks/");
+export const getTasksDueToday = () => apiGet("/tasks/due-today");
+export const createTask = (data: any) => apiPost("/tasks/", data);
+export const updateTask = (id: string, data: any) => apiPut(`/tasks/${id}`, data);
+export const deleteTask = (id: string) => apiDelete(`/tasks/${id}`);
+
+// Quotes
+export const getQuotes = () => apiGet("/quotes/");
+export const createQuote = (data: any) => apiPost("/quotes/", data);
+export const updateQuote = (id: string, data: any) => apiPut(`/quotes/${id}`, data);
+export const deleteQuote = (id: string) => apiDelete(`/quotes/${id}`);
+export const generateQuotePdf = (id: string) => apiPost(`/quotes/${id}/pdf`);
+export const convertQuoteToInvoice = (id: string, data?: any) => apiPost(`/quotes/${id}/convert`, data);
+
+// Invoices
+export const getInvoices = () => apiGet("/quotes/invoices");
+export const createInvoice = (data: any) => apiPost("/quotes/invoices", data);
+export const updateInvoice = (id: string, data: any) => apiPut(`/quotes/invoices/${id}`, data);
+export const generateInvoicePdf = (id: string) => apiPost(`/quotes/invoices/${id}/pdf`);
+
+// Analytics
+export const getAnalyticsOverview = () => apiGet("/analytics/overview");
+export const getCampaignAnalytics = (campaignId: string) => apiGet(`/analytics/campaign/${campaignId}`);
+export const getPipelineHistory = () => apiGet("/analytics/pipeline/history");
+
+// Replies
+export const getReplies = () => apiGet("/replies/");
+export const checkReplies = () => apiPost("/replies/check");
+export const updateReply = (id: string, data: any) => apiPut(`/replies/${id}`, data);
+
+// Tracking
+export const getCampaignStats = (campaignId: string) => apiGet(`/tracking/stats/${campaignId}`);
+export const getContactEngagement = (contactId: string) => apiGet(`/tracking/contact/${contactId}`);
+
+// Sequences
+export const getSequences = () => apiGet("/sequences/");
+export const createSequence = (data: any) => apiPost("/sequences/", data);
+export const updateSequence = (id: string, data: any) => apiPut(`/sequences/${id}`, data);
+export const deleteSequence = (id: string) => apiDelete(`/sequences/${id}`);
+export const startSequence = (id: string) => apiPost(`/sequences/${id}/start`);
+export const executeSequenceStep = (id: string) => apiPost(`/sequences/${id}/execute`);
+export const getSequenceStatus = (id: string) => apiGet(`/sequences/${id}/status`);
+
+// Calendar
+export const getCalendarEvents = () => apiGet("/calendar/events");
+export const createCalendarEvent = (data: any) => apiPost("/calendar/events", data);
+export const updateCalendarEvent = (id: string, data: any) => apiPut(`/calendar/events/${id}`, data);
+export const deleteCalendarEvent = (id: string) => apiDelete(`/calendar/events/${id}`);
+export const getAvailability = (startDate: string, endDate: string) => apiGet(`/calendar/availability?startDate=${startDate}&endDate=${endDate}`);
 
 // Gmail
 export const getGmailStatus = () => apiGet("/google/gmail/status");

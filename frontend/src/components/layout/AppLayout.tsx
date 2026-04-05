@@ -1,8 +1,8 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useFirebaseAuth } from "../../contexts/FirebaseAuthContext";
 import {
-  LayoutDashboard, Target, Users, Mail, Send, GitBranch,
-  LogOut, ChevronLeft, ChevronRight,
+  LayoutDashboard, Target, Users, Send, GitBranch,
+  CheckSquare, FileText, Sparkles, LogOut, ChevronLeft, ChevronRight, CalendarDays, BarChart3,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -10,9 +10,13 @@ const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/leads", icon: Target, label: "Leads" },
   { to: "/contacts", icon: Users, label: "Contacts" },
-  { to: "/templates", icon: Mail, label: "Templates" },
-  { to: "/campaigns", icon: Send, label: "Campaigns" },
+  { to: "/outreach", icon: Send, label: "Outreach" },
   { to: "/pipeline", icon: GitBranch, label: "Pipeline" },
+  { to: "/calendar", icon: CalendarDays, label: "Calendar" },
+  { to: "/tasks", icon: CheckSquare, label: "Tasks" },
+  { to: "/quotes", icon: FileText, label: "Quotes" },
+  { to: "/replies", icon: Sparkles, label: "Replies" },
+  { to: "/analytics", icon: BarChart3, label: "Analytics" },
 ];
 
 export function AppLayout() {

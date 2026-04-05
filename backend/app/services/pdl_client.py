@@ -58,10 +58,18 @@ def find_contacts(company: str, domain: str = "", titles: list = None, location:
             if emails:
                 email = emails[0].get("address", "")
 
+        phone = ""
+        phone_numbers = person.get("phone_numbers", [])
+        if phone_numbers:
+            phone = phone_numbers[0]
+        elif person.get("mobile_phone"):
+            phone = person["mobile_phone"]
+
         contacts.append({
             "firstName": person.get("first_name", ""),
             "lastName": person.get("last_name", ""),
             "email": email,
+            "phone": phone,
             "jobTitle": person.get("job_title", ""),
             "company": person.get("job_company_name", company),
             "linkedinUrl": person.get("linkedin_url", ""),

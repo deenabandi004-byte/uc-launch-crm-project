@@ -331,15 +331,12 @@ export default function OnboardingFlow() {
   const handleComplete = async () => {
     setLoading(true);
     try {
-      // Try backend first, but fall back to client-side Firestore write
-      try {
-        await apiCompleteOnboarding(form);
-      } catch (backendErr) {
-        console.warn("Backend onboarding failed, using client-side write:", backendErr);
-      }
+      // Write directly to Firestore client-side (faster than round-tripping through backend)
       await completeOnboarding(form);
       toast.success("Welcome to OutboundCRM!");
       navigate("/");
+      // Sync to backend in background (non-blocking)
+      apiCompleteOnboarding(form).catch(() => {});
     } catch (err: any) {
       toast.error(err.message || "Failed to complete onboarding");
     } finally {
