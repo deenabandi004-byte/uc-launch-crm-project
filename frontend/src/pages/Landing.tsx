@@ -253,13 +253,13 @@ export default function Landing() {
 
           <div className="hidden md:flex items-center gap-2">
             <button
-              onClick={() => navigate("/onboarding")}
+              onClick={() => navigate("/signin")}
               style={{ background: "transparent", color: "#0F172A", fontSize: 12, fontWeight: 600, fontFamily: SERIF, padding: "6px 14px", borderRadius: 100, border: "1px solid rgba(91,33,182,0.2)", cursor: "pointer", transition: "all 0.15s ease", lineHeight: 1.4, whiteSpace: "nowrap" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(0,0,0,0.03)"; e.currentTarget.style.borderColor = "rgba(91,33,182,0.35)"; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.borderColor = "rgba(91,33,182,0.2)"; }}
             >Sign in</button>
             <button
-              onClick={() => navigate("/onboarding")}
+              onClick={() => navigate("/signin")}
               style={{ background: "#7C3AED", color: "#fff", fontSize: 12, fontWeight: 600, fontFamily: SERIF, padding: "6px 14px", borderRadius: 3, border: "none", cursor: "pointer", transition: "background 0.15s ease", lineHeight: 1.4, whiteSpace: "nowrap" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "#5B21B6"; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "#7C3AED"; }}
@@ -279,7 +279,7 @@ export default function Landing() {
               <button key={link.id} onClick={() => scrollTo(link.id)} className="text-left px-4 py-3 text-sm font-medium rounded-lg hover:bg-gray-50" style={{ color: "#4A5E80", fontFamily: SERIF, background: "none", border: "none" }}>{link.label}</button>
             ))}
             <div style={{ borderTop: "1px solid rgba(91,33,182,0.08)", marginTop: 8, paddingTop: 8 }}>
-              <button onClick={() => { navigate("/onboarding"); setMobileMenuOpen(false); }} className="w-full text-center py-3 text-sm font-semibold" style={{ background: "#7C3AED", color: "#fff", borderRadius: 3, border: "none", cursor: "pointer" }}>Try it free</button>
+              <button onClick={() => { navigate("/signin"); setMobileMenuOpen(false); }} className="w-full text-center py-3 text-sm font-semibold" style={{ background: "#7C3AED", color: "#fff", borderRadius: 3, border: "none", cursor: "pointer" }}>Try it free</button>
             </div>
           </nav>
         </div>
@@ -311,7 +311,7 @@ export default function Landing() {
             </p>
 
             <div className="hero-fade-up hero-fade-up-delay-4" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <button onClick={() => navigate("/onboarding")} className="btn-pulse" style={{ background: "#7C3AED", color: "#fff", fontFamily: SERIF, fontWeight: 600, borderRadius: 3, padding: "10px 22px", border: "none", cursor: "pointer", fontSize: 13 }}
+              <button onClick={() => navigate("/signin")} className="btn-pulse" style={{ background: "#7C3AED", color: "#fff", fontFamily: SERIF, fontWeight: 600, borderRadius: 3, padding: "10px 22px", border: "none", cursor: "pointer", fontSize: 13 }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "#5B21B6"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "#7C3AED"; }}
               >Start free trial <ArrowRight size={13} style={{ display: "inline", marginLeft: 5, verticalAlign: "middle" }} /></button>
@@ -545,7 +545,7 @@ export default function Landing() {
                 </div>
               ))}
             </div>
-            <button onClick={() => navigate("/onboarding")} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px 0", fontSize: 14, fontWeight: 600, background: "#7C3AED", color: "#fff", borderRadius: 3, fontFamily: SERIF, border: "none", cursor: "pointer" }}
+            <button onClick={() => navigate("/signin")} style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px 0", fontSize: 14, fontWeight: 600, background: "#7C3AED", color: "#fff", borderRadius: 3, fontFamily: SERIF, border: "none", cursor: "pointer" }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "#5B21B6"; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = "#7C3AED"; }}
             >Get started free <ArrowRight size={14} /></button>
@@ -558,7 +558,7 @@ export default function Landing() {
         <div style={{ maxWidth: 600, margin: "0 auto", padding: "0 24px", textAlign: "center" }}>
           <h2 style={{ fontFamily: SERIF, fontSize: "clamp(28px, 4vw, 40px)", fontWeight: 400, color: "#fff", marginBottom: 16 }}>Your next client is already in our database.</h2>
           <p style={{ fontSize: 17, color: "rgba(255,255,255,0.65)", marginBottom: 32 }}>Find them, reach out, and close the deal — all in one platform. Free to start.</p>
-          <button onClick={() => navigate("/onboarding")} style={{ background: "#fff", color: "#7C3AED", fontFamily: SERIF, fontWeight: 600, borderRadius: 3, padding: "14px 34px", border: "none", cursor: "pointer", fontSize: 15, transition: "all 0.15s ease" }}
+          <button onClick={() => navigate("/signin")} style={{ background: "#fff", color: "#7C3AED", fontFamily: SERIF, fontWeight: 600, borderRadius: 3, padding: "14px 34px", border: "none", cursor: "pointer", fontSize: 15, transition: "all 0.15s ease" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = "#F5F3FF"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "#fff"; }}
           >Start finding clients free <ArrowRight size={14} style={{ display: "inline", marginLeft: 6, verticalAlign: "middle" }} /></button>

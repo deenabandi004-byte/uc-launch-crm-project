@@ -26,7 +26,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (isLoading) return <LoadingScreen />;
   if (!user) return <Navigate to="/signin" replace />;
   if (user.needsOnboarding) return <Navigate to="/onboarding" replace />;
-  if (!user.gmailConnected) return <Navigate to="/connect-gmail" replace />;
   return <>{children}</>;
 }
 
@@ -45,12 +44,16 @@ function AppRoutes() {
 
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={
+        user && !user.needsOnboarding ? <Navigate to="/dashboard" replace /> : <Landing />
+      } />
       <Route path="/signin" element={user ? <Navigate to="/dashboard" replace /> : <SignIn />} />
       <Route
         path="/onboarding"
         element={
-          !user ? <Navigate to="/signin" replace /> : <OnboardingFlow />
+          !user ? <Navigate to="/signin" replace /> :
+          !user.needsOnboarding ? <Navigate to="/dashboard" replace /> :
+          <OnboardingFlow />
         }
       />
       <Route
