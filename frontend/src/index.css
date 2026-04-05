@@ -383,97 +383,32 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ============================================================
-   APP PAGE OVERRIDES — match landing page aesthetic
-   Sharp corners · Libre Baskerville headings · Purple CTAs
-   #FAFBFF glass cards · Generous spacing · #0f2545 headings
+   APP DESIGN SYSTEM — Offerloop layout + Landing page colors
+   Offerloop patterns: glass cards, dark nav buttons, serif titles,
+   clean tables, generous spacing, 3px corners
+   Landing page colors: purple #7C3AED, navy #1E1B2E, #0f2545 text
    ============================================================ */
 
-/* ── Typography — serif headings like landing page ── */
+/* ── Typography — Libre Baskerville for page titles ── */
 h1, h2 {
   font-family: 'Libre Baskerville', Georgia, serif;
   color: #0f2545;
   letter-spacing: -0.015em;
 }
-h1 { font-weight: 700; }
+h1 { font-weight: 600; }
 h2 { font-weight: 600; }
-h3 { font-weight: 600; color: #0f2545; }
+h3 { font-weight: 600; color: #0f2545; font-family: 'Inter', sans-serif; }
 
-/* ── Page containers ── */
-.p-8 { padding: 2.5rem !important; }
-
-/* ── Primary buttons — purple like landing CTAs ── */
-.bg-primary {
-  background-color: #7C3AED !important;
-  border-radius: 3px !important;
-  font-weight: 600 !important;
-  font-size: 14px;
-  transition: all 0.15s ease;
-}
-.bg-primary:hover,
-.hover\:bg-primary\/90:hover {
-  background-color: #5B21B6 !important;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
-}
-
-/* ── Text/border accents → purple ── */
-.text-primary { color: #7C3AED !important; }
-.border-primary { border-color: #7C3AED !important; }
-
-/* ── Sharp 3px corners globally ── */
-.rounded-lg { border-radius: 3px !important; }
-.rounded-xl { border-radius: 3px !important; }
-.rounded-2xl { border-radius: 6px !important; }
-.rounded-full { border-radius: 100px !important; }
-
-/* ── Cards — glass style matching landing page ── */
-.border-border { border-color: #E2E8F0 !important; }
-.bg-card { background: #FAFBFF !important; }
-
-.rounded-xl.border,
-.rounded-lg.border {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-.rounded-xl.border:hover,
-.rounded-lg.border:hover {
-  border-color: #C4B5FD;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
-  transform: translateY(-2px);
-}
-
-/* ── Table headers ── */
-.bg-muted\/50 { background: #FAFBFF !important; }
-
-/* ── Inputs — sharp, clean focus ── */
-input, select, textarea {
-  border-radius: 3px !important;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-}
-input:focus, select:focus, textarea:focus {
-  border-color: #7C3AED !important;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
-}
-input[type="checkbox"] { accent-color: #7C3AED; border-radius: 2px !important; }
-
-/* ── Hover accent ── */
-.hover\:bg-secondary:hover { background-color: #F5F3FF !important; }
-
-/* ── Colors matching landing page ── */
-.text-muted-foreground { color: #64748B !important; }
-.text-foreground { color: #0f2545 !important; }
-
-/* ── Table rows — clean hover ── */
-tr:hover td { background: #FAFBFF; }
-
-/* ── Section heading sizes ── */
+/* Page title class — centered like Offerloop */
 .text-2xl.font-bold {
   font-family: 'Libre Baskerville', Georgia, serif !important;
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
+  font-size: 1.625rem !important;
+  font-weight: 600 !important;
   color: #0f2545 !important;
   letter-spacing: -0.015em;
 }
+
+/* Section headers */
 .text-lg.font-semibold {
   font-size: 0.9375rem !important;
   font-weight: 600 !important;
@@ -481,6 +416,145 @@ tr:hover td { background: #FAFBFF; }
   letter-spacing: -0.01em;
 }
 
+/* ── Page containers — generous whitespace ── */
+.p-8 { padding: 2.5rem 3rem !important; }
+
+/* ── Primary buttons — dark navy (Offerloop style) with purple accent ── */
+.bg-primary {
+  background-color: #0F172A !important;
+  color: #EDE9FE !important;
+  border-radius: 3px !important;
+  font-weight: 500 !important;
+  font-size: 14px;
+  transition: all 0.12s ease;
+}
+.bg-primary:hover,
+.hover\:bg-primary\/90:hover {
+  background-color: #1E293B !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Text/border accents → purple ── */
+.text-primary { color: #7C3AED !important; }
+.border-primary { border-color: #7C3AED !important; }
+
+/* ── Sharp 3px corners (Offerloop standard) ── */
+.rounded-lg { border-radius: 3px !important; }
+.rounded-xl { border-radius: 3px !important; }
+.rounded-2xl { border-radius: 3px !important; }
+.rounded-full { border-radius: 100px !important; }
+.rounded-md { border-radius: 3px !important; }
+
+/* ── Cards — Offerloop glass-card pattern ── */
+.border-border { border-color: #E2E8F0 !important; }
+.bg-card { background: #FAFBFF !important; }
+
+.rounded-xl.border,
+.rounded-lg.border,
+.border.border-border {
+  background: #FAFBFF;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.rounded-xl.border:hover,
+.rounded-lg.border:hover {
+  border-color: #C4B5FD;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.10);
+}
+
+/* ── Table system — Offerloop spreadsheet style ── */
+.bg-muted\/50 { background: #FAFBFF !important; }
+
+table {
+  font-size: 14px;
+  border-collapse: collapse;
+}
+th {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  color: #94A3B8 !important;
+  background: #FAFBFF !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  padding: 10px 16px !important;
+}
+td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  color: #0F172A;
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none !important; }
+tr:hover td { background: #FAFBFF !important; }
+
+/* ── Inputs — Offerloop style ── */
+input, select, textarea {
+  border-radius: 3px !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  border: 1px solid #E2E8F0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #7C3AED !important;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.08);
+}
+input[type="checkbox"] { accent-color: #7C3AED; border-radius: 2px !important; }
+
+/* ── Hover states ── */
+.hover\:bg-secondary:hover { background-color: #F5F3FF !important; }
+.hover\:bg-muted\/30:hover { background-color: #FAFBFF !important; }
+
+/* ── Text colors — Offerloop hierarchy ── */
+.text-foreground { color: #0F172A !important; }
+.text-muted-foreground { color: #64748B !important; }
+
 /* ── Secondary / muted backgrounds ── */
 .bg-secondary { background: #F5F3FF !important; }
 .bg-muted { background: #F5F3FF !important; }
+.bg-secondary\/30 { background: rgba(245, 243, 255, 0.3) !important; }
+
+/* ── Empty states — centered, clean ── */
+.border-dashed {
+  border-style: dashed !important;
+  border-color: #E2E8F0 !important;
+  border-radius: 3px !important;
+}
+
+/* ── Status badges — Offerloop pill style ── */
+.rounded-full {
+  font-weight: 500 !important;
+}
+
+/* ── Shadow system ── */
+.shadow-sm {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+.shadow-md {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
+}
+.shadow-lg {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+}
+.shadow-xl {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10) !important;
+}
+
+/* ── Pipeline/Kanban cards — Offerloop pattern ── */
+.cursor-grab {
+  border-radius: 3px !important;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.cursor-grab:hover {
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.10) !important;
+}
+
+/* ── Progress bars ── */
+.bg-primary.h-full {
+  background: #7C3AED !important;
+}
+
+/* ── Animate ── */
+.transition-all { transition-duration: 0.12s !important; }
+.transition-colors { transition-duration: 0.12s !important; }
