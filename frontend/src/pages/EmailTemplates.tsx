@@ -53,7 +53,6 @@ export default function EmailTemplates() {
     <div className="mx-auto max-w-4xl p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Email Templates</h1>
           <p className="text-muted-foreground">Manage your outreach templates</p>
         </div>
         <button
