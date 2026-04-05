@@ -20,38 +20,104 @@ export default function ConnectGmail() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-dots" style={{ background: "#FAFBFF" }}>
-      <div className="w-full max-w-md space-y-6 bg-white p-8 text-center" style={{ borderRadius: 3, border: "1px solid #E2E8F0", boxShadow: "0 8px 24px rgba(124,58,237,0.08)" }}>
-        <div className="mx-auto flex h-16 w-16 items-center justify-center" style={{ borderRadius: 3, background: "#F5F3FF" }}>
-          <Mail style={{ color: "#7C3AED" }} size={32} />
+    <div
+      className="flex min-h-screen items-center justify-center bg-dots"
+      style={{ background: "#FAFBFF", fontFamily: "Inter, sans-serif" }}
+    >
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 420,
+          background: "#fff",
+          border: "1px solid #E2E8F0",
+          borderRadius: 3,
+          boxShadow: "0 8px 24px rgba(124,58,237,0.08)",
+          padding: "32px 32px 28px",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 3,
+            background: "#F5F3FF",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto",
+          }}
+        >
+          <Mail style={{ color: "#7C3AED" }} size={20} />
         </div>
 
-        <div>
-          <h2 className="text-2xl font-bold" style={{ color: "#0F172A" }}>Connect Gmail</h2>
-          <p className="mt-2 text-muted-foreground">
+        <div style={{ marginTop: 20 }}>
+          <h2
+            style={{
+              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontSize: "1.5rem",
+              fontWeight: 500,
+              color: "#0f2545",
+              margin: 0,
+            }}
+          >
+            Connect Gmail
+          </h2>
+          <p style={{ marginTop: 8, fontSize: "0.875rem", color: "#64748B", lineHeight: 1.6 }}>
             Connect your Gmail account to send personalized outreach emails directly from Outbound.
           </p>
         </div>
 
-        <div className="space-y-3 text-left text-sm text-muted-foreground">
-          <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7C3AED" }} />
-            <span>Send campaigns from your Gmail address</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7C3AED" }} />
-            <span>Track replies and engagement automatically</span>
-          </div>
-          <div className="flex items-start gap-2">
-            <div className="mt-1 h-1.5 w-1.5 flex-shrink-0 rounded-full" style={{ background: "#7C3AED" }} />
-            <span>We only request compose and read permissions</span>
-          </div>
+        <div style={{ marginTop: 20, textAlign: "left" }}>
+          {[
+            "Send campaigns from your Gmail address",
+            "Track replies and engagement automatically",
+            "We only request compose and read permissions",
+          ].map((text) => (
+            <div key={text} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 12 }}>
+              <div
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "#7C3AED",
+                  flexShrink: 0,
+                  marginTop: 6,
+                }}
+              />
+              <span style={{ fontSize: "0.875rem", color: "#64748B" }}>{text}</span>
+            </div>
+          ))}
         </div>
 
         <button
           onClick={handleConnect}
           disabled={connecting}
-          className="btn-primary-glass flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-medium disabled:opacity-50"
+          style={{
+            display: "flex",
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            background: "#0F172A",
+            color: "#EDE9FE",
+            border: "none",
+            borderRadius: 3,
+            padding: "12px 24px",
+            fontSize: "0.875rem",
+            fontWeight: 500,
+            fontFamily: "Inter, sans-serif",
+            cursor: connecting ? "not-allowed" : "pointer",
+            opacity: connecting ? 0.5 : 1,
+            marginTop: 24,
+            transition: "all 0.15s ease",
+          }}
+          onMouseEnter={(e) => {
+            if (!connecting) e.currentTarget.style.background = "#1E293B";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#0F172A";
+          }}
         >
           {connecting ? (
             <Loader2 size={16} className="animate-spin" />
@@ -63,7 +129,28 @@ export default function ConnectGmail() {
 
         <button
           onClick={() => navigate("/")}
-          className="flex w-full items-center justify-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          style={{
+            display: "flex",
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 4,
+            background: "none",
+            border: "none",
+            fontSize: "0.875rem",
+            color: "#94A3B8",
+            fontFamily: "Inter, sans-serif",
+            cursor: "pointer",
+            marginTop: 16,
+            padding: "8px 0",
+            transition: "color 0.15s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = "#0F172A";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = "#94A3B8";
+          }}
         >
           Skip for now <ArrowRight size={14} />
         </button>

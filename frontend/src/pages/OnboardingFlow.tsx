@@ -440,7 +440,7 @@ export default function OnboardingFlow() {
     "w-full rounded-[3px] border border-[#E2E8F0] bg-white px-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 transition-all duration-200 hover:bg-slate-50 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/15";
 
   return (
-    <div className="h-screen overflow-hidden bg-[#f8fafc]">
+    <div className="h-screen overflow-hidden" style={{ background: "white", fontFamily: "Inter, sans-serif" }}>
       <div className="grid h-full grid-cols-1 xl:grid-cols-[55%_45%]">
         <main className="flex items-center justify-center overflow-y-auto">
           <div className="w-full max-w-[580px] px-8 py-12 md:px-10">
@@ -451,7 +451,7 @@ export default function OnboardingFlow() {
                   <div key={i} className="flex items-center">
                     <span
                       className={`h-6 w-6 rounded-full border-2 transition-all duration-300 ${
-                        i <= step ? "border-[#7C3AED] bg-[#7C3AED]" : "border-[#D1D5DB] bg-white"
+                        i <= step ? "border-[#7C3AED] bg-[#7C3AED]" : "border-[#E2E8F0] bg-white"
                       }`}
                     />
                     {i < steps.length - 1 && (
@@ -467,8 +467,8 @@ export default function OnboardingFlow() {
             </div>
 
             <div className="mt-8">
-              <h3 className="text-[2.25rem] font-semibold leading-tight tracking-tight text-slate-900">{steps[step].title}</h3>
-              <p className="mt-2 text-lg text-slate-500">{steps[step].desc}</p>
+              <h3 className="text-[2.25rem] leading-tight tracking-tight" style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontWeight: 500, color: "#0f2545" }}>{steps[step].title}</h3>
+              <p className="mt-2 text-lg" style={{ color: "#64748B" }}>{steps[step].desc}</p>
             </div>
 
             <div className="mt-10">
@@ -477,7 +477,7 @@ export default function OnboardingFlow() {
                   <div>
                     <label className="mb-2.5 block text-sm font-normal text-slate-500">Company Name</label>
                     <input
-                      className="w-full rounded-lg border border-[#E5E7EB] bg-white px-4 py-4 text-[20px] text-slate-900 placeholder:text-slate-400 transition-all duration-200 hover:bg-slate-50 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/15"
+                      className="w-full rounded-[3px] border border-[#E2E8F0] bg-white px-4 py-4 text-[20px] text-slate-900 placeholder:text-slate-400 transition-all duration-200 hover:bg-slate-50 focus:border-[#7C3AED] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/15"
                       placeholder="Acme Inc."
                       value={form.companyName}
                       onChange={(e) => update("companyName", e.target.value)}
@@ -533,7 +533,7 @@ export default function OnboardingFlow() {
                       <div
                         ref={industryListRef}
                         role="listbox"
-                        className="absolute left-0 right-0 z-30 mt-1.5 max-h-[252px] overflow-auto overscroll-contain rounded-lg border border-slate-200 bg-white py-1 shadow-lg"
+                        className="absolute left-0 right-0 z-30 mt-1.5 max-h-[252px] overflow-auto overscroll-contain rounded-[3px] border border-[#E2E8F0] bg-white py-1 shadow-lg"
                       >
                         {filteredIndustries.length === 0 ? (
                           <div className="px-4 py-3 text-center text-sm text-slate-500">No industries found</div>
@@ -716,7 +716,7 @@ export default function OnboardingFlow() {
                   <button
                     onClick={handleParseWebsite}
                     disabled={parsing || !form.website}
-                    className="flex h-11 min-w-[116px] items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
+                    className="flex h-11 min-w-[116px] items-center justify-center gap-2 rounded-[3px] border border-[#E2E8F0] bg-white px-5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100 disabled:opacity-50"
                   >
                     {parsing ? <Loader2 size={16} className="animate-spin" /> : <Globe size={16} />}
                     Parse
@@ -732,7 +732,7 @@ export default function OnboardingFlow() {
                       setStep(step + 1);
                     }}
                     disabled={!canProceed()}
-                    className="flex h-12 min-w-[164px] items-center justify-center gap-1 rounded-lg bg-[#7C3AED] px-7 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6D28D9] disabled:opacity-50"
+                    className="flex h-12 min-w-[164px] items-center justify-center gap-1 rounded-[3px] bg-[#7C3AED] px-7 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6D28D9] disabled:opacity-50"
                   >
                     Continue <ArrowRight size={16} />
                   </button>
@@ -740,7 +740,7 @@ export default function OnboardingFlow() {
                   <button
                     onClick={handleComplete}
                     disabled={loading}
-                    className="flex h-12 min-w-[164px] items-center justify-center gap-1 rounded-lg bg-[#7C3AED] px-7 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6D28D9] disabled:opacity-50"
+                    className="flex h-12 min-w-[164px] items-center justify-center gap-1 rounded-[3px] bg-[#7C3AED] px-7 text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#6D28D9] disabled:opacity-50"
                   >
                     {loading ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />}
                     Create Page

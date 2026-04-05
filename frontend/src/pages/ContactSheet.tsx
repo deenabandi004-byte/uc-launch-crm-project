@@ -20,16 +20,18 @@ const API_BASE =
 type SortKey = "name" | "jobTitle" | "company" | "email" | "phone" | "pipelineStage";
 type SortDir = "asc" | "desc";
 
-const STAGE_COLORS: Record<string, string> = {
-  interested: "bg-teal-100 text-teal-700",
-  contacted: "bg-blue-100 text-blue-700",
-  approved: "bg-amber-100 text-amber-700",
-  complete: "bg-green-100 text-green-700",
-  paid: "bg-emerald-100 text-emerald-700",
-  estimate_sent: "bg-indigo-100 text-indigo-700",
-  in_progress: "bg-orange-100 text-orange-700",
-  not_interested: "bg-red-100 text-red-700",
+const STAGE_COLORS: Record<string, { background: string; color: string }> = {
+  interested: { background: "#EDE9FE", color: "#6D28D9" },
+  contacted: { background: "#E0E7FF", color: "#4338CA" },
+  approved: { background: "#F3E8FF", color: "#7C3AED" },
+  complete: { background: "#DCFCE7", color: "#15803D" },
+  paid: { background: "#D1FAE5", color: "#047857" },
+  estimate_sent: { background: "#DDD6FE", color: "#5B21B6" },
+  in_progress: { background: "#FDE68A", color: "#92400E" },
+  not_interested: { background: "#FEE2E2", color: "#B91C1C" },
 };
+
+const DEFAULT_STAGE_STYLE = { background: "#F1F5F9", color: "#64748B" };
 
 const CSV_FIELDS = ["firstName", "lastName", "email", "phone", "jobTitle", "company", "linkedinUrl", "location"];
 
@@ -233,39 +235,77 @@ export default function ContactSheet() {
   };
 
   const SortIcon = ({ col }: { col: SortKey }) => {
-    if (sortKey !== col) return <ArrowUpDown size={12} className="text-muted-foreground/50" />;
+    if (sortKey !== col) return <ArrowUpDown size={12} style={{ color: "#94A3B8" }} />;
     return sortDir === "asc" ? <ArrowUp size={12} /> : <ArrowDown size={12} />;
   };
 
+  const secondaryBtnStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    borderRadius: 3,
+    border: "1px solid #E2E8F0",
+    padding: "8px 12px",
+    fontSize: 13,
+    fontWeight: 500,
+    background: "#fff",
+    color: "#0f2545",
+    cursor: "pointer",
+  };
+
+  const primaryBtnStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    borderRadius: 3,
+    background: "#0F172A",
+    color: "#EDE9FE",
+    padding: "8px 16px",
+    fontSize: 13,
+    fontWeight: 500,
+    border: "none",
+    cursor: "pointer",
+  };
+
+  const editInputStyle: React.CSSProperties = {
+    borderRadius: 3,
+    border: "1px solid #E2E8F0",
+    padding: "4px 6px",
+    fontSize: 13,
+    width: "100%",
+    outline: "none",
+    fontFamily: "'Inter', sans-serif",
+  };
+
   return (
-    <div className="mx-auto max-w-7xl p-8">
-      <div className="mb-6 flex items-center justify-between">
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 48px", fontFamily: "'Inter', sans-serif" }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
-          <h1 className="text-2xl font-bold">Contact Sheet</h1>
-          <p className="text-muted-foreground">{contacts.length} contacts</p>
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: "#0f2545", fontFamily: "'Libre Baskerville', Georgia, serif", margin: 0 }}>
+            Contact Sheet
+          </h1>
+          <p style={{ color: "#64748B", fontSize: 13, marginTop: 4 }}>{contacts.length} contacts</p>
         </div>
-        <div className="flex gap-2">
+        <div style={{ display: "flex", gap: 8 }}>
           {/* CSV Export */}
-          <button
-            onClick={handleExport}
-            className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-secondary"
-          >
+          <button onClick={handleExport} style={secondaryBtnStyle}>
             <Download size={16} /> Export
           </button>
           {/* CSV Import */}
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={importing}
-            className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-secondary disabled:opacity-50"
+            style={{ ...secondaryBtnStyle, opacity: importing ? 0.5 : 1 }}
           >
-            {importing ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+            {importing ? <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /> : <Upload size={16} />}
             Import
           </button>
           <input
             ref={fileInputRef}
             type="file"
             accept=".csv"
-            className="hidden"
+            style={{ display: "none" }}
             onChange={handleFileSelect}
           />
           {/* Enrich phones */}
@@ -273,15 +313,15 @@ export default function ContactSheet() {
             <button
               onClick={() => enrichMutation.mutate()}
               disabled={enrichMutation.isPending}
-              className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium hover:bg-secondary disabled:opacity-50"
+              style={{ ...secondaryBtnStyle, opacity: enrichMutation.isPending ? 0.5 : 1 }}
             >
-              {enrichMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Phone size={16} />}
+              {enrichMutation.isPending ? <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /> : <Phone size={16} />}
               Add Phones
             </button>
           )}
           <button
             onClick={() => setFindingContacts(!findingContacts)}
-            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
+            style={primaryBtnStyle}
           >
             <UserPlus size={16} /> Find Contacts
           </button>
@@ -290,11 +330,11 @@ export default function ContactSheet() {
 
       {/* Find contacts panel */}
       {findingContacts && (
-        <div className="mb-6 rounded-xl border border-border p-4">
-          <h3 className="mb-3 text-sm font-medium">Find contacts at a company</h3>
-          <div className="flex gap-2">
+        <div style={{ marginBottom: 24, background: "#fff", border: "1px solid #E2E8F0", borderRadius: 3, padding: 24 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", marginBottom: 12, marginTop: 0 }}>Find contacts at a company</h3>
+          <div style={{ display: "flex", gap: 8 }}>
             <select
-              className="flex-1 rounded-lg border border-border px-3 py-2 text-sm"
+              style={{ flex: 1, borderRadius: 3, border: "1px solid #E2E8F0", padding: "8px 12px", fontSize: 13, outline: "none", fontFamily: "'Inter', sans-serif" }}
               value={selectedLead}
               onChange={(e) => setSelectedLead(e.target.value)}
             >
@@ -306,25 +346,34 @@ export default function ContactSheet() {
             <button
               onClick={handleFindContacts}
               disabled={!selectedLead || findMutation.isPending}
-              className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+              style={{ ...primaryBtnStyle, opacity: (!selectedLead || findMutation.isPending) ? 0.5 : 1 }}
             >
-              {findMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
+              {findMutation.isPending ? <Loader2 size={16} style={{ animation: "spin 1s linear infinite" }} /> : <Search size={16} />}
               Find
             </button>
           </div>
           {leads.length === 0 && (
-            <p className="mt-2 text-xs text-muted-foreground">
+            <p style={{ marginTop: 8, fontSize: 12, color: "#94A3B8" }}>
               No leads yet. Generate leads first from the Leads page.
             </p>
           )}
         </div>
       )}
 
-      {/* Filter */}
-      <div className="relative mb-4">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+      {/* Filter / Search */}
+      <div style={{ position: "relative", marginBottom: 16 }}>
+        <Search size={16} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94A3B8" }} />
         <input
-          className="w-full rounded-lg border border-border py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+          style={{
+            width: "100%",
+            borderRadius: 3,
+            border: "1px solid #E2E8F0",
+            padding: "10px 16px 10px 36px",
+            fontSize: 13,
+            outline: "none",
+            fontFamily: "'Inter', sans-serif",
+            boxSizing: "border-box",
+          }}
           placeholder="Search contacts by name, company, title, email..."
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
@@ -333,150 +382,187 @@ export default function ContactSheet() {
 
       {/* Table */}
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="animate-spin text-muted-foreground" /></div>
+        <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}>
+          <Loader2 size={24} style={{ color: "#94A3B8", animation: "spin 1s linear infinite" }} />
+        </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
-          <Users className="mb-3 text-muted-foreground" size={40} />
-          <h3 className="text-lg font-medium">No contacts yet</h3>
-          <p className="text-sm text-muted-foreground">Find contacts at your target companies or import a CSV</p>
+        <div style={{
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          border: "1px dashed #E2E8F0", borderRadius: 3, padding: "64px 0",
+        }}>
+          <Users size={40} style={{ color: "#94A3B8", marginBottom: 12 }} />
+          <h3 style={{ fontSize: 18, fontWeight: 600, color: "#0f2545", margin: 0 }}>No contacts yet</h3>
+          <p style={{ fontSize: 13, color: "#64748B", marginTop: 4 }}>Find contacts at your target companies or import a CSV</p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border overflow-x-auto">
-          <table className="w-full">
+        <div style={{ background: "#fff", border: "1px solid #E2E8F0", borderRadius: 3, overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr className="border-b border-border bg-muted/50">
+              <tr>
                 <SortableHeader label="Name" col="name" onSort={handleSort} icon={<SortIcon col="name" />} />
                 <SortableHeader label="Title" col="jobTitle" onSort={handleSort} icon={<SortIcon col="jobTitle" />} />
                 <SortableHeader label="Company" col="company" onSort={handleSort} icon={<SortIcon col="company" />} />
                 <SortableHeader label="Email" col="email" onSort={handleSort} icon={<SortIcon col="email" />} />
                 <SortableHeader label="Phone" col="phone" onSort={handleSort} icon={<SortIcon col="phone" />} />
                 <SortableHeader label="Stage" col="pipelineStage" onSort={handleSort} icon={<SortIcon col="pipelineStage" />} />
-                <th className="px-4 py-3 text-right text-xs font-medium uppercase text-muted-foreground">Actions</th>
+                <th style={{
+                  padding: "10px 16px", textAlign: "right", fontSize: 11, fontWeight: 600,
+                  textTransform: "uppercase", letterSpacing: "0.05em", color: "#94A3B8",
+                  background: "#F8FAFC", borderBottom: "1px solid #E2E8F0",
+                }}>
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
-              {filtered.map((c: any) => (
-                <tr key={c.id} className="border-b border-border last:border-0 hover:bg-muted/30">
-                  {editingId === c.id ? (
-                    <>
-                      <td className="px-4 py-2">
-                        <div className="flex gap-1">
+              {filtered.map((c: any) => {
+                const stageStyle = STAGE_COLORS[c.pipelineStage] || DEFAULT_STAGE_STYLE;
+                return (
+                  <tr
+                    key={c.id}
+                    style={{ borderBottom: "1px solid #E2E8F0" }}
+                    onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#FAFBFF"; }}
+                    onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+                  >
+                    {editingId === c.id ? (
+                      <>
+                        <td style={{ padding: "8px 16px" }}>
+                          <div style={{ display: "flex", gap: 4 }}>
+                            <input
+                              style={{ ...editInputStyle, width: 80 }}
+                              value={editData.firstName}
+                              onChange={(e) => setEditData({ ...editData, firstName: e.target.value })}
+                              placeholder="First"
+                            />
+                            <input
+                              style={{ ...editInputStyle, width: 80 }}
+                              value={editData.lastName}
+                              onChange={(e) => setEditData({ ...editData, lastName: e.target.value })}
+                              placeholder="Last"
+                            />
+                          </div>
+                        </td>
+                        <td style={{ padding: "8px 16px" }}>
                           <input
-                            className="w-20 rounded border border-border px-1.5 py-1 text-sm"
-                            value={editData.firstName}
-                            onChange={(e) => setEditData({ ...editData, firstName: e.target.value })}
-                            placeholder="First"
+                            style={editInputStyle}
+                            value={editData.jobTitle}
+                            onChange={(e) => setEditData({ ...editData, jobTitle: e.target.value })}
                           />
+                        </td>
+                        <td style={{ padding: "8px 16px" }}>
                           <input
-                            className="w-20 rounded border border-border px-1.5 py-1 text-sm"
-                            value={editData.lastName}
-                            onChange={(e) => setEditData({ ...editData, lastName: e.target.value })}
-                            placeholder="Last"
+                            style={editInputStyle}
+                            value={editData.company}
+                            onChange={(e) => setEditData({ ...editData, company: e.target.value })}
                           />
-                        </div>
-                      </td>
-                      <td className="px-4 py-2">
-                        <input
-                          className="w-full rounded border border-border px-1.5 py-1 text-sm"
-                          value={editData.jobTitle}
-                          onChange={(e) => setEditData({ ...editData, jobTitle: e.target.value })}
-                        />
-                      </td>
-                      <td className="px-4 py-2">
-                        <input
-                          className="w-full rounded border border-border px-1.5 py-1 text-sm"
-                          value={editData.company}
-                          onChange={(e) => setEditData({ ...editData, company: e.target.value })}
-                        />
-                      </td>
-                      <td className="px-4 py-2">
-                        <input
-                          className="w-full rounded border border-border px-1.5 py-1 text-sm"
-                          value={editData.email}
-                          onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                        />
-                      </td>
-                      <td className="px-4 py-2">
-                        <input
-                          className="w-full rounded border border-border px-1.5 py-1 text-sm"
-                          value={editData.phone}
-                          onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-                        />
-                      </td>
-                      <td className="px-4 py-2">—</td>
-                      <td className="px-4 py-2 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button onClick={saveEdit} disabled={updateMutation.isPending} className="rounded p-1 text-green-600 hover:bg-green-50">
-                            {updateMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
-                          </button>
-                          <button onClick={cancelEdit} className="rounded p-1 text-muted-foreground hover:bg-muted">
-                            <X size={14} />
-                          </button>
-                        </div>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td className="px-4 py-3 text-sm font-medium">
-                        {c.firstName} {c.lastName}
-                      </td>
-                      <td className="px-4 py-3 text-sm">{c.jobTitle || "—"}</td>
-                      <td className="px-4 py-3 text-sm">{c.company || "—"}</td>
-                      <td className="px-4 py-3 text-sm">
-                        {c.email ? (
-                          <a href={`mailto:${c.email}`} className="flex items-center gap-1 text-purple-600 hover:underline">
-                            <Mail size={12} /> {c.email}
-                          </a>
-                        ) : "—"}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {c.phone ? (
-                          <a href={`tel:${c.phone}`} className="flex items-center gap-1 text-purple-600 hover:underline">
-                            <Phone size={12} /> {c.phone}
-                          </a>
-                        ) : "—"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium capitalize ${
-                          STAGE_COLORS[c.pipelineStage] || "bg-gray-100 text-gray-600"
-                        }`}>
-                          {!c.pipelineStage || c.pipelineStage === "none" ? "New Lead" : c.pipelineStage?.replace(/_/g, " ") || "New Lead"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <div className="flex items-center justify-end gap-1">
-                          <button
-                            onClick={() => startEdit(c)}
-                            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                            title="Edit"
-                          >
-                            <Pencil size={14} />
-                          </button>
-                          {c.linkedinUrl && (
-                            <a href={c.linkedinUrl} target="_blank" rel="noopener noreferrer" className="rounded p-1 text-muted-foreground hover:text-purple-600">
-                              <Linkedin size={14} />
+                        </td>
+                        <td style={{ padding: "8px 16px" }}>
+                          <input
+                            style={editInputStyle}
+                            value={editData.email}
+                            onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+                          />
+                        </td>
+                        <td style={{ padding: "8px 16px" }}>
+                          <input
+                            style={editInputStyle}
+                            value={editData.phone}
+                            onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                          />
+                        </td>
+                        <td style={{ padding: "12px 16px", color: "#94A3B8" }}>&mdash;</td>
+                        <td style={{ padding: "8px 16px", textAlign: "right" }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+                            <button
+                              onClick={saveEdit}
+                              disabled={updateMutation.isPending}
+                              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 3, color: "#15803D" }}
+                            >
+                              {updateMutation.isPending ? <Loader2 size={14} style={{ animation: "spin 1s linear infinite" }} /> : <Check size={14} />}
+                            </button>
+                            <button onClick={cancelEdit} style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 3, color: "#94A3B8" }}>
+                              <X size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td style={{ padding: "12px 16px", fontSize: 13, fontWeight: 500, color: "#0f2545" }}>
+                          {c.firstName} {c.lastName}
+                        </td>
+                        <td style={{ padding: "12px 16px", fontSize: 13, color: "#64748B" }}>{c.jobTitle || "\u2014"}</td>
+                        <td style={{ padding: "12px 16px", fontSize: 13, color: "#64748B" }}>{c.company || "\u2014"}</td>
+                        <td style={{ padding: "12px 16px", fontSize: 13 }}>
+                          {c.email ? (
+                            <a href={`mailto:${c.email}`} style={{ display: "flex", alignItems: "center", gap: 4, color: "#7C3AED", textDecoration: "none" }}>
+                              <Mail size={12} /> {c.email}
                             </a>
-                          )}
-                          <button
-                            onClick={() => deleteMutation.mutate(c.id)}
-                            className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                            title="Delete"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </td>
-                    </>
-                  )}
-                </tr>
-              ))}
+                          ) : "\u2014"}
+                        </td>
+                        <td style={{ padding: "12px 16px", fontSize: 13 }}>
+                          {c.phone ? (
+                            <a href={`tel:${c.phone}`} style={{ display: "flex", alignItems: "center", gap: 4, color: "#7C3AED", textDecoration: "none" }}>
+                              <Phone size={12} /> {c.phone}
+                            </a>
+                          ) : "\u2014"}
+                        </td>
+                        <td style={{ padding: "12px 16px" }}>
+                          <span style={{
+                            borderRadius: 100, padding: "3px 10px", fontSize: 10, fontWeight: 600,
+                            textTransform: "capitalize",
+                            background: stageStyle.background,
+                            color: stageStyle.color,
+                            display: "inline-block",
+                          }}>
+                            {!c.pipelineStage || c.pipelineStage === "none" ? "New Lead" : c.pipelineStage?.replace(/_/g, " ") || "New Lead"}
+                          </span>
+                        </td>
+                        <td style={{ padding: "12px 16px", textAlign: "right" }}>
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 4 }}>
+                            <button
+                              onClick={() => startEdit(c)}
+                              title="Edit"
+                              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 3, color: "#94A3B8" }}
+                            >
+                              <Pencil size={14} />
+                            </button>
+                            {c.linkedinUrl && (
+                              <a
+                                href={c.linkedinUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{ padding: 4, borderRadius: 3, color: "#94A3B8", display: "flex" }}
+                              >
+                                <Linkedin size={14} />
+                              </a>
+                            )}
+                            <button
+                              onClick={() => deleteMutation.mutate(c.id)}
+                              title="Delete"
+                              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 3, color: "#94A3B8" }}
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      </>
+                    )}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-          <div className="border-t border-border bg-muted/30 px-4 py-2 text-xs text-muted-foreground">
+          <div style={{
+            borderTop: "1px solid #E2E8F0", background: "#F8FAFC",
+            padding: "8px 16px", fontSize: 12, color: "#94A3B8",
+          }}>
             Showing {filtered.length} of {contacts.length} contacts
           </div>
         </div>
       )}
+
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
@@ -484,10 +570,15 @@ export default function ContactSheet() {
 function SortableHeader({ label, col, onSort, icon }: { label: string; col: SortKey; onSort: (k: SortKey) => void; icon: React.ReactNode }) {
   return (
     <th
-      className="cursor-pointer select-none px-4 py-3 text-left text-xs font-medium uppercase text-muted-foreground hover:text-foreground"
       onClick={() => onSort(col)}
+      style={{
+        padding: "10px 16px", textAlign: "left", fontSize: 11, fontWeight: 600,
+        textTransform: "uppercase", letterSpacing: "0.05em", color: "#94A3B8",
+        background: "#F8FAFC", cursor: "pointer", userSelect: "none",
+        borderBottom: "1px solid #E2E8F0",
+      }}
     >
-      <div className="flex items-center gap-1">
+      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
         {label}
         {icon}
       </div>

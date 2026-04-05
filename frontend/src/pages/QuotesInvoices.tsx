@@ -10,15 +10,15 @@ import {
   ArrowRight, DollarSign, CheckCircle, Clock, AlertCircle,
 } from "lucide-react";
 
-const STATUS_COLORS: Record<string, string> = {
-  draft: "bg-gray-100 text-gray-700",
-  sent: "bg-purple-100 text-purple-700",
-  approved: "bg-green-100 text-green-700",
-  rejected: "bg-red-100 text-red-700",
-  expired: "bg-gray-100 text-gray-500",
-  paid: "bg-emerald-100 text-emerald-700",
-  overdue: "bg-red-100 text-red-700",
-  viewed: "bg-purple-100 text-purple-700",
+const STATUS_COLORS: Record<string, { bg: string; color: string }> = {
+  draft: { bg: "#F1F5F9", color: "#64748B" },
+  sent: { bg: "#F5F3FF", color: "#7C3AED" },
+  approved: { bg: "#F0FDF4", color: "#16A34A" },
+  rejected: { bg: "#FEE2E2", color: "#DC2626" },
+  expired: { bg: "#F1F5F9", color: "#94A3B8" },
+  paid: { bg: "#ECFDF5", color: "#059669" },
+  overdue: { bg: "#FEE2E2", color: "#DC2626" },
+  viewed: { bg: "#F5F3FF", color: "#7C3AED" },
 };
 
 interface LineItem {
@@ -27,6 +27,9 @@ interface LineItem {
   unitPrice: number;
   total: number;
 }
+
+const font = "'Inter', sans-serif";
+const serifFont = "'Libre Baskerville', Georgia, serif";
 
 export default function QuotesInvoices() {
   const queryClient = useQueryClient();
@@ -180,24 +183,76 @@ export default function QuotesInvoices() {
 
   const isLoading = quotesLoading || invoicesLoading;
 
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    border: "1px solid #E2E8F0",
+    borderRadius: 3,
+    padding: 24,
+  };
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    borderRadius: 3,
+    border: "1px solid #E2E8F0",
+    padding: "8px 12px",
+    fontSize: 13,
+    fontFamily: font,
+    outline: "none",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    marginBottom: 4,
+    fontSize: 13,
+    fontWeight: 500,
+    color: "#0f2545",
+    fontFamily: font,
+  };
+
+  const smallLabelStyle: React.CSSProperties = {
+    display: "block",
+    marginBottom: 4,
+    fontSize: 11,
+    fontWeight: 500,
+    color: "#64748B",
+    fontFamily: font,
+  };
+
+  const iconBtnStyle: React.CSSProperties = {
+    borderRadius: 3,
+    padding: 6,
+    color: "#94A3B8",
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+  };
+
   return (
-    <div className="mx-auto max-w-5xl p-8">
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 48px", fontFamily: font }}>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-2xl font-bold">Quotes & Invoices</h1>
-          <p className="text-muted-foreground">{quotes.length} quotes, {invoices.length} invoices</p>
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: "#0f2545", fontFamily: serifFont, margin: 0 }}>Quotes & Invoices</h1>
+          <p style={{ color: "#64748B", fontSize: 13, margin: "4px 0 0" }}>{quotes.length} quotes, {invoices.length} invoices</p>
         </div>
-        <div className="flex gap-2">
+        <div style={{ display: "flex", gap: 8 }}>
           <button
             onClick={() => { resetBuilder(); setBuilderType("invoice"); setShowBuilder(true); }}
-            className="flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-secondary"
+            style={{
+              display: "flex", alignItems: "center", gap: 8, borderRadius: 3,
+              border: "1px solid #E2E8F0", padding: "8px 16px", fontSize: 13, fontWeight: 500,
+              background: "#fff", cursor: "pointer", fontFamily: font, color: "#0f2545",
+            }}
           >
             <FileText size={16} /> New Invoice
           </button>
           <button
             onClick={() => { resetBuilder(); setBuilderType("quote"); setShowBuilder(true); }}
-            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
+            style={{
+              display: "flex", alignItems: "center", gap: 8, borderRadius: 3,
+              background: "#0F172A", color: "#EDE9FE", padding: "8px 16px",
+              fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+            }}
           >
             <Plus size={16} /> New Quote
           </button>
@@ -206,16 +261,16 @@ export default function QuotesInvoices() {
 
       {/* Builder */}
       {showBuilder && (
-        <div className="mb-6 rounded-xl border border-border bg-card p-6">
-          <h3 className="mb-4 text-lg font-semibold">
+        <div style={{ ...cardStyle, marginBottom: 24 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", margin: "0 0 16px" }}>
             {builderType === "quote" ? "Create Quote" : "Create Invoice"}
           </h3>
 
           {/* Contact select */}
-          <div className="mb-4">
-            <label className="mb-1 block text-sm font-medium">Client</label>
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle}>Client</label>
             <select
-              className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
+              style={inputStyle}
               value={contactId}
               onChange={(e) => handleContactSelect(e.target.value)}
             >
@@ -229,55 +284,55 @@ export default function QuotesInvoices() {
           </div>
 
           {/* Line items */}
-          <div className="mb-4">
-            <label className="mb-2 block text-sm font-medium">Line Items</label>
-            <div className="rounded-lg border border-border overflow-hidden">
-              <table className="w-full">
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ ...labelStyle, marginBottom: 8 }}>Line Items</label>
+            <div style={{ borderRadius: 3, border: "1px solid #E2E8F0", overflow: "hidden" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <thead>
-                  <tr className="bg-gray-50 text-xs font-medium uppercase text-gray-500">
-                    <th className="px-3 py-2 text-left">Description</th>
-                    <th className="w-20 px-3 py-2 text-right">Qty</th>
-                    <th className="w-28 px-3 py-2 text-right">Unit Price</th>
-                    <th className="w-28 px-3 py-2 text-right">Total</th>
-                    <th className="w-10 px-2 py-2" />
+                  <tr>
+                    <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 12px", textAlign: "left" }}>Description</th>
+                    <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 12px", textAlign: "right", width: 80 }}>Qty</th>
+                    <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 12px", textAlign: "right", width: 112 }}>Unit Price</th>
+                    <th style={{ background: "#F8FAFC", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", fontWeight: 600, color: "#64748B", padding: "8px 12px", textAlign: "right", width: 112 }}>Total</th>
+                    <th style={{ background: "#F8FAFC", padding: "8px 8px", width: 40 }} />
                   </tr>
                 </thead>
                 <tbody>
                   {lineItems.map((item, i) => (
-                    <tr key={i} className="border-t border-border">
-                      <td className="px-2 py-1.5">
+                    <tr key={i} style={{ borderTop: "1px solid #E2E8F0" }}>
+                      <td style={{ padding: "6px 8px" }}>
                         <input
-                          className="w-full rounded border-0 px-1 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                          style={{ ...inputStyle, border: "none", padding: "6px 4px" }}
                           placeholder="Service or product description"
                           value={item.description}
                           onChange={(e) => updateLineItem(i, "description", e.target.value)}
                         />
                       </td>
-                      <td className="px-2 py-1.5">
+                      <td style={{ padding: "6px 8px" }}>
                         <input
                           type="number"
                           min={1}
-                          className="w-full rounded border-0 px-1 py-1.5 text-right text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                          style={{ ...inputStyle, border: "none", padding: "6px 4px", textAlign: "right" }}
                           value={item.quantity}
                           onChange={(e) => updateLineItem(i, "quantity", Number(e.target.value))}
                         />
                       </td>
-                      <td className="px-2 py-1.5">
+                      <td style={{ padding: "6px 8px" }}>
                         <input
                           type="number"
                           min={0}
                           step={0.01}
-                          className="w-full rounded border-0 px-1 py-1.5 text-right text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+                          style={{ ...inputStyle, border: "none", padding: "6px 4px", textAlign: "right" }}
                           value={item.unitPrice}
                           onChange={(e) => updateLineItem(i, "unitPrice", Number(e.target.value))}
                         />
                       </td>
-                      <td className="px-3 py-1.5 text-right text-sm font-medium">
+                      <td style={{ padding: "6px 12px", textAlign: "right", fontSize: 13, fontWeight: 500, color: "#0f2545" }}>
                         ${item.total.toFixed(2)}
                       </td>
-                      <td className="px-2 py-1.5">
+                      <td style={{ padding: "6px 8px" }}>
                         {lineItems.length > 1 && (
-                          <button onClick={() => removeLineItem(i)} className="rounded p-1 text-gray-400 hover:text-red-500">
+                          <button onClick={() => removeLineItem(i)} style={{ ...iconBtnStyle, color: "#94A3B8" }}>
                             <Trash2 size={13} />
                           </button>
                         )}
@@ -289,38 +344,38 @@ export default function QuotesInvoices() {
             </div>
             <button
               onClick={addLineItem}
-              className="mt-2 flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+              style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 500, color: "#7C3AED", background: "transparent", border: "none", cursor: "pointer", fontFamily: font }}
             >
               <Plus size={12} /> Add line item
             </button>
           </div>
 
           {/* Tax, Discount, Payment Terms */}
-          <div className="mb-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div style={{ marginBottom: 16, display: "grid", gridTemplateColumns: builderType === "invoice" ? "1fr 1fr 1fr 1fr" : "1fr 1fr", gap: 16 }}>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500">Tax Rate (%)</label>
+              <label style={smallLabelStyle}>Tax Rate (%)</label>
               <input
                 type="number"
                 min={0}
                 step={0.1}
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                style={inputStyle}
                 value={taxRate}
                 onChange={(e) => setTaxRate(Number(e.target.value))}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-gray-500">Discount</label>
-              <div className="flex gap-1">
+              <label style={smallLabelStyle}>Discount</label>
+              <div style={{ display: "flex", gap: 4 }}>
                 <input
                   type="number"
                   min={0}
                   step={0.01}
-                  className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  style={inputStyle}
                   value={discountValue}
                   onChange={(e) => setDiscountValue(Number(e.target.value))}
                 />
                 <select
-                  className="rounded-lg border border-border px-2 py-2 text-xs focus:outline-none"
+                  style={{ ...inputStyle, width: "auto", flex: "none", padding: "8px 8px" }}
                   value={discountType}
                   onChange={(e) => setDiscountType(e.target.value as "flat" | "percent")}
                 >
@@ -331,9 +386,9 @@ export default function QuotesInvoices() {
             </div>
             {builderType === "invoice" && (
               <div>
-                <label className="mb-1 block text-xs font-medium text-gray-500">Payment Terms</label>
+                <label style={smallLabelStyle}>Payment Terms</label>
                 <select
-                  className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                  style={inputStyle}
                   value={paymentTerms}
                   onChange={(e) => setPaymentTerms(e.target.value)}
                 >
@@ -347,25 +402,25 @@ export default function QuotesInvoices() {
           </div>
 
           {/* Totals preview */}
-          <div className="mb-4 flex justify-end">
-            <div className="w-64 space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+          <div style={{ marginBottom: 16, display: "flex", justifyContent: "flex-end" }}>
+            <div style={{ width: 256, display: "flex", flexDirection: "column", gap: 4, fontSize: 13 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "#64748B" }}>Subtotal</span>
+                <span style={{ color: "#0f2545" }}>${subtotal.toFixed(2)}</span>
               </div>
               {discountValue > 0 && (
-                <div className="flex justify-between text-red-600">
+                <div style={{ display: "flex", justifyContent: "space-between", color: "#DC2626" }}>
                   <span>Discount</span>
                   <span>-${discountAmount.toFixed(2)}</span>
                 </div>
               )}
               {taxRate > 0 && (
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Tax ({taxRate}%)</span>
-                  <span>${taxAmount.toFixed(2)}</span>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <span style={{ color: "#64748B" }}>Tax ({taxRate}%)</span>
+                  <span style={{ color: "#0f2545" }}>${taxAmount.toFixed(2)}</span>
                 </div>
               )}
-              <div className="flex justify-between border-t border-border pt-2 text-base font-bold">
+              <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid #E2E8F0", paddingTop: 8, fontSize: 15, fontWeight: 700, color: "#0f2545" }}>
                 <span>Total</span>
                 <span>${total.toFixed(2)}</span>
               </div>
@@ -373,10 +428,10 @@ export default function QuotesInvoices() {
           </div>
 
           {/* Notes */}
-          <div className="mb-4">
-            <label className="mb-1 block text-sm font-medium">Notes / Terms</label>
+          <div style={{ marginBottom: 16 }}>
+            <label style={labelStyle}>Notes / Terms</label>
             <textarea
-              className="w-full rounded-lg border border-border px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
+              style={{ ...inputStyle, resize: "vertical" }}
               rows={2}
               placeholder="Payment instructions, scope of work, special conditions..."
               value={notes}
@@ -385,18 +440,29 @@ export default function QuotesInvoices() {
           </div>
 
           {/* Actions */}
-          <div className="flex gap-2">
+          <div style={{ display: "flex", gap: 8 }}>
             <button
               onClick={handleSubmit}
               disabled={createQuoteMutation.isPending || createInvoiceMutation.isPending}
-              className="flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+              style={{
+                display: "flex", alignItems: "center", gap: 8, borderRadius: 3,
+                background: "#0F172A", color: "#EDE9FE", padding: "10px 20px",
+                fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+                opacity: (createQuoteMutation.isPending || createInvoiceMutation.isPending) ? 0.5 : 1,
+              }}
             >
               {(createQuoteMutation.isPending || createInvoiceMutation.isPending)
                 ? <Loader2 size={14} className="animate-spin" />
                 : <FileText size={14} />}
               Create {builderType === "quote" ? "Quote" : "Invoice"}
             </button>
-            <button onClick={resetBuilder} className="rounded-lg border border-border px-4 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
+            <button
+              onClick={resetBuilder}
+              style={{
+                borderRadius: 3, border: "1px solid #E2E8F0", padding: "10px 16px",
+                fontSize: 13, color: "#64748B", background: "#fff", cursor: "pointer", fontFamily: font,
+              }}
+            >
               Cancel
             </button>
           </div>
@@ -404,20 +470,26 @@ export default function QuotesInvoices() {
       )}
 
       {/* Tabs */}
-      <div className="mb-4 flex gap-1 border-b border-border">
+      <div style={{ marginBottom: 16, display: "flex", gap: 4, borderBottom: "1px solid #E2E8F0" }}>
         <button
           onClick={() => setTab("quotes")}
-          className={`px-4 py-2.5 text-sm font-medium transition-colors ${
-            tab === "quotes" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"
-          }`}
+          style={{
+            padding: "10px 16px", fontSize: 13, fontWeight: 500, fontFamily: font,
+            background: "transparent", border: "none", cursor: "pointer",
+            borderBottom: tab === "quotes" ? "2px solid #7C3AED" : "2px solid transparent",
+            color: tab === "quotes" ? "#7C3AED" : "#64748B",
+          }}
         >
           Quotes ({quotes.length})
         </button>
         <button
           onClick={() => setTab("invoices")}
-          className={`px-4 py-2.5 text-sm font-medium transition-colors ${
-            tab === "invoices" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"
-          }`}
+          style={{
+            padding: "10px 16px", fontSize: 13, fontWeight: 500, fontFamily: font,
+            background: "transparent", border: "none", cursor: "pointer",
+            borderBottom: tab === "invoices" ? "2px solid #7C3AED" : "2px solid transparent",
+            color: tab === "invoices" ? "#7C3AED" : "#64748B",
+          }}
         >
           Invoices ({invoices.length})
         </button>
@@ -425,36 +497,36 @@ export default function QuotesInvoices() {
 
       {/* Content */}
       {isLoading ? (
-        <div className="flex justify-center py-12"><Loader2 className="animate-spin text-muted-foreground" /></div>
+        <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}>
+          <Loader2 className="animate-spin" style={{ color: "#94A3B8" }} />
+        </div>
       ) : tab === "quotes" ? (
         quotes.length === 0 ? (
           <EmptyState type="quotes" />
         ) : (
-          <div className="space-y-2">
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {quotes.map((q: any) => (
-              <div key={q.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-purple-50">
-                    <FileText size={18} className="text-purple-600" />
+              <div key={q.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: 3, border: "1px solid #E2E8F0", background: "#fff", padding: 16 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ width: 40, height: 40, borderRadius: 3, background: "#F5F3FF", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <FileText size={18} style={{ color: "#7C3AED" }} />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold">{q.quoteNumber}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${STATUS_COLORS[q.status] || STATUS_COLORS.draft}`}>
-                        {q.status}
-                      </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#0f2545" }}>{q.quoteNumber}</span>
+                      <StatusBadge status={q.status} />
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>
                       {q.contactName || "No client"} &middot; {new Date(q.createdAt).toLocaleDateString()}
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-lg font-bold">${(q.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                  <div className="flex gap-1">
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ fontSize: 18, fontWeight: 700, color: "#0f2545" }}>${(q.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                  <div style={{ display: "flex", gap: 4 }}>
                     <button
                       onClick={() => handleDownloadPdf(q.id, "quote")}
-                      className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                      style={iconBtnStyle}
                       title="Download PDF"
                     >
                       <Download size={15} />
@@ -463,7 +535,7 @@ export default function QuotesInvoices() {
                       <button
                         onClick={() => convertMutation.mutate(q.id)}
                         disabled={convertMutation.isPending}
-                        className="rounded p-1.5 text-gray-400 hover:bg-green-50 hover:text-green-600"
+                        style={iconBtnStyle}
                         title="Convert to Invoice"
                       >
                         <ArrowRight size={15} />
@@ -471,7 +543,7 @@ export default function QuotesInvoices() {
                     )}
                     <button
                       onClick={() => deleteMutation.mutate(q.id)}
-                      className="rounded p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                      style={iconBtnStyle}
                       title="Delete"
                     >
                       <Trash2 size={15} />
@@ -486,55 +558,55 @@ export default function QuotesInvoices() {
         invoices.length === 0 ? (
           <EmptyState type="invoices" />
         ) : (
-          <div className="space-y-2">
-            {invoices.map((inv: any) => (
-              <div key={inv.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
-                <div className="flex items-center gap-4">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${
-                    inv.status === "paid" ? "bg-emerald-50" : inv.status === "overdue" ? "bg-red-50" : "bg-purple-50"
-                  }`}>
-                    {inv.status === "paid" ? <CheckCircle size={18} className="text-emerald-600" /> :
-                     inv.status === "overdue" ? <AlertCircle size={18} className="text-red-600" /> :
-                     <FileText size={18} className="text-purple-600" />}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {invoices.map((inv: any) => {
+              const iconBg = inv.status === "paid" ? "#ECFDF5" : inv.status === "overdue" ? "#FEE2E2" : "#F5F3FF";
+              const iconColor = inv.status === "paid" ? "#059669" : inv.status === "overdue" ? "#DC2626" : "#7C3AED";
+              return (
+                <div key={inv.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: 3, border: "1px solid #E2E8F0", background: "#fff", padding: 16 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 3, background: iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      {inv.status === "paid" ? <CheckCircle size={18} style={{ color: iconColor }} /> :
+                       inv.status === "overdue" ? <AlertCircle size={18} style={{ color: iconColor }} /> :
+                       <FileText size={18} style={{ color: iconColor }} />}
+                    </div>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: "#0f2545" }}>{inv.invoiceNumber}</span>
+                        <StatusBadge status={inv.status} />
+                        {inv.quoteNumber && (
+                          <span style={{ fontSize: 10, color: "#94A3B8" }}>from {inv.quoteNumber}</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>
+                        {inv.contactName || "No client"} &middot; Due {new Date(inv.dueDate).toLocaleDateString()}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold">{inv.invoiceNumber}</span>
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${STATUS_COLORS[inv.status] || STATUS_COLORS.draft}`}>
-                        {inv.status}
-                      </span>
-                      {inv.quoteNumber && (
-                        <span className="text-[10px] text-muted-foreground">from {inv.quoteNumber}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <span style={{ fontSize: 18, fontWeight: 700, color: "#0f2545" }}>${(inv.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                    <div style={{ display: "flex", gap: 4 }}>
+                      <button
+                        onClick={() => handleDownloadPdf(inv.id, "invoice")}
+                        style={iconBtnStyle}
+                        title="Download PDF"
+                      >
+                        <Download size={15} />
+                      </button>
+                      {inv.status !== "paid" && (
+                        <button
+                          onClick={() => markPaidMutation.mutate(inv.id)}
+                          style={iconBtnStyle}
+                          title="Mark as Paid"
+                        >
+                          <DollarSign size={15} />
+                        </button>
                       )}
                     </div>
-                    <div className="text-xs text-muted-foreground">
-                      {inv.contactName || "No client"} &middot; Due {new Date(inv.dueDate).toLocaleDateString()}
-                    </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-lg font-bold">${(inv.total || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => handleDownloadPdf(inv.id, "invoice")}
-                      className="rounded p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                      title="Download PDF"
-                    >
-                      <Download size={15} />
-                    </button>
-                    {inv.status !== "paid" && (
-                      <button
-                        onClick={() => markPaidMutation.mutate(inv.id)}
-                        className="rounded p-1.5 text-gray-400 hover:bg-emerald-50 hover:text-emerald-600"
-                        title="Mark as Paid"
-                      >
-                        <DollarSign size={15} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )
       )}
@@ -542,12 +614,24 @@ export default function QuotesInvoices() {
   );
 }
 
+function StatusBadge({ status }: { status: string }) {
+  const s = STATUS_COLORS[status] || STATUS_COLORS.draft;
+  return (
+    <span style={{ borderRadius: 100, padding: "2px 8px", fontSize: 10, fontWeight: 600, background: s.bg, color: s.color, textTransform: "capitalize" }}>
+      {status}
+    </span>
+  );
+}
+
 function EmptyState({ type }: { type: "quotes" | "invoices" }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
-      <FileText className="mb-3 text-muted-foreground" size={40} />
-      <h3 className="text-lg font-medium">No {type} yet</h3>
-      <p className="text-sm text-muted-foreground">
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+      borderRadius: 3, border: "1px dashed #E2E8F0", padding: "64px 0", fontFamily: "'Inter', sans-serif",
+    }}>
+      <FileText size={40} style={{ marginBottom: 12, color: "#94A3B8" }} />
+      <h3 style={{ fontSize: 17, fontWeight: 500, color: "#0f2545", margin: "0 0 4px" }}>No {type} yet</h3>
+      <p style={{ fontSize: 13, color: "#64748B", margin: 0 }}>
         {type === "quotes" ? "Create a quote for a client" : "Convert a quote or create a standalone invoice"}
       </p>
     </div>

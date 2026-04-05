@@ -57,6 +57,13 @@ interface ContactCard {
   stageEnteredAt?: string;
 }
 
+const AI_CATEGORY_STYLES: Record<string, { background: string; color: string }> = {
+  interested: { background: "#DCFCE7", color: "#15803D" },
+  not_interested: { background: "#FEE2E2", color: "#B91C1C" },
+  follow_up: { background: "#FEF3C7", color: "#B45309" },
+  question: { background: "#DBEAFE", color: "#1D4ED8" },
+};
+
 function DraggableCard({ contact, stageColor }: { contact: ContactCard; stageColor: string }) {
   const daysInStage = contact.stageEnteredAt
     ? Math.floor((Date.now() - new Date(contact.stageEnteredAt).getTime()) / 86400000)
@@ -64,45 +71,70 @@ function DraggableCard({ contact, stageColor }: { contact: ContactCard; stageCol
 
   return (
     <div
-      className="group cursor-grab rounded-lg border bg-white p-3 shadow-sm transition-shadow hover:shadow-md active:cursor-grabbing"
-      style={{ borderLeftWidth: 4, borderLeftColor: stageColor }}
+      style={{
+        background: "#fff",
+        border: "1px solid #E2E8F0",
+        borderLeft: `3px solid ${stageColor}`,
+        borderRadius: 3,
+        padding: 12,
+        cursor: "grab",
+        transition: "border-color 0.15s, box-shadow 0.15s",
+        fontFamily: "'Inter', sans-serif",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = "#C4B5FD";
+        e.currentTarget.style.borderLeft = `3px solid ${stageColor}`;
+        e.currentTarget.style.boxShadow = "0 2px 8px rgba(124,58,237,0.10)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = "#E2E8F0";
+        e.currentTarget.style.borderLeft = `3px solid ${stageColor}`;
+        e.currentTarget.style.boxShadow = "none";
+      }}
     >
-      <div className="flex items-start justify-between">
-        <div className="min-w-0 flex-1">
-          <div className="text-sm font-medium text-gray-900 truncate">
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#0f2545", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {contact.firstName} {contact.lastName}
           </div>
           {contact.jobTitle && (
-            <div className="text-xs text-gray-500 truncate">{contact.jobTitle}</div>
+            <div style={{ fontSize: 11, color: "#64748B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{contact.jobTitle}</div>
           )}
           {contact.company && (
-            <div className="text-xs text-gray-500 truncate">{contact.company}</div>
+            <div style={{ fontSize: 11, color: "#64748B", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{contact.company}</div>
           )}
         </div>
-        <GripVertical size={14} className="mt-0.5 flex-shrink-0 text-gray-300 group-hover:text-gray-400" />
+        <GripVertical size={14} style={{ flexShrink: 0, marginTop: 2, color: "#94A3B8" }} />
       </div>
 
       {/* Deal value & days in stage */}
-      <div className="mt-2 flex items-center gap-2 flex-wrap">
+      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
         {contact.dealValue != null && contact.dealValue > 0 && (
-          <span className="flex items-center gap-0.5 rounded-full bg-green-50 px-1.5 py-0.5 text-[10px] font-medium text-green-700">
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: 2,
+            borderRadius: 100, background: "#DCFCE7", padding: "2px 7px",
+            fontSize: 10, fontWeight: 600, color: "#15803D",
+          }}>
             <DollarSign size={9} />
             {contact.dealValue.toLocaleString()}
           </span>
         )}
         {daysInStage != null && daysInStage > 0 && (
-          <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] text-gray-500">
+          <span style={{
+            borderRadius: 100, background: "#F1F5F9", padding: "2px 7px",
+            fontSize: 10, color: "#64748B",
+          }}>
             {daysInStage}d
           </span>
         )}
         {contact.aiCategory && contact.aiCategory !== "null" && (
-          <span className={`flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-            contact.aiCategory === "interested" ? "bg-green-100 text-green-700" :
-            contact.aiCategory === "not_interested" ? "bg-red-100 text-red-700" :
-            contact.aiCategory === "follow_up" ? "bg-amber-100 text-amber-700" :
-            contact.aiCategory === "question" ? "bg-blue-100 text-blue-700" :
-            "bg-gray-100 text-gray-600"
-          }`}>
+          <span style={{
+            display: "inline-flex", alignItems: "center", gap: 2,
+            borderRadius: 100, padding: "2px 7px",
+            fontSize: 10, fontWeight: 600,
+            background: AI_CATEGORY_STYLES[contact.aiCategory]?.background || "#F1F5F9",
+            color: AI_CATEGORY_STYLES[contact.aiCategory]?.color || "#64748B",
+          }}>
             <Sparkles size={8} />
             {contact.aiCategory.replace(/_/g, " ")}
           </span>
@@ -110,19 +142,28 @@ function DraggableCard({ contact, stageColor }: { contact: ContactCard; stageCol
       </div>
 
       {/* Contact actions */}
-      <div className="mt-2 flex items-center gap-1">
+      <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4 }}>
         {contact.email && (
-          <a href={`mailto:${contact.email}`} className="rounded p-0.5 text-gray-400 hover:text-purple-600" title={contact.email}>
+          <a href={`mailto:${contact.email}`} style={{ borderRadius: 3, padding: 2, color: "#94A3B8", transition: "color 0.15s" }} title={contact.email}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "#7C3AED"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "#94A3B8"; }}
+          >
             <Mail size={12} />
           </a>
         )}
         {contact.phone && (
-          <a href={`tel:${contact.phone}`} className="rounded p-0.5 text-gray-400 hover:text-purple-600" title={contact.phone}>
+          <a href={`tel:${contact.phone}`} style={{ borderRadius: 3, padding: 2, color: "#94A3B8", transition: "color 0.15s" }} title={contact.phone}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "#7C3AED"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "#94A3B8"; }}
+          >
             <Phone size={12} />
           </a>
         )}
         {contact.linkedinUrl && (
-          <a href={contact.linkedinUrl} target="_blank" rel="noopener noreferrer" className="rounded p-0.5 text-gray-400 hover:text-purple-600">
+          <a href={contact.linkedinUrl} target="_blank" rel="noopener noreferrer" style={{ borderRadius: 3, padding: 2, color: "#94A3B8", transition: "color 0.15s" }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "#7C3AED"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "#94A3B8"; }}
+          >
             <Linkedin size={12} />
           </a>
         )}
@@ -130,8 +171,8 @@ function DraggableCard({ contact, stageColor }: { contact: ContactCard; stageCol
 
       {/* Unread reply indicator */}
       {contact.hasUnreadReply && (
-        <div className="mt-1.5 flex items-center gap-1 text-[10px] font-medium text-green-600">
-          <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+        <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 600, color: "#059669" }}>
+          <span style={{ height: 6, width: 6, borderRadius: "50%", background: "#059669", display: "inline-block" }} />
           New reply
         </div>
       )}
@@ -155,37 +196,77 @@ function DroppableColumn({
   return (
     <div
       ref={setNodeRef}
-      className={`flex h-full flex-shrink-0 flex-col rounded-xl transition-colors ${
-        isOver ? "bg-purple-50/60 ring-2 ring-purple-300" : "bg-gray-50/50"
-      }`}
-      style={{ width: 280 }}
+      style={{
+        display: "flex",
+        height: "100%",
+        flexShrink: 0,
+        flexDirection: "column",
+        width: 280,
+        borderRadius: 3,
+        transition: "background 0.15s",
+        background: isOver ? "rgba(124,58,237,0.06)" : "#F8FAFC",
+        outline: isOver ? "2px solid #C4B5FD" : "none",
+        fontFamily: "'Inter', sans-serif",
+      }}
     >
       {/* Stage header */}
-      <div className={`mx-2 mt-2 flex items-center gap-2 rounded-lg border-l-4 px-3 py-2.5 ${stage.bg}`}>
+      <div style={{
+        margin: "8px 8px 0 8px",
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
+        borderRadius: 3,
+        background: "#F8FAFC",
+        border: "1px solid #E2E8F0",
+        padding: "10px 12px",
+      }}>
         <span
-          className="h-2.5 w-2.5 rounded-full flex-shrink-0"
-          style={{ backgroundColor: stage.color }}
+          style={{
+            height: 8,
+            width: 8,
+            borderRadius: "50%",
+            flexShrink: 0,
+            backgroundColor: stage.color,
+            display: "inline-block",
+          }}
         />
-        <span className="text-sm font-semibold text-gray-800">{stage.label}</span>
-        <span className="ml-auto rounded-full bg-white/80 px-2 py-0.5 text-xs font-medium text-gray-600">
+        <span style={{ fontSize: 13, fontWeight: 600, color: "#0f2545" }}>{stage.label}</span>
+        <span style={{
+          marginLeft: "auto",
+          borderRadius: 100,
+          background: "rgba(255,255,255,0.8)",
+          padding: "2px 8px",
+          fontSize: 11,
+          fontWeight: 500,
+          color: "#64748B",
+        }}>
           {contacts.length}
         </span>
       </div>
 
       {/* Total deal value */}
       {totalValue > 0 && (
-        <div className="mx-4 mt-1 text-[10px] text-gray-400 font-medium">
+        <div style={{ margin: "4px 16px 0", fontSize: 10, color: "#94A3B8", fontWeight: 500 }}>
           ${totalValue.toLocaleString()} total
         </div>
       )}
 
       {/* Cards */}
-      <div className="flex-1 space-y-2 overflow-y-auto p-2" style={{ maxHeight: "calc(100vh - 220px)" }}>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", padding: 8, maxHeight: "calc(100vh - 220px)" }}>
         {contacts.map((c) => (
           <DraggableCardWrapper key={c.id} contact={c} stageColor={stage.color} />
         ))}
         {contacts.length === 0 && (
-          <div className="flex items-center justify-center rounded-lg border border-dashed border-gray-200 py-8 text-xs text-gray-400">
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px dashed #E2E8F0",
+            borderRadius: 3,
+            padding: "32px 0",
+            fontSize: 12,
+            color: "#94A3B8",
+          }}>
             Drop here
           </div>
         )}
@@ -298,26 +379,34 @@ export default function Pipeline() {
 
   if (isLoading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <Loader2 className="animate-spin text-muted-foreground" />
+      <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", fontFamily: "'Inter', sans-serif" }}>
+        <Loader2 className="animate-spin" style={{ color: "#94A3B8" }} />
       </div>
     );
   }
 
   return (
-    <div className="h-full p-8">
-      <div className="mb-6 flex items-center justify-between">
+    <div style={{ height: "100%", padding: "40px 40px 40px 48px", fontFamily: "'Inter', sans-serif" }}>
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-2xl font-bold">Pipeline</h1>
-          <p className="text-muted-foreground">{totalContacts} contacts in pipeline</p>
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: "#0f2545", fontFamily: "'Libre Baskerville', Georgia, serif", margin: 0 }}>Pipeline</h1>
+          <p style={{ color: "#64748B", fontSize: 14, margin: "4px 0 0" }}>{totalContacts} contacts in pipeline</p>
         </div>
       </div>
 
       {totalContacts === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
-          <Users className="mb-3 text-muted-foreground" size={40} />
-          <h3 className="text-lg font-medium">Pipeline is empty</h3>
-          <p className="text-sm text-muted-foreground">
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          border: "2px dashed #E2E8F0",
+          borderRadius: 3,
+          padding: "64px 0",
+        }}>
+          <Users style={{ marginBottom: 12, color: "#94A3B8" }} size={40} />
+          <h3 style={{ fontSize: 18, fontWeight: 500, color: "#0f2545", margin: 0 }}>Pipeline is empty</h3>
+          <p style={{ fontSize: 14, color: "#64748B", margin: "4px 0 0" }}>
             Add contacts and send a campaign to see them here
           </p>
         </div>
@@ -329,7 +418,7 @@ export default function Pipeline() {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex gap-3 overflow-x-auto pb-4" style={{ minHeight: "calc(100vh - 200px)" }}>
+          <div style={{ display: "flex", gap: 12, overflowX: "auto", paddingBottom: 16, minHeight: "calc(100vh - 200px)" }}>
             {STAGES.map((stage) => {
               const contacts = (pipeline as any)[stage.key] || [];
               return (

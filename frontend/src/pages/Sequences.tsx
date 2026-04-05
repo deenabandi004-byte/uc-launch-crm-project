@@ -34,6 +34,9 @@ interface Step {
   subject: string;
 }
 
+const font = "'Inter', sans-serif";
+const serifFont = "'Libre Baskerville', Georgia, serif";
+
 export default function Sequences() {
   const queryClient = useQueryClient();
   const { data: sequences = [] } = useQuery({ queryKey: ["sequences"], queryFn: getSequences });
@@ -164,28 +167,68 @@ export default function Sequences() {
   };
 
   const statusBadge = (status: string) => {
-    const colors: Record<string, string> = {
-      draft: "bg-gray-100 text-gray-700",
-      active: "bg-purple-100 text-purple-700",
-      paused: "bg-yellow-100 text-yellow-700",
-      completed: "bg-green-100 text-green-700",
+    const colors: Record<string, { bg: string; color: string }> = {
+      draft: { bg: "#F1F5F9", color: "#64748B" },
+      active: { bg: "#F5F3FF", color: "#7C3AED" },
+      paused: { bg: "#FEF3C7", color: "#B45309" },
+      completed: { bg: "#F0FDF4", color: "#16A34A" },
     };
+    const s = colors[status] || colors.draft;
     return (
-      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${colors[status] || "bg-gray-100 text-gray-600"}`}>
+      <span style={{ borderRadius: 100, padding: "2px 8px", fontSize: 10, fontWeight: 600, background: s.bg, color: s.color }}>
         {status}
       </span>
     );
   };
 
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    border: "1px solid #E2E8F0",
+    borderRadius: 3,
+    padding: 24,
+  };
+
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    borderRadius: 3,
+    border: "1px solid #E2E8F0",
+    padding: "8px 12px",
+    fontSize: 13,
+    fontFamily: font,
+    outline: "none",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: "block",
+    marginBottom: 6,
+    fontSize: 13,
+    fontWeight: 500,
+    color: "#0f2545",
+    fontFamily: font,
+  };
+
+  const smallLabelStyle: React.CSSProperties = {
+    display: "block",
+    marginBottom: 4,
+    fontSize: 11,
+    color: "#64748B",
+    fontFamily: font,
+  };
+
   return (
-    <div className="mx-auto max-w-5xl p-8">
-      <div className="mb-6 flex items-center justify-between">
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 48px", fontFamily: font }}>
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <p className="text-muted-foreground">Create multi-step follow-up campaigns</p>
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: "#0f2545", fontFamily: serifFont, margin: 0 }}>Sequences</h1>
+          <p style={{ color: "#64748B", fontSize: 13, margin: "4px 0 0" }}>Create multi-step follow-up campaigns</p>
         </div>
         <button
           onClick={() => { resetForm(); setShowForm(true); }}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white hover:bg-primary/90"
+          style={{
+            display: "flex", alignItems: "center", gap: 8, borderRadius: 3,
+            background: "#0F172A", color: "#EDE9FE", padding: "10px 16px",
+            fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+          }}
         >
           <Plus size={16} />
           Create Sequence
@@ -194,20 +237,20 @@ export default function Sequences() {
 
       {/* Create / Edit Form */}
       {showForm && (
-        <div className="mb-8 rounded-xl border border-border bg-card p-6">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold">{editingId ? "Edit Sequence" : "New Sequence"}</h2>
-            <button onClick={resetForm} className="rounded p-1 hover:bg-muted">
-              <X size={18} />
+        <div style={{ ...cardStyle, marginBottom: 32 }}>
+          <div style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <h2 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", margin: 0 }}>{editingId ? "Edit Sequence" : "New Sequence"}</h2>
+            <button onClick={resetForm} style={{ borderRadius: 3, padding: 4, border: "none", background: "transparent", cursor: "pointer" }}>
+              <X size={18} color="#64748B" />
             </button>
           </div>
 
-          <div className="space-y-5">
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
             {/* Name */}
             <div>
-              <label className="mb-1.5 block text-sm font-medium">Sequence Name</label>
+              <label style={labelStyle}>Sequence Name</label>
               <input
-                className="w-full max-w-md rounded-lg border border-border px-3 py-2 text-sm"
+                style={{ ...inputStyle, maxWidth: 400 }}
                 placeholder="e.g., 3-Day Follow-up"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -216,19 +259,24 @@ export default function Sequences() {
 
             {/* Steps Builder */}
             <div>
-              <label className="mb-2 block text-sm font-medium">Steps</label>
-              <div className="space-y-3">
+              <label style={{ ...labelStyle, marginBottom: 8 }}>Steps</label>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {steps.map((step, i) => (
-                  <div key={i} className="flex items-start gap-3 rounded-lg border border-border p-3">
-                    <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                  <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 12, borderRadius: 3, border: "1px solid #E2E8F0", padding: 12 }}>
+                    <div style={{
+                      width: 28, height: 28, flexShrink: 0, borderRadius: 3,
+                      background: "#F5F3FF", color: "#7C3AED",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: 12, fontWeight: 600,
+                    }}>
                       {i + 1}
                     </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex gap-3">
-                        <div className="flex-1">
-                          <label className="mb-1 block text-xs text-muted-foreground">Template</label>
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8 }}>
+                      <div style={{ display: "flex", gap: 12 }}>
+                        <div style={{ flex: 1 }}>
+                          <label style={smallLabelStyle}>Template</label>
                           <select
-                            className="w-full rounded-lg border border-border px-3 py-1.5 text-sm"
+                            style={inputStyle}
                             value={step.templateId}
                             onChange={(e) => updateStep(i, "templateId", e.target.value)}
                           >
@@ -238,21 +286,21 @@ export default function Sequences() {
                             ))}
                           </select>
                         </div>
-                        <div className="w-32">
-                          <label className="mb-1 block text-xs text-muted-foreground">Delay (days)</label>
+                        <div style={{ width: 128 }}>
+                          <label style={smallLabelStyle}>Delay (days)</label>
                           <input
                             type="number"
                             min={0}
-                            className="w-full rounded-lg border border-border px-3 py-1.5 text-sm"
+                            style={inputStyle}
                             value={step.delayDays}
                             onChange={(e) => updateStep(i, "delayDays", parseInt(e.target.value) || 0)}
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="mb-1 block text-xs text-muted-foreground">Subject override (optional)</label>
+                        <label style={smallLabelStyle}>Subject override (optional)</label>
                         <input
-                          className="w-full rounded-lg border border-border px-3 py-1.5 text-sm"
+                          style={inputStyle}
                           placeholder="Leave empty to use template subject"
                           value={step.subject}
                           onChange={(e) => updateStep(i, "subject", e.target.value)}
@@ -262,7 +310,7 @@ export default function Sequences() {
                     {steps.length > 1 && (
                       <button
                         onClick={() => removeStep(i)}
-                        className="mt-1 rounded p-1 text-muted-foreground hover:bg-red-50 hover:text-red-600"
+                        style={{ marginTop: 4, borderRadius: 3, padding: 4, color: "#94A3B8", border: "none", background: "transparent", cursor: "pointer" }}
                       >
                         <Trash2 size={14} />
                       </button>
@@ -272,7 +320,7 @@ export default function Sequences() {
               </div>
               <button
                 onClick={addStep}
-                className="mt-2 flex items-center gap-1 text-sm text-primary hover:underline"
+                style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: "#7C3AED", background: "transparent", border: "none", cursor: "pointer", fontFamily: font }}
               >
                 <Plus size={14} />
                 Add Step
@@ -281,34 +329,34 @@ export default function Sequences() {
 
             {/* Contact selector */}
             <div>
-              <div className="mb-2 flex items-center justify-between">
-                <label className="text-sm font-medium">
+              <div style={{ marginBottom: 8, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <label style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>
                   Select Contacts ({selectedContacts.length} selected)
                 </label>
-                <button onClick={selectAllContacts} className="text-xs text-primary hover:underline">
+                <button onClick={selectAllContacts} style={{ fontSize: 11, color: "#7C3AED", background: "transparent", border: "none", cursor: "pointer", fontFamily: font }}>
                   {selectedContacts.length === contactsWithEmail.length ? "Deselect All" : "Select All"}
                 </button>
               </div>
               {contactsWithEmail.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No contacts with email addresses found.</p>
+                <p style={{ fontSize: 13, color: "#94A3B8", margin: 0 }}>No contacts with email addresses found.</p>
               ) : (
-                <div className="max-h-48 space-y-1 overflow-y-auto rounded-lg border border-border p-2">
+                <div style={{ maxHeight: 192, overflowY: "auto", borderRadius: 3, border: "1px solid #E2E8F0", padding: 8 }}>
                   {contactsWithEmail.map((c: any) => (
                     <label
                       key={c.id}
-                      className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-1.5 hover:bg-muted/50"
+                      style={{ display: "flex", cursor: "pointer", alignItems: "center", gap: 12, borderRadius: 3, padding: "6px 12px" }}
                     >
                       <input
                         type="checkbox"
                         checked={selectedContacts.includes(c.id)}
                         onChange={() => toggleContact(c.id)}
-                        className="h-4 w-4 rounded border-border text-primary"
+                        style={{ width: 16, height: 16, accentColor: "#7C3AED" }}
                       />
-                      <div className="flex-1">
-                        <span className="text-sm font-medium">{c.firstName} {c.lastName}</span>
-                        <span className="ml-2 text-xs text-muted-foreground">{c.jobTitle} at {c.company}</span>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>{c.firstName} {c.lastName}</span>
+                        <span style={{ marginLeft: 8, fontSize: 11, color: "#64748B" }}>{c.jobTitle} at {c.company}</span>
                       </div>
-                      <span className="text-xs text-muted-foreground">{c.email}</span>
+                      <span style={{ fontSize: 11, color: "#94A3B8" }}>{c.email}</span>
                     </label>
                   ))}
                 </div>
@@ -318,7 +366,12 @@ export default function Sequences() {
             <button
               onClick={handleSave}
               disabled={createMutation.isPending}
-              className="flex items-center gap-2 rounded-lg bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+              style={{
+                display: "flex", alignItems: "center", gap: 8, borderRadius: 3,
+                background: "#0F172A", color: "#EDE9FE", padding: "10px 24px",
+                fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+                opacity: createMutation.isPending ? 0.5 : 1, alignSelf: "flex-start",
+              }}
             >
               {createMutation.isPending && <Loader2 size={16} className="animate-spin" />}
               {editingId ? "Update Sequence" : "Create Sequence"}
@@ -332,50 +385,60 @@ export default function Sequences() {
 
       {/* Sequences List */}
       {sequences.length === 0 && !showForm ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
-          <Zap className="mb-3 text-muted-foreground" size={40} />
-          <h3 className="text-lg font-medium">No sequences yet</h3>
-          <p className="mb-4 text-sm text-muted-foreground">Create a multi-step follow-up sequence to automate outreach</p>
+        <div style={{
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          borderRadius: 3, border: "1px dashed #E2E8F0", padding: "64px 0", fontFamily: font,
+        }}>
+          <Zap size={40} style={{ marginBottom: 12, color: "#94A3B8" }} />
+          <h3 style={{ fontSize: 17, fontWeight: 500, color: "#0f2545", margin: "0 0 4px" }}>No sequences yet</h3>
+          <p style={{ marginBottom: 16, fontSize: 13, color: "#64748B" }}>Create a multi-step follow-up sequence to automate outreach</p>
           <button
             onClick={() => { resetForm(); setShowForm(true); }}
-            className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
+            style={{
+              display: "flex", alignItems: "center", gap: 8, borderRadius: 3,
+              background: "#0F172A", color: "#EDE9FE", padding: "8px 16px",
+              fontSize: 13, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+            }}
           >
             <Plus size={16} />
             Create Sequence
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {sequences.map((seq: any) => (
             <div
               key={seq.id}
-              className="rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/20"
+              style={{
+                borderRadius: 3, border: "1px solid #E2E8F0", background: "#fff", padding: 16,
+                transition: "border-color 0.15s",
+              }}
             >
-              <div className="flex items-center justify-between">
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <div
-                  className="flex-1 cursor-pointer"
+                  style={{ flex: 1, cursor: "pointer" }}
                   onClick={() => setViewingId(viewingId === seq.id ? null : seq.id)}
                 >
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-sm font-semibold">{seq.name}</h3>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <h3 style={{ fontSize: 13, fontWeight: 600, color: "#0f2545", margin: 0 }}>{seq.name}</h3>
                     {statusBadge(seq.status)}
                   </div>
-                  <div className="mt-1 flex items-center gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
+                  <div style={{ marginTop: 4, display: "flex", alignItems: "center", gap: 16, fontSize: 11, color: "#64748B" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
                       <ChevronRight size={12} />
                       {seq.steps?.length || 0} steps
                     </span>
-                    <span className="flex items-center gap-1">
+                    <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
                       <Users size={12} />
                       {seq.contactIds?.length || 0} contacts
                     </span>
                     {seq.currentStep != null && seq.status === "active" && (
-                      <span className="flex items-center gap-1">
+                      <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
                         Step {seq.currentStep + 1} of {seq.steps?.length || 0}
                       </span>
                     )}
                     {seq.nextRunAt && seq.status === "active" && (
-                      <span className="flex items-center gap-1">
+                      <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
                         <Clock size={12} />
                         Next: {new Date(seq.nextRunAt).toLocaleDateString()}
                       </span>
@@ -384,20 +447,28 @@ export default function Sequences() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   {seq.status === "draft" && (
                     <>
                       <button
                         onClick={() => startMutation.mutate(seq.id)}
                         disabled={startMutation.isPending}
-                        className="flex items-center gap-1 rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700 disabled:opacity-50"
+                        style={{
+                          display: "flex", alignItems: "center", gap: 4, borderRadius: 3,
+                          background: "#16A34A", color: "#fff", padding: "6px 12px",
+                          fontSize: 11, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+                          opacity: startMutation.isPending ? 0.5 : 1,
+                        }}
                       >
                         <Play size={12} />
                         Start
                       </button>
                       <button
                         onClick={() => openEditForm(seq)}
-                        className="rounded-lg border border-border px-3 py-1.5 text-xs hover:bg-secondary"
+                        style={{
+                          borderRadius: 3, border: "1px solid #E2E8F0", padding: "6px 12px",
+                          fontSize: 11, background: "#fff", cursor: "pointer", fontFamily: font, color: "#0f2545",
+                        }}
                       >
                         Edit
                       </button>
@@ -409,7 +480,12 @@ export default function Sequences() {
                       <button
                         onClick={() => executeMutation.mutate(seq.id)}
                         disabled={executeMutation.isPending}
-                        className="flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+                        style={{
+                          display: "flex", alignItems: "center", gap: 4, borderRadius: 3,
+                          background: "#0F172A", color: "#EDE9FE", padding: "6px 12px",
+                          fontSize: 11, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+                          opacity: executeMutation.isPending ? 0.5 : 1,
+                        }}
                       >
                         {executeMutation.isPending ? (
                           <Loader2 size={12} className="animate-spin" />
@@ -420,7 +496,11 @@ export default function Sequences() {
                       </button>
                       <button
                         onClick={() => pauseResumeMutation.mutate({ id: seq.id, status: "paused" })}
-                        className="flex items-center gap-1 rounded-lg border border-border px-3 py-1.5 text-xs hover:bg-secondary"
+                        style={{
+                          display: "flex", alignItems: "center", gap: 4, borderRadius: 3,
+                          border: "1px solid #E2E8F0", padding: "6px 12px",
+                          fontSize: 11, background: "#fff", cursor: "pointer", fontFamily: font, color: "#0f2545",
+                        }}
                       >
                         <Pause size={12} />
                         Pause
@@ -431,7 +511,11 @@ export default function Sequences() {
                   {seq.status === "paused" && (
                     <button
                       onClick={() => pauseResumeMutation.mutate({ id: seq.id, status: "active" })}
-                      className="flex items-center gap-1 rounded-lg bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700"
+                      style={{
+                        display: "flex", alignItems: "center", gap: 4, borderRadius: 3,
+                        background: "#7C3AED", color: "#fff", padding: "6px 12px",
+                        fontSize: 11, fontWeight: 500, border: "none", cursor: "pointer", fontFamily: font,
+                      }}
                     >
                       <Play size={12} />
                       Resume
@@ -439,7 +523,7 @@ export default function Sequences() {
                   )}
 
                   {seq.status === "completed" && (
-                    <span className="flex items-center gap-1 text-xs text-green-600">
+                    <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#16A34A" }}>
                       <CheckCircle2 size={14} />
                       Completed
                     </span>
@@ -449,7 +533,7 @@ export default function Sequences() {
                     onClick={() => {
                       if (confirm("Delete this sequence?")) deleteMutation.mutate(seq.id);
                     }}
-                    className="rounded p-1.5 text-muted-foreground hover:bg-red-50 hover:text-red-600"
+                    style={{ borderRadius: 3, padding: 6, color: "#94A3B8", border: "none", background: "transparent", cursor: "pointer" }}
                   >
                     <Trash2 size={14} />
                   </button>
@@ -469,11 +553,19 @@ function SequenceStatusView({ sequenceId, onClose }: { sequenceId: string; onClo
     queryFn: () => getSequenceStatus(sequenceId),
   });
 
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    border: "1px solid #E2E8F0",
+    borderRadius: 3,
+    padding: 24,
+    marginBottom: 24,
+  };
+
   if (isLoading) {
     return (
-      <div className="mb-6 rounded-xl border border-border bg-card p-6">
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="animate-spin text-muted-foreground" size={24} />
+      <div style={cardStyle}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "32px 0" }}>
+          <Loader2 className="animate-spin" size={24} style={{ color: "#94A3B8" }} />
         </div>
       </div>
     );
@@ -482,65 +574,61 @@ function SequenceStatusView({ sequenceId, onClose }: { sequenceId: string; onClo
   if (!status) return null;
 
   return (
-    <div className="mb-6 rounded-xl border border-border bg-card p-6">
-      <div className="mb-4 flex items-center justify-between">
+    <div style={cardStyle}>
+      <div style={{ marginBottom: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h2 className="text-lg font-semibold">{status.name} - Status</h2>
-          <p className="text-sm text-muted-foreground">
+          <h2 style={{ fontSize: 15, fontWeight: 600, color: "#0f2545", margin: 0, fontFamily: font }}>{status.name} - Status</h2>
+          <p style={{ fontSize: 13, color: "#64748B", margin: "4px 0 0" }}>
             Step {Math.min(status.currentStep + 1, status.totalSteps)} of {status.totalSteps}
             {status.nextRunAt && ` · Next run: ${new Date(status.nextRunAt).toLocaleString()}`}
           </p>
         </div>
-        <button onClick={onClose} className="rounded p-1 hover:bg-muted">
-          <X size={18} />
+        <button onClick={onClose} style={{ borderRadius: 3, padding: 4, border: "none", background: "transparent", cursor: "pointer" }}>
+          <X size={18} color="#64748B" />
         </button>
       </div>
 
       {/* Steps progress */}
-      <div className="mb-5 flex items-center gap-1">
+      <div style={{ marginBottom: 20, display: "flex", alignItems: "center", gap: 4 }}>
         {status.steps?.map((_: any, i: number) => (
-          <div key={i} className="flex items-center gap-1">
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <div
-              className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium ${
-                i < status.currentStep
-                  ? "bg-green-100 text-green-700"
-                  : i === status.currentStep && status.status === "active"
-                  ? "bg-primary text-white"
-                  : "bg-muted text-muted-foreground"
-              }`}
+              style={{
+                width: 32, height: 32, borderRadius: 100, fontSize: 11, fontWeight: 500,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                background: i < status.currentStep ? "#F0FDF4" : i === status.currentStep && status.status === "active" ? "#0F172A" : "#F1F5F9",
+                color: i < status.currentStep ? "#16A34A" : i === status.currentStep && status.status === "active" ? "#EDE9FE" : "#94A3B8",
+              }}
             >
               {i < status.currentStep ? <CheckCircle2 size={14} /> : i + 1}
             </div>
             {i < status.steps.length - 1 && (
-              <div className={`h-0.5 w-6 ${i < status.currentStep ? "bg-green-300" : "bg-border"}`} />
+              <div style={{ height: 2, width: 24, background: i < status.currentStep ? "#86EFAC" : "#E2E8F0" }} />
             )}
           </div>
         ))}
       </div>
 
       {/* Per-contact status */}
-      <div className="space-y-2">
-        <h3 className="text-sm font-medium text-muted-foreground">Contact Details</h3>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <h3 style={{ fontSize: 13, fontWeight: 500, color: "#64748B", margin: 0 }}>Contact Details</h3>
         {status.contacts?.map((contact: any) => (
-          <div key={contact.contactId} className="flex items-center justify-between rounded-lg border border-border px-4 py-2.5">
+          <div key={contact.contactId} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderRadius: 3, border: "1px solid #E2E8F0", padding: "10px 16px" }}>
             <div>
-              <div className="text-sm font-medium">{contact.name || "Unknown"}</div>
-              <div className="text-xs text-muted-foreground">{contact.email}</div>
+              <div style={{ fontSize: 13, fontWeight: 500, color: "#0f2545" }}>{contact.name || "Unknown"}</div>
+              <div style={{ fontSize: 11, color: "#64748B" }}>{contact.email}</div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex gap-1">
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ display: "flex", gap: 4 }}>
                 {status.steps?.map((_: any, i: number) => {
                   const completed = contact.stepsCompleted?.some((sc: any) => sc.stepIndex === i);
                   return (
                     <div
                       key={i}
-                      className={`h-2.5 w-2.5 rounded-full ${
-                        completed
-                          ? "bg-green-500"
-                          : contact.skipped
-                          ? "bg-yellow-400"
-                          : "bg-gray-200"
-                      }`}
+                      style={{
+                        height: 10, width: 10, borderRadius: 100,
+                        background: completed ? "#22C55E" : contact.skipped ? "#FBBF24" : "#E2E8F0",
+                      }}
                       title={
                         completed
                           ? `Step ${i + 1} sent`
@@ -553,17 +641,17 @@ function SequenceStatusView({ sequenceId, onClose }: { sequenceId: string; onClo
                 })}
               </div>
               {contact.skipped ? (
-                <span className="flex items-center gap-1 text-xs text-yellow-600">
+                <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#B45309" }}>
                   <SkipForward size={12} />
                   {contact.skipReason === "replied" ? "Replied" : contact.skipReason}
                 </span>
               ) : contact.hasReplied ? (
-                <span className="flex items-center gap-1 text-xs text-green-600">
+                <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#16A34A" }}>
                   <CheckCircle2 size={12} />
                   Replied
                 </span>
               ) : (
-                <span className="text-xs text-muted-foreground">
+                <span style={{ fontSize: 11, color: "#94A3B8" }}>
                   {contact.stepsCompleted?.length || 0}/{status.totalSteps} sent
                 </span>
               )}
@@ -571,7 +659,7 @@ function SequenceStatusView({ sequenceId, onClose }: { sequenceId: string; onClo
           </div>
         ))}
         {(!status.contacts || status.contacts.length === 0) && (
-          <p className="py-4 text-center text-sm text-muted-foreground">No contacts in this sequence</p>
+          <p style={{ padding: "16px 0", textAlign: "center", fontSize: 13, color: "#94A3B8", margin: 0 }}>No contacts in this sequence</p>
         )}
       </div>
     </div>

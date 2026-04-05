@@ -7,10 +7,10 @@ import {
   AlertCircle, Clock, Check, Filter, Search,
 } from "lucide-react";
 
-const PRIORITY_COLORS: Record<string, string> = {
-  high: "bg-red-100 text-red-700",
-  medium: "bg-amber-100 text-amber-700",
-  low: "bg-purple-100 text-purple-700",
+const PRIORITY_COLORS: Record<string, { background: string; color: string }> = {
+  high: { background: "#FEE2E2", color: "#B91C1C" },
+  medium: { background: "#FEF3C7", color: "#B45309" },
+  low: { background: "#EDE9FE", color: "#7C3AED" },
 };
 
 const STATUS_FILTERS = ["all", "open", "overdue", "completed"] as const;
@@ -135,19 +135,34 @@ export default function Tasks() {
   const overdueCount = tasks.filter((t: any) => t.status === "overdue").length;
   const openCount = tasks.filter((t: any) => t.status === "open").length;
 
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    borderRadius: 3,
+    border: "1px solid #E2E8F0",
+    padding: "10px 16px",
+    fontSize: 14,
+    outline: "none",
+    fontFamily: "'Inter', sans-serif",
+  };
+
   return (
-    <div className="mx-auto max-w-4xl p-8">
+    <div style={{ maxWidth: 896, margin: "0 auto", padding: "40px 48px", fontFamily: "'Inter', sans-serif" }}>
       {/* Header */}
-      <div className="mb-6 flex items-center justify-between">
+      <div style={{ marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <h1 className="text-2xl font-bold">Tasks</h1>
-          <p className="text-muted-foreground">
-            {openCount} open{overdueCount > 0 && <span className="text-red-600 font-medium"> ({overdueCount} overdue)</span>}
+          <h1 style={{ fontSize: 26, fontWeight: 600, color: "#0f2545", fontFamily: "'Libre Baskerville', Georgia, serif", margin: 0 }}>Tasks</h1>
+          <p style={{ color: "#64748B", fontSize: 14, margin: "4px 0 0" }}>
+            {openCount} open{overdueCount > 0 && <span style={{ color: "#DC2626", fontWeight: 500 }}> ({overdueCount} overdue)</span>}
           </p>
         </div>
         <button
           onClick={() => { resetForm(); setShowForm(true); }}
-          className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90"
+          style={{
+            display: "flex", alignItems: "center", gap: 8,
+            background: "#0F172A", color: "#EDE9FE",
+            borderRadius: 3, padding: "8px 16px",
+            fontSize: 14, fontWeight: 500, border: "none", cursor: "pointer",
+          }}
         >
           <Plus size={16} /> New Task
         </button>
@@ -155,19 +170,25 @@ export default function Tasks() {
 
       {/* Create/Edit form */}
       {showForm && (
-        <div className="mb-6 rounded-xl border border-border bg-card p-5">
-          <h3 className="mb-4 text-sm font-semibold">{editingId ? "Edit Task" : "New Task"}</h3>
-          <div className="space-y-3">
+        <div style={{
+          marginBottom: 24,
+          background: "#fff",
+          border: "1px solid #E2E8F0",
+          borderRadius: 3,
+          padding: 20,
+        }}>
+          <h3 style={{ marginBottom: 16, fontSize: 14, fontWeight: 600, color: "#0f2545", marginTop: 0 }}>{editingId ? "Edit Task" : "New Task"}</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <input
-              className="w-full rounded-lg border border-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+              style={inputStyle}
               placeholder="Task title (e.g., Call Mike about estimate)"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
               autoFocus
             />
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
               <select
-                className="rounded-lg border border-border px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
+                style={{ ...inputStyle, padding: "10px 12px" }}
                 value={form.contactId}
                 onChange={(e) => handleContactSelect(e.target.value)}
               >
@@ -180,12 +201,12 @@ export default function Tasks() {
               </select>
               <input
                 type="date"
-                className="rounded-lg border border-border px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
+                style={{ ...inputStyle, padding: "10px 12px" }}
                 value={form.dueDate}
                 onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
               />
               <select
-                className="rounded-lg border border-border px-3 py-2.5 text-sm focus:border-primary focus:outline-none"
+                style={{ ...inputStyle, padding: "10px 12px" }}
                 value={form.priority}
                 onChange={(e) => setForm({ ...form, priority: e.target.value })}
               >
@@ -195,24 +216,34 @@ export default function Tasks() {
               </select>
             </div>
             <textarea
-              className="w-full rounded-lg border border-border px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+              style={{ ...inputStyle, resize: "vertical" }}
               rows={2}
               placeholder="Notes (optional)"
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
             />
-            <div className="flex gap-2">
+            <div style={{ display: "flex", gap: 8 }}>
               <button
                 onClick={handleSubmit}
                 disabled={!form.title.trim() || createMutation.isPending}
-                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+                style={{
+                  display: "flex", alignItems: "center", gap: 8,
+                  background: "#0F172A", color: "#EDE9FE",
+                  borderRadius: 3, padding: "8px 16px",
+                  fontSize: 14, fontWeight: 500, border: "none", cursor: "pointer",
+                  opacity: (!form.title.trim() || createMutation.isPending) ? 0.5 : 1,
+                }}
               >
                 {createMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <Check size={14} />}
                 {editingId ? "Update" : "Create Task"}
               </button>
               <button
                 onClick={resetForm}
-                className="rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground hover:bg-secondary"
+                style={{
+                  borderRadius: 3, border: "1px solid #E2E8F0",
+                  padding: "8px 16px", fontSize: 14, color: "#64748B",
+                  background: "transparent", cursor: "pointer",
+                }}
               >
                 Cancel
               </button>
@@ -222,29 +253,40 @@ export default function Tasks() {
       )}
 
       {/* Filters */}
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="flex gap-1">
+      <div style={{ marginBottom: 16, display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 4 }}>
           {STATUS_FILTERS.map((s) => (
             <button
               key={s}
               onClick={() => setFilter(s)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
-                filter === s
-                  ? "bg-primary text-white"
-                  : "border border-border text-muted-foreground hover:bg-secondary"
-              }`}
+              style={{
+                borderRadius: 3,
+                padding: "6px 12px",
+                fontSize: 12,
+                fontWeight: 500,
+                textTransform: "capitalize",
+                border: filter === s ? "none" : "1px solid #E2E8F0",
+                background: filter === s ? "#0F172A" : "transparent",
+                color: filter === s ? "#EDE9FE" : "#64748B",
+                cursor: "pointer",
+                transition: "all 0.15s",
+              }}
             >
               {s}
               {s === "overdue" && overdueCount > 0 && (
-                <span className="ml-1 rounded-full bg-red-500 px-1.5 text-[10px] text-white">{overdueCount}</span>
+                <span style={{
+                  marginLeft: 4, borderRadius: 100,
+                  background: "#EF4444", padding: "1px 6px",
+                  fontSize: 10, color: "#fff",
+                }}>{overdueCount}</span>
               )}
             </button>
           ))}
         </div>
-        <div className="relative flex-1">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <div style={{ position: "relative", flex: 1 }}>
+          <Search size={14} style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94A3B8" }} />
           <input
-            className="w-full rounded-lg border border-border py-2 pl-9 pr-3 text-sm focus:border-primary focus:outline-none"
+            style={{ ...inputStyle, paddingLeft: 36, paddingRight: 12 }}
             placeholder="Search tasks..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -254,21 +296,26 @@ export default function Tasks() {
 
       {/* Task list */}
       {isLoading ? (
-        <div className="flex justify-center py-12">
-          <Loader2 className="animate-spin text-muted-foreground" />
+        <div style={{ display: "flex", justifyContent: "center", padding: "48px 0" }}>
+          <Loader2 className="animate-spin" style={{ color: "#94A3B8" }} />
         </div>
       ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border py-16">
-          <CheckSquare className="mb-3 text-muted-foreground" size={40} />
-          <h3 className="text-lg font-medium">
+        <div style={{
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
+          border: "2px dashed #E2E8F0", borderRadius: 3,
+          padding: "64px 0",
+        }}>
+          <CheckSquare style={{ marginBottom: 12, color: "#94A3B8" }} size={40} />
+          <h3 style={{ fontSize: 18, fontWeight: 500, color: "#0f2545", margin: 0 }}>
             {filter === "all" ? "No tasks yet" : `No ${filter} tasks`}
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p style={{ fontSize: 14, color: "#64748B", margin: "4px 0 0" }}>
             {filter === "all" ? "Create a task to track your follow-ups" : "Try a different filter"}
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {filtered.map((task: any) => {
             const isOverdue = task.status === "overdue";
             const isCompleted = task.status === "completed";
@@ -279,78 +326,129 @@ export default function Tasks() {
                 })
               : null;
 
+            const pColor = PRIORITY_COLORS[task.priority] || PRIORITY_COLORS.medium;
+
             return (
               <div
                 key={task.id}
-                className={`group flex items-start gap-3 rounded-lg border p-4 transition-colors ${
-                  isOverdue
-                    ? "border-red-200 bg-red-50/50"
-                    : isCompleted
-                    ? "border-border bg-muted/30"
-                    : "border-border bg-card hover:bg-secondary/30"
-                }`}
+                style={{
+                  display: "flex", alignItems: "flex-start", gap: 12,
+                  borderRadius: 3, padding: 16,
+                  border: isOverdue ? "1px solid #FECACA" : "1px solid #E2E8F0",
+                  background: isOverdue ? "#FEF2F2" : isCompleted ? "#F8FAFC" : "#fff",
+                  transition: "border-color 0.15s, box-shadow 0.15s",
+                }}
+                onMouseEnter={(e) => {
+                  if (!isOverdue && !isCompleted) {
+                    e.currentTarget.style.borderColor = "#C4B5FD";
+                    e.currentTarget.style.boxShadow = "0 2px 8px rgba(124,58,237,0.10)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isOverdue && !isCompleted) {
+                    e.currentTarget.style.borderColor = "#E2E8F0";
+                    e.currentTarget.style.boxShadow = "none";
+                  }
+                }}
               >
                 {/* Checkbox */}
                 <button
                   onClick={() => toggleComplete(task)}
-                  className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border transition-colors ${
-                    isCompleted
-                      ? "border-green-500 bg-green-500 text-white"
-                      : "border-gray-300 hover:border-primary"
-                  }`}
+                  style={{
+                    marginTop: 2, display: "flex",
+                    height: 20, width: 20, flexShrink: 0,
+                    alignItems: "center", justifyContent: "center",
+                    borderRadius: 3, border: isCompleted ? "1px solid #059669" : "1px solid #CBD5E1",
+                    background: isCompleted ? "#059669" : "transparent",
+                    color: isCompleted ? "#fff" : "transparent",
+                    cursor: "pointer", transition: "all 0.15s",
+                  }}
                 >
                   {isCompleted && <Check size={12} />}
                 </button>
 
                 {/* Content */}
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-start justify-between gap-2">
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
                     <button
                       onClick={() => handleEdit(task)}
-                      className={`text-sm font-medium text-left hover:text-primary ${
-                        isCompleted ? "line-through text-muted-foreground" : ""
-                      }`}
+                      style={{
+                        fontSize: 14, fontWeight: 500, textAlign: "left",
+                        color: isCompleted ? "#94A3B8" : "#0f2545",
+                        textDecoration: isCompleted ? "line-through" : "none",
+                        background: "none", border: "none", cursor: "pointer",
+                        padding: 0,
+                      }}
                     >
                       {task.title}
                     </button>
-                    <div className="flex flex-shrink-0 items-center gap-1">
-                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${PRIORITY_COLORS[task.priority] || PRIORITY_COLORS.medium}`}>
+                    <div style={{ display: "flex", flexShrink: 0, alignItems: "center", gap: 4 }}>
+                      <span style={{
+                        borderRadius: 100, padding: "2px 8px",
+                        fontSize: 10, fontWeight: 600,
+                        background: pColor.background,
+                        color: pColor.color,
+                      }}>
                         {task.priority}
                       </span>
                       <button
                         onClick={() => deleteMutation.mutate(task.id)}
-                        className="rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-destructive/10 hover:text-destructive group-hover:opacity-100"
+                        style={{
+                          borderRadius: 3, padding: 4,
+                          color: "#94A3B8", background: "none",
+                          border: "none", cursor: "pointer",
+                          transition: "color 0.15s",
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.color = "#DC2626"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = "#94A3B8"; }}
                       >
                         <Trash2 size={13} />
                       </button>
                     </div>
                   </div>
 
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                  <div style={{ marginTop: 4, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, fontSize: 12, color: "#64748B" }}>
                     {task.contactName && (
-                      <span className="flex items-center gap-1">
-                        <span className="h-4 w-4 rounded-full bg-purple-100 text-center text-[9px] font-bold leading-4 text-purple-700">
+                      <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                        <span style={{
+                          height: 16, width: 16, borderRadius: "50%",
+                          background: "#EDE9FE", textAlign: "center",
+                          fontSize: 9, fontWeight: 700, lineHeight: "16px",
+                          color: "#7C3AED", display: "inline-block",
+                        }}>
                           {task.contactName.charAt(0).toUpperCase()}
                         </span>
                         {task.contactName}
                       </span>
                     )}
                     {dueLabel && (
-                      <span className={`flex items-center gap-1 ${isOverdue ? "font-medium text-red-600" : ""}`}>
+                      <span style={{
+                        display: "flex", alignItems: "center", gap: 4,
+                        color: isOverdue ? "#DC2626" : "#64748B",
+                        fontWeight: isOverdue ? 500 : 400,
+                      }}>
                         {isOverdue ? <AlertCircle size={11} /> : <Calendar size={11} />}
                         {dueLabel}
                         {isOverdue && " (overdue)"}
                       </span>
                     )}
                     {task.createdFrom && task.createdFrom !== "manual" && (
-                      <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px]">
+                      <span style={{
+                        borderRadius: 3, background: "#F1F5F9",
+                        padding: "2px 6px", fontSize: 10,
+                        color: "#64748B",
+                      }}>
                         {task.createdFrom === "pipeline_prompt" ? "from pipeline" : task.createdFrom.replace(/_/g, " ")}
                       </span>
                     )}
                   </div>
 
                   {task.notes && (
-                    <p className="mt-1.5 text-xs text-muted-foreground line-clamp-1">{task.notes}</p>
+                    <p style={{
+                      marginTop: 6, fontSize: 12, color: "#94A3B8",
+                      overflow: "hidden", textOverflow: "ellipsis",
+                      whiteSpace: "nowrap", margin: "6px 0 0",
+                    }}>{task.notes}</p>
                   )}
                 </div>
               </div>
