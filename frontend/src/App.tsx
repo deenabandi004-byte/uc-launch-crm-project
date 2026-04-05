@@ -6,11 +6,12 @@ import { AppLayout } from "./components/layout/AppLayout";
 import SignIn from "./pages/SignIn";
 import OnboardingFlow from "./pages/OnboardingFlow";
 import Dashboard from "./pages/Dashboard";
-import LeadGeneration from "./pages/LeadGeneration";
 import ContactSheet from "./pages/ContactSheet";
-import EmailTemplates from "./pages/EmailTemplates";
 import CampaignCompose from "./pages/CampaignCompose";
 import Pipeline from "./pages/Pipeline";
+import Tasks from "./pages/Tasks";
+import Quotes from "./pages/Quotes";
+import SettingsPage from "./pages/SettingsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 5 * 60 * 1000, gcTime: 10 * 60 * 1000 } },
@@ -54,11 +55,15 @@ function AppRoutes() {
         }
       >
         <Route path="/" element={<Dashboard />} />
-        <Route path="/leads" element={<LeadGeneration />} />
-        <Route path="/contacts" element={<ContactSheet />} />
-        <Route path="/templates" element={<EmailTemplates />} />
-        <Route path="/campaigns" element={<CampaignCompose />} />
         <Route path="/pipeline" element={<Pipeline />} />
+        <Route path="/contacts" element={<ContactSheet />} />
+        <Route path="/campaigns" element={<CampaignCompose />} />
+        <Route path="/tasks" element={<Tasks />} />
+        <Route path="/quotes" element={<Quotes />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        {/* Legacy redirects */}
+        <Route path="/leads" element={<Navigate to="/contacts" replace />} />
+        <Route path="/templates" element={<Navigate to="/campaigns" replace />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
