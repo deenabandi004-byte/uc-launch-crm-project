@@ -9,9 +9,9 @@ import { useState } from "react";
 import logoImg from "../../assets/logo-circle.png";
 
 const NAV_FONT_SIZE = "13.5px";
-const NAV_PY = "11px";
-const NAV_GAP = "10px";
-const NAV_RADIUS = "8px";
+const NAV_PY = "10px";
+const NAV_GAP = "11px";
+const NAV_RADIUS = "6px";
 
 const ACTIVE_BG = "rgba(124,58,237,.18)";
 const ACTIVE_COLOR = "#C4B5FD";
@@ -135,7 +135,7 @@ export function AppLayout() {
         }}
       >
         {/* User profile / toggle */}
-        <div className="px-3 pt-3 pb-1 flex-shrink-0">
+        <div className="px-3 pt-4 pb-2 flex-shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,.06)" }}>
           {collapsed ? (
             <div className="flex justify-center">
               <button
@@ -169,8 +169,11 @@ export function AppLayout() {
                     {userInitials}
                   </div>
                   <div className="flex-1 min-w-0 text-left">
-                    <p className="text-sm font-medium truncate" style={{ color: "#fff", fontFamily: "'Inter', sans-serif" }}>
+                    <p className="truncate" style={{ color: "#fff", fontFamily: "'Inter', sans-serif", fontSize: 13, fontWeight: 500, lineHeight: 1.3 }}>
                       {user?.name || "User"}
+                    </p>
+                    <p className="truncate" style={{ color: "rgba(255,255,255,.35)", fontSize: 11, lineHeight: 1.3, marginTop: 1 }}>
+                      {user?.email || ""}
                     </p>
                   </div>
                   {userDropdownOpen
@@ -222,20 +225,20 @@ export function AppLayout() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-3 pt-2 pb-3 flex flex-col">
-          <div className="space-y-0.5">
+        <nav className="flex-1 overflow-y-auto px-3 pt-4 pb-4 flex flex-col">
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {mainNavItems.map((item) => renderNavItem(item, false))}
           </div>
 
           <div className="flex-1" />
 
-          <div className="space-y-0.5">
+          <div style={{ display: "flex", flexDirection: "column", gap: 2, paddingTop: 8, borderTop: "1px solid rgba(255,255,255,.06)" }}>
             {utilityNavItems.map((item) => renderNavItem(item, false))}
           </div>
         </nav>
 
         {/* Footer — Credits + Upgrade */}
-        <div className="p-3 flex-shrink-0" style={{ borderTop: "0.5px solid rgba(255,255,255,.07)" }}>
+        <div className="flex-shrink-0" style={{ padding: "16px 12px", borderTop: "1px solid rgba(255,255,255,.06)" }}>
           {!collapsed ? (
             <div className="space-y-3">
               {/* Credits */}
@@ -260,7 +263,7 @@ export function AppLayout() {
               <button
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium transition-all"
                 style={{
-                  background: "#7C3AED", color: "#0F172A", borderRadius: 3,
+                  background: "#7C3AED", color: "#FFFFFF", borderRadius: 3,
                   border: "none", cursor: "pointer", fontFamily: "'Inter', sans-serif",
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = "#5B21B6"; }}
@@ -274,7 +277,7 @@ export function AppLayout() {
             <button
               className="w-full flex items-center justify-center p-2 transition-all"
               style={{
-                background: "#7C3AED", color: "#0F172A", borderRadius: 3,
+                background: "#7C3AED", color: "#FFFFFF", borderRadius: 3,
                 border: "none", cursor: "pointer",
               }}
               onMouseEnter={(e) => { e.currentTarget.style.background = "#5B21B6"; }}
@@ -287,7 +290,7 @@ export function AppLayout() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto" style={{ background: "#FFFFFF" }}>
         <Outlet />
       </main>
     </div>
